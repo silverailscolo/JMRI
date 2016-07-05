@@ -30,6 +30,7 @@ import java.util.Map.Entry;
  *
  * @author Kevin Dickerson Copyright (C) 2011
  * @author Matthew Harris Copyright (C) 2011
+ * @version $Revision$
  */
 public class PortNameMapper {
 

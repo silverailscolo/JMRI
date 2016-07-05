@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 class SearchPathTableModel extends AbstractTableModel implements PropertyChangeListener {
 
+    private static final long serialVersionUID = -3552357466103474946L;
     private static final Logger log = LoggerFactory.getLogger(SearchPathTableModel.class);
 
     @SuppressWarnings("LeakingThisInConstructor")

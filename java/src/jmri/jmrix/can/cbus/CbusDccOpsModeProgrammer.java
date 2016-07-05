@@ -35,7 +35,6 @@ public class CbusDccOpsModeProgrammer extends CbusDccProgrammer implements Addre
     /**
      * Forward a write request to an ops-mode write operation
      */
-    @Override
     synchronized public void writeCV(int CV, int val, ProgListener p) throws ProgrammerException {
         log.debug("ops mode write CV=" + CV + " val=" + val);
 
@@ -51,7 +50,6 @@ public class CbusDccOpsModeProgrammer extends CbusDccProgrammer implements Addre
         notifyProgListenerEnd(_val, jmri.ProgListener.OK);
     }
 
-    @Override
     synchronized public void readCV(int CV, ProgListener p) throws ProgrammerException {
         if (log.isDebugEnabled()) {
             log.debug("read CV=" + CV);
@@ -60,8 +58,7 @@ public class CbusDccOpsModeProgrammer extends CbusDccProgrammer implements Addre
         throw new ProgrammerException();
     }
 
-    @Override
-    synchronized public void confirmCV(String CV, int val, ProgListener p) throws ProgrammerException {
+    synchronized public void confirmCV(int CV, int val, ProgListener p) throws ProgrammerException {
         if (log.isDebugEnabled()) {
             log.debug("confirm CV=" + CV);
         }

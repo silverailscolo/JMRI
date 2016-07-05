@@ -147,22 +147,19 @@ place that in the "lib" directory in the JMRI program directory.
 Alternately, you can create a "classes" directory, and compile your Java class into that. 
 In that case, it should end up in:
 
-<pre style="font-family: monospace;">
-
+<pre><code>
 classes/MyCode.class
 </code></pre>
 
 if you've specified no code in your package, or 
 
-<pre style="font-family: monospace;">
-
+<pre><code>
 classes/MyCode.class
 </code></pre>
 
 or
 
-<pre style="font-family: monospace;">
-
+<pre><code>
 classes/jmri/jmrit/automat/SampleAutomaton.class
 </code></pre>
 
@@ -172,15 +169,13 @@ The easiest way to invoke your code is to use JMRI's scripting support.
 Open a Script Output window (so you can see errors) from the Panels menu, 
 then a Script Entry window, enter:
 
-<pre style="font-family: monospace;">
-
+<pre><code>
 MyCode().start()
 </code></pre>
 
 or
 
-<pre style="font-family: monospace;">
-
+<pre><code>
 import jmri.jmrit.automat
 jmri.jmrit.automat.SampleAutomaton().start()
 </code></pre>

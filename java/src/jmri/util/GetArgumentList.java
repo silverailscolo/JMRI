@@ -1,3 +1,4 @@
+// GetArgumentList.java
 package jmri.util;
 
 /**
@@ -10,6 +11,7 @@ package jmri.util;
  * don't need to start the JVM twice.
  *
  * @author	Bob Jacobsen, Copyright (C) 2008
+ * @version $Revision$
  */
 public class GetArgumentList {
 

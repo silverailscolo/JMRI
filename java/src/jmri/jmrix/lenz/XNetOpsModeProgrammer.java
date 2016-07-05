@@ -1,3 +1,4 @@
+/* XNetOpsModeProgrammer.java */
 package jmri.jmrix.lenz;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
  * @see jmri.Programmer
  * @author Paul Bender Copyright (C) 2003-2010
  * @author Girgio Terdina Copyright (C) 2007
+ * @version $Revision$
  */
 public class XNetOpsModeProgrammer extends jmri.jmrix.AbstractProgrammer implements XNetListener, AddressedProgrammer {
 
@@ -47,7 +49,6 @@ public class XNetOpsModeProgrammer extends jmri.jmrix.AbstractProgrammer impleme
     /**
      * Send an ops-mode write request to the XPressnet.
      */
-    @Override
     synchronized public void writeCV(int CV, int val, ProgListener p) throws ProgrammerException {
         XNetMessage msg = XNetMessage.getWriteOpsModeCVMsg(mAddressHigh, mAddressLow, CV, val);
         tc.sendXNetMessage(msg, this);
@@ -60,7 +61,6 @@ public class XNetOpsModeProgrammer extends jmri.jmrix.AbstractProgrammer impleme
         restartTimer(msg.getTimeout());
     }
 
-    @Override
     synchronized public void readCV(int CV, ProgListener p) throws ProgrammerException {
         XNetMessage msg = XNetMessage.getVerifyOpsModeCVMsg(mAddressHigh, mAddressLow, CV, value);
         tc.sendXNetMessage(msg, this);
@@ -69,9 +69,7 @@ public class XNetOpsModeProgrammer extends jmri.jmrix.AbstractProgrammer impleme
         p.programmingOpReply(CV, jmri.ProgListener.NotImplemented);
     }
 
-    @Override
-    public void confirmCV(String CVname, int val, ProgListener p) throws ProgrammerException {
-        int CV = Integer.parseInt(CVname);
+    public void confirmCV(int CV, int val, ProgListener p) throws ProgrammerException {
         XNetMessage msg = XNetMessage.getVerifyOpsModeCVMsg(mAddressHigh, mAddressLow, CV, val);
         tc.sendXNetMessage(msg, this);
         /* We can trigger a read to an LRC120, but the information is not
@@ -171,3 +169,5 @@ public class XNetOpsModeProgrammer extends jmri.jmrix.AbstractProgrammer impleme
     private final static Logger log = LoggerFactory.getLogger(XNetOpsModeProgrammer.class.getName());
 
 }
+
+/* @(#)XnetOpsModeProgrammer.java */

@@ -1,3 +1,4 @@
+// SystemType.java
 package jmri.util;
 
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
  * @author Bob Jacobsen Copyright 2006
  * @author Daniel Boudreau Copyright 2012 (add Unix)
  * @author Randall Wood Copyright 2013
+ * @version $Revision$
  */
 public class SystemType {
 

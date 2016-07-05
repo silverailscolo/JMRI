@@ -70,8 +70,7 @@ public class QsiProgrammer extends AbstractProgrammer implements QsiListener {
         controller().sendQsiMessage(QsiMessage.getWriteCV(CV, val, getMode()), this);
     }
 
-    @Override
-    public synchronized void confirmCV(String CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
+    public synchronized void confirmCV(int CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
         readCV(CV, p);
     }
 

@@ -99,8 +99,7 @@ not work with other servlet containers.
 <h3>Get the status of individual objects</h3>
 
 Request:
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;xmlio&gt;
   &lt;item&gt;
     &lt;type&gt;turnout&lt;/type&gt;
@@ -118,8 +117,7 @@ Request:
 </code></pre>
 
 Reply:
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;xmlio&gt;
   &lt;item&gt;
     &lt;type&gt;turnout&lt;/type&gt;
@@ -149,8 +147,7 @@ item's state has changed to something different.
 
 Request:
 
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;xmlio&gt;
   &lt;list&gt;
     &lt;type&gt;sensor&lt;/type&gt;
@@ -159,8 +156,7 @@ Request:
 </code></pre>
 
 Reply:
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;xmlio&gt;
   &lt;item&gt;
     &lt;type&gt;sensor&lt;/type&gt;
@@ -185,8 +181,7 @@ The response can be turned around and used as the next request.
 <h3>Set the status of an object</h3>
 
 Request:
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;xmlio&gt;
   &lt;item&gt;
     &lt;type&gt;turnout&lt;/type&gt;
@@ -197,8 +192,7 @@ Request:
 </code></pre>
 
 Reply:
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;xmlio&gt;
   &lt;item&gt;
     &lt;type&gt;turnout&lt;/type&gt;
@@ -221,14 +215,12 @@ have propagated completely.
 <h3>Set the status of an object (attribute-based syntax)</h3>
 
 Request:
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;turnout name="IT12" set="2" /&gt;
 </code></pre>
 
 Reply:
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;turnout name="IT12" value="2" /&gt;
 </code></pre>
 
@@ -240,8 +232,7 @@ default ThrottleManager. The first use
 allocates the throttle, and all later ones
 set any attributes present:
 
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;xmlio&gt;
     &lt;throttle&gt;
         &lt;address&gt;1234&lt;/address&gt;

@@ -157,7 +157,7 @@ public class TrainCustomManifest {
      * 
      * @return true if process completes without a timeout, false if there's a
      *         timeout.
-     * @throws InterruptedException if process thread is interrupted
+     * @throws InterruptedException
      */
     public static boolean waitForProcessToComplete() throws InterruptedException {
         boolean status;

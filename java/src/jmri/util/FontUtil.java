@@ -1,3 +1,4 @@
+// FontUtil.java
 package jmri.util;
 
 import java.awt.Font;
@@ -13,6 +14,7 @@ import java.awt.Font;
  * 1.1.8 system, or at least try to fake it.
  *
  * @author Bob Jacobsen Copyright 2003
+ * @version $Revision$
  */
 public class FontUtil {
 

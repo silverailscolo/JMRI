@@ -1,3 +1,4 @@
+/* NceOpsModeProgrammer.java */
 package jmri.jmrix.nce;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
  * @see jmri.Programmer
  * @author	Bob Jacobsen Copyright (C) 2002, 2014
  * @author kcameron Copyright (C) 2014
+ * @version	$Revision$
  */
 public class NceOpsModeProgrammer extends NceProgrammer implements AddressedProgrammer {
 
@@ -86,9 +88,9 @@ public class NceOpsModeProgrammer extends NceProgrammer implements AddressedProg
         throw new ProgrammerException();
     }
 
-    public synchronized void confirmCV(String CV, int val, ProgListener p) throws ProgrammerException {
+    public synchronized void confirmCV(int CV, int val, ProgListener p) throws ProgrammerException {
         if (log.isDebugEnabled()) {
-            log.debug("confirm CV={}", CV);
+            log.debug("confirm CV=" + CV);
         }
         log.error("confirmCV not available in this protocol");
         throw new ProgrammerException();
@@ -153,3 +155,5 @@ public class NceOpsModeProgrammer extends NceProgrammer implements AddressedProg
     private final static Logger log = LoggerFactory.getLogger(NceOpsModeProgrammer.class.getName());
 
 }
+
+/* @(#)NceOpsModeProgrammer.java */

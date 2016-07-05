@@ -1,3 +1,4 @@
+/* SprogOpsModeProgrammer.java */
 package jmri.jmrix.sprog;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see jmri.Programmer
  * @author	Andrew Crosland Copyright (C) 2006
+ * @version	$Revision$
  */
 public class SprogOpsModeProgrammer extends SprogProgrammer implements AddressedProgrammer {
 
@@ -64,9 +66,9 @@ public class SprogOpsModeProgrammer extends SprogProgrammer implements Addressed
         throw new ProgrammerException();
     }
 
-    synchronized public void confirmCV(String CV, int val, ProgListener p) throws ProgrammerException {
+    synchronized public void confirmCV(int CV, int val, ProgListener p) throws ProgrammerException {
         if (log.isDebugEnabled()) {
-            log.debug("confirm CV={}", CV);
+            log.debug("confirm CV=" + CV);
         }
         log.error("confirmCV not available in this protocol");
         throw new ProgrammerException();
@@ -122,3 +124,5 @@ public class SprogOpsModeProgrammer extends SprogProgrammer implements Addressed
     private final static Logger log = LoggerFactory.getLogger(SprogOpsModeProgrammer.class.getName());
 
 }
+
+/* @(#)SprogOpsModeProgrammer.java */

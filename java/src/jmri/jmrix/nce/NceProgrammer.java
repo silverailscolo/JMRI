@@ -122,8 +122,7 @@ public class NceProgrammer extends AbstractProgrammer implements NceListener {
         }
     }
 
-    @Override
-    public void confirmCV(String CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
+    public void confirmCV(int CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
         readCV(CV, p);
     }
 

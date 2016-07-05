@@ -10,6 +10,7 @@ import junit.framework.TestSuite;
  * Tests for the jmri.util.IntlUtilities class.
  *
  * @author	Bob Jacobsen Copyright 20014
+ * @version	$Revision$
  */
 public class IntlUtilitiesTest extends TestCase {
 

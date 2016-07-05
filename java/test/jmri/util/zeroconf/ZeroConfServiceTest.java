@@ -9,6 +9,7 @@ import junit.framework.TestSuite;
  * Tests for the ZeroConfService class
  *
  * @author Paul Bender Copyright (C) 2014
+ * @version $Revision: 17977 $
  */
 public class ZeroConfServiceTest extends TestCase {
 

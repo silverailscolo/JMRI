@@ -1,3 +1,4 @@
+// SocketUtil.java
 package jmri.util;
 
 import gnu.io.SerialPort;
@@ -12,6 +13,7 @@ import gnu.io.SerialPort;
  * falling back to JavaComm 2 if necessary.
  *
  * @author Paul Bender Copyright 2007
+ * @version $Revision$
  */
 public class SerialUtil {
 

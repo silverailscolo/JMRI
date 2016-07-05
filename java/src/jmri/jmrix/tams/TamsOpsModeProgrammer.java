@@ -1,3 +1,4 @@
+/* TamsOpsModeProgrammer.java */
 package jmri.jmrix.tams;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see jmri.Programmer Based on work by Bob Jacobsen
  * @author	Kevin Dickerson Copyright (C) 2012
+ * @version	$Revision: 19990 $
  */
 public class TamsOpsModeProgrammer extends TamsProgrammer implements AddressedProgrammer {
 
@@ -60,7 +62,7 @@ public class TamsOpsModeProgrammer extends TamsProgrammer implements AddressedPr
         throw new ProgrammerException();
     }
 
-    public synchronized void confirmCV(String CV, int val, ProgListener p) throws ProgrammerException {
+    public synchronized void confirmCV(int CV, int val, ProgListener p) throws ProgrammerException {
         if (log.isDebugEnabled()) {
             log.debug("confirm CV=" + CV);
         }
@@ -127,3 +129,5 @@ public class TamsOpsModeProgrammer extends TamsProgrammer implements AddressedPr
     private final static Logger log = LoggerFactory.getLogger(TamsOpsModeProgrammer.class.getName());
 
 }
+
+/* @(#)TamsOpsModeProgrammer.java */
