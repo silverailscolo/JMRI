@@ -1,3 +1,4 @@
+/* DCCppOpsModeProgrammer.java */
 package jmri.jmrix.dccpp;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
  * @author Paul Bender Copyright (C) 2003-2010
  * @author Girgio Terdina Copyright (C) 2007
  * @author Mark Underwood Copyright (C) 2015
+ * @version $Revision$
  *
  * Based on XNetOpsModeProgrammer by Paul Bender and Girgio Terdina
  */
@@ -70,8 +72,7 @@ public class DCCppOpsModeProgrammer extends jmri.jmrix.AbstractProgrammer implem
         p.programmingOpReply(CV, jmri.ProgListener.NotImplemented);
     }
 
-    @Override
-    public void confirmCV(String CV, int val, ProgListener p) throws ProgrammerException {
+    public void confirmCV(int CV, int val, ProgListener p) throws ProgrammerException {
         //DCCppMessage msg = DCCppMessage.getVerifyOpsModeCVMsg(mAddressHigh, mAddressLow, CV, val);
         //tc.sendDCCppMessage(msg, this);
         /* We can trigger a read to an LRC120, but the information is not
@@ -165,3 +166,5 @@ public class DCCppOpsModeProgrammer extends jmri.jmrix.AbstractProgrammer implem
     private final static Logger log = LoggerFactory.getLogger(DCCppOpsModeProgrammer.class.getName());
 
 }
+
+/* @(#)DCCppOpsModeProgrammer.java */

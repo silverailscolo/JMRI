@@ -12,6 +12,8 @@ import javax.swing.AbstractListModel;
  */
 public class ProfileListModel extends AbstractListModel<Profile> {
 
+    private static final long serialVersionUID = -2962313838094980115L;
+
     public ProfileListModel() {
         ProfileManager.getDefault().addPropertyChangeListener(ProfileManager.PROFILES, (PropertyChangeEvent evt) -> {
             if (evt instanceof IndexedPropertyChangeEvent

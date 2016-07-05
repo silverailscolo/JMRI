@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Randall Wood Copyright (C) 2012
+ * @version $Revision$
  */
 public class WebServerPreferences extends Bean {
 

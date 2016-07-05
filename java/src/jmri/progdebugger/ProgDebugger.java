@@ -1,3 +1,4 @@
+// ProgDebugger.java
 package jmri.progdebugger;
 
 import java.beans.PropertyChangeListener;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
  * Only supports the DCC single-number address space.
  *
  * @author	Bob Jacobsen Copyright (C) 2001, 2007, 2013
+ * @version $Revision$
  */
 public class ProgDebugger implements AddressedProgrammer {
 
@@ -141,15 +143,11 @@ public class ProgDebugger implements AddressedProgrammer {
 
     boolean confirmOK;  // cached result of last compare
 
-    @Override
-    @SuppressWarnings("deprecation") // parent Programmer method deprecated, will remove at same time
-    public final void confirmCV(int CV, int val, ProgListener p) throws ProgrammerException {
-        confirmCV("" + CV, val, p);
+    public void confirmCV(String CV, int val, ProgListener p) throws ProgrammerException {
+        confirmCV(Integer.parseInt(CV), val, p);
     }
 
-    @Override
-    public void confirmCV(String CVname, int val, ProgListener p) throws ProgrammerException {
-        int CV = Integer.parseInt(CVname);
+    public void confirmCV(int CV, int val, ProgListener p) throws ProgrammerException {
         final ProgListener m = p;
 
         nOperations++;
@@ -366,3 +364,5 @@ public class ProgDebugger implements AddressedProgrammer {
 
     private final static Logger log = LoggerFactory.getLogger(ProgDebugger.class.getName());
 }
+
+/* @(#)ProgDebugger.java */

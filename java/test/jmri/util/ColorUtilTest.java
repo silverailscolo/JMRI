@@ -11,6 +11,7 @@ import java.awt.Color;
  * Tests for the jmri.util.ColorUtil class.
  *
  * @author	Paul Bender Copyright 2016
+ * @version	$Revision$
  */
 public class ColorUtilTest extends TestCase {
 

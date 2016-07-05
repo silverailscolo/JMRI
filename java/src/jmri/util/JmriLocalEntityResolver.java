@@ -1,3 +1,4 @@
+// JmriLocalEntityResolver.java
 package jmri.util;
 
 import java.io.File;
@@ -25,6 +26,7 @@ import org.xml.sax.InputSource;
  * within the JMRI distributions in the xml/DTD directory.
  *
  * @author Bob Jacobsen Copyright 2007, 2009
+ * @version $Revision$
  */
 public class JmriLocalEntityResolver implements EntityResolver {
 

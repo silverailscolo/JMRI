@@ -1,3 +1,4 @@
+// DateUtil.java
 package jmri.util;
 
 import java.util.Calendar;
@@ -8,6 +9,7 @@ import java.util.GregorianCalendar;
  * <P>
  *
  * @author Paul Bender Copyright 2014
+ * @version $Revision$
  */
 public class DateUtil {
 

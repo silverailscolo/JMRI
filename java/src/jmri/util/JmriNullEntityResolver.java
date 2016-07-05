@@ -1,9 +1,11 @@
+// JmriNullEntityResolver.java
 package jmri.util;
 
 /**
  * Entity Resolver to return a null DTD content, used to bypass verification.
  *
  * @author Bob Jacobsen Copyright 2007
+ * @version $Revision$
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

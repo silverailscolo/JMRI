@@ -9,6 +9,7 @@ import junit.framework.TestSuite;
  * Tests for the Bundle class
  *
  * @author Bob Jacobsen Copyright (C) 2012
+ * @version $Revision: 17977 $
  */
 public class BundleTest extends TestCase {
 

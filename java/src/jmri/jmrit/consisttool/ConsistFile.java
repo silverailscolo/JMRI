@@ -1,3 +1,4 @@
+// ConsistFile.java
 package jmri.jmrit.consisttool;
 
 import java.io.File;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
  * manipulates files conforming to the consist-roster-config DTD.
  *
  * @author Paul Bender Copyright (C) 2008
+ * @version $Revision$
  */
 public class ConsistFile extends XmlFile {
 

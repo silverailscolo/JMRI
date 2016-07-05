@@ -92,8 +92,7 @@ Le sch&#233;ma XML est d&#233;fini dans le
 
 Demande:
 
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;xmlio&gt;
   &lt;item&gt;
     &lt;type&gt;turnout&lt;/type&gt;
@@ -110,8 +109,7 @@ Demande:
 &lt;/xmlio&gt;
 </code></pre>
 
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;xmlio&gt;
   &lt;item&gt;
     &lt;type&gt;turnout&lt;/type&gt;
@@ -141,8 +139,7 @@ la r&#233;ponse ne sera restitu&#233;e que lorsque l'un ou plusieurs des
 
 Demande:
 
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;xmlio&gt;
   &lt;list&gt;
     &lt;type&gt;sensor&lt;/type&gt;
@@ -151,8 +148,7 @@ Demande:
 </code></pre>
 
 R&#233;ponse:
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;xmlio&gt;
   &lt;item&gt;
     &lt;type&gt;sensor&lt;/type&gt;
@@ -179,8 +175,7 @@ La r&#233;ponse peut &#234;tre retourn&#233;e et utilis&#233;e comme la prochain
 
 Demande:
 
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;xmlio&gt;
   &lt;item&gt;
     &lt;type&gt;turnout&lt;/type&gt;
@@ -191,8 +186,7 @@ Demande:
 </code></pre>
 
 R&#233;ponse:
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;xmlio&gt;
   &lt;item&gt;
     &lt;type&gt;turnout&lt;/type&gt;
@@ -216,13 +210,11 @@ soient propag&#233;es compl&#232;tement.
 
 <h3>Contr&#244;le un r&#233;gulateur</h3>
 Demande:
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;turnout name="IT12" set="2" /&gt;
 </code></pre>
 R&#233;ponse:
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;turnout name="IT12" value="2" /&gt;
 </code></pre>
 

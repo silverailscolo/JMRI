@@ -1,3 +1,4 @@
+// SocketUtil.java
 package jmri.util;
 
 import java.net.ServerSocket;
@@ -14,6 +15,7 @@ import java.net.Socket;
  * an explicit implementation when running on Java 1.1
  *
  * @author Bob Jacobsen Copyright 2006
+ * @version $Revision$
  */
 public class SocketUtil {
 

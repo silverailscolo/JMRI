@@ -1,3 +1,7 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package jmri.swing;
 
 import java.awt.Component;
@@ -12,6 +16,11 @@ import javax.swing.JTextField;
  * @author rhwood
  */
 public class DefaultListCellEditor<E> extends DefaultCellEditor implements ListCellEditor<E> {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 7557104352512667759L;
 
     public DefaultListCellEditor(final JCheckBox checkBox) {
         super(checkBox);

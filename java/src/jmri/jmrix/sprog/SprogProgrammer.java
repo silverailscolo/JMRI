@@ -73,8 +73,7 @@ public class SprogProgrammer extends AbstractProgrammer implements SprogListener
         controller().sendSprogMessage(SprogMessage.getProgMode(), this);
     }
 
-    @Override
-    synchronized public void confirmCV(String CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
+    synchronized public void confirmCV(int CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
         readCV(CV, p);
     }
 

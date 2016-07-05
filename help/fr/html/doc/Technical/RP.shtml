@@ -101,8 +101,7 @@ de sorte qu'il serait bon de coder ailleurs, pendant que &#231;a fonctionne touj
 <p>
 Vous pouvez travailler avec les contr&#244;les relatifs &#224; l'obsolescence "on" lors de la compilation.
 Pour ce faire, changez cette ligne de build.xml:
-<pre style="font-family: monospace;">
-
+<pre><code>
 &lt;property name="deprecation" value="on" /&gt;
 </code></pre>
 

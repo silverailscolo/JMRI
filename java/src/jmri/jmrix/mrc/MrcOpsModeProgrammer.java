@@ -1,3 +1,4 @@
+/* MrcOpsModeProgrammer.java */
 package jmri.jmrix.mrc;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
  * @author	Bob Jacobsen Copyright (C) 2002
  * @author	Ken Cameron Copyright (C) 2014
  * @author Kevin Dickerson Copyright (C) 2014
+ * @version	$Revision: 24270 $
  */
 public class MrcOpsModeProgrammer extends MrcProgrammer implements jmri.AddressedProgrammer {
 
@@ -65,7 +67,7 @@ public class MrcOpsModeProgrammer extends MrcProgrammer implements jmri.Addresse
         throw new ProgrammerException();
     }
 
-    public synchronized void confirmCV(String CV, int val, ProgListener p) throws ProgrammerException {
+    public synchronized void confirmCV(int CV, int val, ProgListener p) throws ProgrammerException {
         log.debug("confirm CV={}", CV);
         log.error(MrcOpsModeBundle.getMessage("LogMrcOpsModeProgrammerConfirmCvModeError")); //IN18N
         throw new ProgrammerException();
@@ -128,3 +130,5 @@ public class MrcOpsModeProgrammer extends MrcProgrammer implements jmri.Addresse
     private final static Logger log = LoggerFactory.getLogger(MrcOpsModeProgrammer.class.getName());
 
 }
+
+/* @(#)MrcOpsModeProgrammer.java */

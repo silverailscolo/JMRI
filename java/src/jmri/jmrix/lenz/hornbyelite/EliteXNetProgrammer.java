@@ -1,3 +1,7 @@
+/*
+ * EliteXNetProgrammer.java
+ */
+ // Convert the jmri.Programmer interface into commands for the Lenz XpressNet
 package jmri.jmrix.lenz.hornbyelite;
 
 import jmri.jmrix.lenz.XNetConstants;
@@ -26,6 +30,7 @@ import org.slf4j.LoggerFactory;
  * </UL>
  *
  * @author Paul Bender Copyright (c) 2008
+ * @version $Revision$
  */
 public class EliteXNetProgrammer extends XNetProgrammer implements XNetListener {
 
@@ -89,7 +94,7 @@ public class EliteXNetProgrammer extends XNetProgrammer implements XNetListener 
         controller().sendXNetMessage(resultMsg, this);
     }
 
-    synchronized public void confirmCV(String CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
+    synchronized public void confirmCV(int CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
         readCV(CV, p);
     }
 
@@ -351,3 +356,6 @@ public class EliteXNetProgrammer extends XNetProgrammer implements XNetListener 
     private final static Logger log = LoggerFactory.getLogger(EliteXNetProgrammer.class.getName());
 
 }
+
+
+/* @(#)XNetProgrammer.java */

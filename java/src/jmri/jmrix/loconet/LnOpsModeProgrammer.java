@@ -1,3 +1,4 @@
+/* LnOpsModeProgrammer.java */
 package jmri.jmrix.loconet;
 
 import java.beans.PropertyChangeListener;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see jmri.Programmer
  * @author	Bob Jacobsen Copyright (C) 2002
+ * @version	$Revision$
  */
 public class LnOpsModeProgrammer implements AddressedProgrammer, LocoNetListener {
 
@@ -43,17 +45,18 @@ public class LnOpsModeProgrammer implements AddressedProgrammer, LocoNetListener
     /**
      * Forward a write request to an ops-mode write operation
      */
-    @Override
     public void writeCV(int CV, int val, ProgListener p) throws ProgrammerException {
         mSlotMgr.writeCVOpsMode(CV, val, p, mAddress, mLongAddr);
     }
 
-    @Override
     public void readCV(int CV, ProgListener p) throws ProgrammerException {
         mSlotMgr.readCVOpsMode(CV, p, mAddress, mLongAddr);
     }
 
-    @Override
+    public void confirmCV(int CV, int val, ProgListener p) throws ProgrammerException {
+        mSlotMgr.confirmCVOpsMode(CV, val, p, mAddress, mLongAddr);
+    }
+
     public void writeCV(String CV, int val, ProgListener p) throws ProgrammerException {
         this.p = null;
         // Check mode
@@ -88,7 +91,6 @@ public class LnOpsModeProgrammer implements AddressedProgrammer, LocoNetListener
         }
     }
 
-    @Override
     public void readCV(String CV, ProgListener p) throws ProgrammerException {
         this.p = null;
         // Check mode
@@ -123,13 +125,6 @@ public class LnOpsModeProgrammer implements AddressedProgrammer, LocoNetListener
         }
     }
 
-    @Override
-    @SuppressWarnings("deprecation") // parent Programmer method deprecated, will remove at same time
-    public final void confirmCV(int CV, int val, ProgListener p) throws ProgrammerException {
-        confirmCV(""+CV, val, p);
-    }
-
-    @Override
     public void confirmCV(String CV, int val, ProgListener p) throws ProgrammerException {
         this.p = null;
         // Check mode
@@ -352,3 +347,5 @@ public class LnOpsModeProgrammer implements AddressedProgrammer, LocoNetListener
     private final static Logger log = LoggerFactory.getLogger(LnOpsModeProgrammer.class.getName());
 
 }
+
+/* @(#)LnOpsModeProgrammer.java */

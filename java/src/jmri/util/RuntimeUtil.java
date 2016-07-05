@@ -7,6 +7,7 @@ package jmri.util;
  * system, or at least try to fake it.
  *
  * @author Paul Bender Copyright 2004
+ * @version $Revision$
  */
 public class RuntimeUtil {
 

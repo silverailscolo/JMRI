@@ -1,3 +1,4 @@
+//MouseInputAdapterInstaller.java
 package jmri.util;
 
 import java.awt.Component;
@@ -13,6 +14,7 @@ import javax.swing.event.MouseInputAdapter;
  * This class is based on the KeyListenerInstaller class.
  *
  * @author Paul Bender Copyright 2005
+ * @version $Revision$
  */
 public class MouseInputAdapterInstaller {
 

@@ -1,3 +1,4 @@
+// PowerManagerMenu.java
 package jmri.swing;
 
 import java.util.List;
@@ -12,9 +13,15 @@ import jmri.PowerManager;
  * Create a menu for selecting the Power Manager to use
  *
  * @author	Bob Jacobsen Copyright 2010
+ * @version $Revision$
  * @since 2.9.5
  */
 abstract public class PowerManagerMenu extends JMenu {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1282259771699660069L;
 
     /**
      * Get the currently selected manager

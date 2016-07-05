@@ -9,7 +9,10 @@ import junit.framework.TestSuite;
 
 /**
  * Tests for the jmri.util.DateUtil class.
+ *
+ *
  * @author Paul Bender Copyright 2014
+ * @version $Revision: 22710 $
  */
 public class DateUtilTest extends TestCase {
 

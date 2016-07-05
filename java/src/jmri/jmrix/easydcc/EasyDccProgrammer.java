@@ -1,3 +1,4 @@
+//EasyDccProgrammer.java
 package jmri.jmrix.easydcc;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
  * powerstation
  *
  * @author	Bob Jacobsen Copyright (C) 2001
+ * @version	$Revision$
  */
 public class EasyDccProgrammer extends AbstractProgrammer implements EasyDccListener {
 
@@ -64,8 +66,7 @@ public class EasyDccProgrammer extends AbstractProgrammer implements EasyDccList
         }
     }
 
-    @Override
-    public synchronized void confirmCV(String CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
+    public synchronized void confirmCV(int CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
         readCV(CV, p);
     }
 
@@ -216,3 +217,6 @@ public class EasyDccProgrammer extends AbstractProgrammer implements EasyDccList
     private final static Logger log = LoggerFactory.getLogger(EasyDccProgrammer.class.getName());
 
 }
+
+
+/* @(#)EasyDccProgrammer.java */

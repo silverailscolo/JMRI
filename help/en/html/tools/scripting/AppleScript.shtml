@@ -40,8 +40,7 @@ JMRI jython scripts, and then invoke them to have your Mac perform
 functions outside JMRI.  An example of this is in the
 <a href="http://jmri.org/jython/AppleScript.py">AppleScript.py</a> sample script distributed with 
 JMRI. It executes a very simple AppleScript:
-<pre style="font-family: monospace;">
-
+<pre><code>
   tell application "Finder"
     make new folder at desktop
   end tell
@@ -59,8 +58,7 @@ your own AppleScripts from within JMRI.
 <h2>Controlling JMRI via an AppleScript</h2>
 
 This section needs a lot of work; in the meantime, try 
-<pre style="font-family: monospace;">
-
+<pre><code>
 osascript -e 'tell application "DecoderPro" to get its |user.name|'
 </code></pre>
 and look at the 
