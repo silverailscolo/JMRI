@@ -62,7 +62,7 @@ public class SignalMastIcon extends PositionableIcon implements java.beans.Prope
     }
 
     /**
-     * Attache a SignalMast element to this display item.
+     * Attach a SignalMast element to this display item.
      *
      * @param sh Specific SignalMast handle
      */
@@ -337,7 +337,7 @@ public class SignalMastIcon extends PositionableIcon implements java.beans.Prope
         }
     }
 
-    static jmri.jmrit.display.layoutEditor.TransitCreationTool tct;
+    static volatile jmri.jmrit.display.layoutEditor.TransitCreationTool tct;
 
     private void setImageTypeList(ButtonGroup iconTypeGroup, JMenu iconSetMenu, final String item) {
         JRadioButtonMenuItem im;
@@ -346,7 +346,6 @@ public class SignalMastIcon extends PositionableIcon implements java.beans.Prope
         iconTypeGroup.add(im);
         im.setSelected(useIconSet.equals(item));
         iconSetMenu.add(im);
-
     }
 
     @Override
