@@ -38,19 +38,15 @@ public class DefaultMeter extends AbstractAnalogIO implements Meter {
     /** {@inheritDoc} */
     @Override
     public void enable() {
-        if (_updateTask != null) {
-            log.debug("Enabling meter.");
-            _updateTask.enable(this);
-        }
+        log.debug("Enabling meter.");
+        _updateTask.enable(this);
     }
 
     /** {@inheritDoc} */
     @Override
     public void disable() {
-        if (_updateTask != null) {
-            log.debug("Disabling meter.");
-            _updateTask.disable(this);
-        }
+        log.debug("Disabling meter.");
+        _updateTask.disable(this);
     }
 
     /**
@@ -83,6 +79,7 @@ public class DefaultMeter extends AbstractAnalogIO implements Meter {
 
     /** {@inheritDoc} */
     @Override
+    @Nonnull
     public String getBeanType() {
         return Bundle.getMessage("BeanNameMeter");
     }
@@ -129,9 +126,8 @@ public class DefaultMeter extends AbstractAnalogIO implements Meter {
      */
     @Override
     public void requestUpdateFromLayout() {
-        if (_updateTask != null) _updateTask.requestUpdateFromLayout();
+        _updateTask.requestUpdateFromLayout();
     }
-    
     
     /**
      * Default implementation of a voltage meter.
@@ -143,7 +139,6 @@ public class DefaultMeter extends AbstractAnalogIO implements Meter {
         }
     }
     
-    
     /**
      * Default implementation of a current meter.
      */
@@ -153,7 +148,7 @@ public class DefaultMeter extends AbstractAnalogIO implements Meter {
             super(sys, unit, min, max, resolution, updateTask);
         }
     }
-    
-    
+
     private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DefaultMeter.class);
+
 }

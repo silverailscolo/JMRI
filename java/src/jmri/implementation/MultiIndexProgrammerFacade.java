@@ -6,6 +6,8 @@ import jmri.jmrix.AbstractProgrammerFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.concurrent.GuardedBy;
+
 /**
  * Programmer facade for accessing CVs that require one or more "index CVs" 
  * to have specific values before doing the final read or write operation.
@@ -96,31 +98,39 @@ public class MultiIndexProgrammerFacade extends AbstractProgrammerFacade impleme
         this.skipDupIndexWrite = skipDupIndexWrite;
     }
 
-    String defaultIndexPI;
-    String defaultIndexSI;
+    private final String defaultIndexPI;
+    private final String defaultIndexSI;
 
-    String indexPI;
-    String indexSI;
-    boolean cvFirst;
-    boolean skipDupIndexWrite;
+    private String indexPI;
+    private String indexSI;
+    private final boolean cvFirst;
+    private final boolean skipDupIndexWrite;
 
     long maxDelay = 1000;  // max mSec since last successful end-of-operation for skipDupIndexWrite; longer delay writes anyway
 
     // members for handling the programmer interface
+    @GuardedBy("this")
     int _val; // remember the value being read/written for confirmative reply
+    @GuardedBy("this")
     String _cv; // remember the cv number being read/written
     int valuePI;  //  value to write to PI in current operation or -1
+    @GuardedBy("this")
     int valueSI;  //  value to write to SI in current operation or -1
 
     // remember last operation for skipDupIndexWrite
-    int lastValuePI = -1;  // value written in last operation
-    int lastValueSI = -1;  // value written in last operation
+    @GuardedBy("this")
+    int lastValuePI = -1;  // value written to PI in last operation
+    @GuardedBy("this")
+    int lastValueSI = -1;  // value written to SI in last operation
+    @GuardedBy("this")
     long lastOpTime = -1;  // time of last complete
 
     // take the CV string and configure the actions to take
     void parseCV(String cv) {
         valuePI = -1;
-        valueSI = -1;
+        synchronized (this) {
+            valueSI = -1;
+        }
         if (cv.contains(".")) {
             if (cvFirst) {
                 String[] splits = cv.split("\\.");
@@ -144,10 +154,14 @@ public class MultiIndexProgrammerFacade extends AbstractProgrammerFacade impleme
                             indexPI = defaultIndexPI;
                         }
                         if (hasAlternateAddress(splits[2])) {
-                            valueSI = getAlternateValue(splits[2]);
+                            synchronized (this) {
+                                valueSI = getAlternateValue(splits[2]);
+                            }
                             indexSI = getAlternateAddress(splits[2]);
                         } else {
-                            valueSI = Integer.parseInt(splits[2]);
+                            synchronized (this) {
+                                valueSI = Integer.parseInt(splits[2]);
+                            }
                             indexSI = defaultIndexSI;
                         }
                         _cv = splits[0];
@@ -155,7 +169,9 @@ public class MultiIndexProgrammerFacade extends AbstractProgrammerFacade impleme
                     default:
                         log.error("Too many parts in CV name; taking 1st two {}", cv);
                         valuePI = Integer.parseInt(splits[1]);
-                        valueSI = Integer.parseInt(splits[2]);
+                        synchronized (this) {
+                            valueSI = Integer.parseInt(splits[2]);
+                        }
                         _cv = splits[0];
                         break;
                 }
@@ -181,10 +197,14 @@ public class MultiIndexProgrammerFacade extends AbstractProgrammerFacade impleme
                             indexPI = defaultIndexPI;
                         }
                         if (hasAlternateAddress(splits[1])) {
-                            valueSI = getAlternateValue(splits[1]);
+                            synchronized (this) {
+                                valueSI = getAlternateValue(splits[1]);
+                            }
                             indexSI = getAlternateAddress(splits[1]);
                         } else {
-                            valueSI = Integer.parseInt(splits[1]);
+                            synchronized (this) {
+                                valueSI = Integer.parseInt(splits[1]);
+                            }
                             indexSI = defaultIndexSI;
                         }
                         _cv = splits[2];
@@ -192,7 +212,9 @@ public class MultiIndexProgrammerFacade extends AbstractProgrammerFacade impleme
                     default:
                         log.error("Too many parts in CV name; taking 1st two {}", cv);
                         valuePI = Integer.parseInt(splits[0]);
-                        valueSI = Integer.parseInt(splits[1]);
+                        synchronized (this) {
+                            valueSI = Integer.parseInt(splits[1]);
+                        }
                         _cv = splits[2];
                         break;
                 }
@@ -228,7 +250,7 @@ public class MultiIndexProgrammerFacade extends AbstractProgrammerFacade impleme
 
     // programming interface
     @Override
-    synchronized public void writeCV(String CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
+    public synchronized void writeCV(String CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
         _val = val;
         useProgrammer(p);
         parseCV(CV);
@@ -254,7 +276,7 @@ public class MultiIndexProgrammerFacade extends AbstractProgrammerFacade impleme
     }
 
     @Override
-    synchronized public void readCV(String CV, jmri.ProgListener p) throws jmri.ProgrammerException {
+    public synchronized void readCV(String CV, jmri.ProgListener p) throws jmri.ProgrammerException {
         useProgrammer(p);
         parseCV(CV);
         if (valuePI == -1) {
@@ -278,7 +300,7 @@ public class MultiIndexProgrammerFacade extends AbstractProgrammerFacade impleme
     }
 
     @Override
-    synchronized public void confirmCV(String CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
+    public synchronized void confirmCV(String CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
         _val = val;
         useProgrammer(p);
         parseCV(CV);
@@ -342,10 +364,13 @@ public class MultiIndexProgrammerFacade extends AbstractProgrammerFacade impleme
 
         if (status != OK) {
             // clear memory of last PI, SI written
-            lastValuePI = -1;
-            lastValueSI = -1;
-            lastOpTime = -1;
-
+            synchronized (this) {
+                lastValuePI = -1;
+                lastValueSI = -1;
+            }
+            synchronized (this) {
+                lastOpTime = -1;
+            }
             // pass abort up
             log.debug("Reset and pass abort up");
             jmri.ProgListener temp = _usingProgrammer;
@@ -361,6 +386,10 @@ public class MultiIndexProgrammerFacade extends AbstractProgrammerFacade impleme
             return;
         }
 
+        int tempValSI;
+        synchronized (this) {
+            tempValSI = valueSI;
+        }
         switch (state) {
             case PROGRAMMING:
                 // the programmingOpReply handler might send an immediate reply, so
@@ -368,61 +397,72 @@ public class MultiIndexProgrammerFacade extends AbstractProgrammerFacade impleme
                 jmri.ProgListener temp = _usingProgrammer;
                 _usingProgrammer = null; // done
                 state = ProgState.NOTPROGRAMMING;
-                lastOpTime = System.currentTimeMillis();
+                synchronized (this) {
+                    lastOpTime = System.currentTimeMillis();
+                }
                 temp.programmingOpReply(value, status);
                 break;
             case FINISHREAD:
-                if (valueSI == -1) {
+                if (tempValSI == -1) {
                     try {
                         state = ProgState.PROGRAMMING;
-                        prog.readCV(_cv, this);
+                        synchronized (this) {
+                            prog.readCV(_cv, this);
+                        }
                     } catch (jmri.ProgrammerException e) {
                         log.error("Exception doing final read", e);
                     }
                 } else {
                     try {
-                        int tempSI = valueSI;
-                        valueSI = -1;
+                        synchronized (this) {
+                            valueSI = -1;
+                        }
                         state = ProgState.FINISHREAD;
-                        prog.writeCV(indexSI, tempSI, this);
+                        prog.writeCV(indexSI, tempValSI, this);
                     } catch (jmri.ProgrammerException e) {
                         log.error("Exception doing write SI for read", e);
                     }
                 }
                 break;
             case FINISHWRITE:
-                if (valueSI == -1) {
+                if (tempValSI == -1) {
                     try {
                         state = ProgState.PROGRAMMING;
-                        prog.writeCV(_cv, _val, this);
+                        synchronized (this) {
+                            prog.writeCV(_cv, _val, this);
+                        }
                     } catch (jmri.ProgrammerException e) {
                         log.error("Exception doing final write", e);
                     }
                 } else {
                     try {
-                        int tempSI = valueSI;
-                        valueSI = -1;
+                        synchronized (this) {
+                            valueSI = -1;
+                        }
                         state = ProgState.FINISHWRITE;
-                        prog.writeCV(indexSI, tempSI, this);
+                        prog.writeCV(indexSI, tempValSI, this);
                     } catch (jmri.ProgrammerException e) {
                         log.error("Exception doing write SI for write", e);
                     }
                 }
                 break;
             case FINISHCONFIRM:
-                if (valueSI == -1) {
+                if (tempValSI == -1) {
                     try {
                         state = ProgState.PROGRAMMING;
-                        prog.confirmCV(_cv, _val, this);
+                        synchronized (this) {
+                            prog.confirmCV(_cv, _val, this);
+                        }
                     } catch (jmri.ProgrammerException e) {
                         log.error("Exception doing final confirm", e);
                     }
                 } else {
                     try {
-                        int tempSI = valueSI;
-                        valueSI = -1;
+                        synchronized (this) {
+                            valueSI = -1;
+                        }
                         state = ProgState.FINISHCONFIRM;
-                        prog.writeCV(indexSI, tempSI, this);
+                        prog.writeCV(indexSI, tempValSI, this);
                     } catch (jmri.ProgrammerException e) {
                         log.error("Exception doing write SI for write", e);
                     }
@@ -433,10 +473,13 @@ public class MultiIndexProgrammerFacade extends AbstractProgrammerFacade impleme
                 // clean up as much as possible
                 _usingProgrammer = null;
                 state = ProgState.NOTPROGRAMMING;
-                lastValuePI = -1;
-                lastValueSI = -1;
-                lastOpTime = -1;
-
+                synchronized (this) {
+                    lastValuePI = -1;
+                    lastValueSI = -1;
+                }
+                synchronized (this) {
+                    lastOpTime = -1;
+                }
         }
     }
 

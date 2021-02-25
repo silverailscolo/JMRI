@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SignalMast implemented via one SignalHead object.
+ * A SignalMast implemented via one SignalHead object.
  * <p>
  * System name specifies the creation information:
  * <pre>

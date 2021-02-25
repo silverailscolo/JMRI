@@ -1,8 +1,3 @@
-/**
- * Concrete subclass of TurnoutOperator for a turnout that has sensor feedback.
- *
- * @author John Harper Copyright 2005
- */
 package jmri.implementation;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -12,6 +7,11 @@ import jmri.TurnoutOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Concrete subclass of TurnoutOperator for a turnout that has sensor feedback.
+ *
+ * @author John Harper Copyright 2005
+ */
 public class SensorTurnoutOperator extends TurnoutOperator {
 
     long interval;
@@ -26,7 +26,7 @@ public class SensorTurnoutOperator extends TurnoutOperator {
     }
 
     /**
-     * Do the autmation for a turnout with sensor feedback. Keep trying up to
+     * Do the automation for a turnout with sensor feedback. Keep trying up to
      * maxTries until the sensor tells us the change has actually happened. Note
      * the call to operatorCheck each time we're about to actually do something
      * - if we're no longer the current operator this throws
@@ -42,7 +42,7 @@ public class SensorTurnoutOperator extends TurnoutOperator {
             public void propertyChange(PropertyChangeEvent e) {
                 if (e.getPropertyName().equals("KnownState")) {
                     synchronized (this) {
-                        this.notify();
+                        this.notifyAll();
                     }
                 }
             }
@@ -73,10 +73,11 @@ public class SensorTurnoutOperator extends TurnoutOperator {
             if (!myTurnout.isConsistentState()) {
                 log.warn("failed to throw {}", myTurnout.getSystemName());
             }
-        } catch (TurnoutOperatorException e) {
+        } catch (TurnoutOperatorException ignore) {
         }
         myTurnout.removePropertyChangeListener(listener);
     }
 
     private final static Logger log = LoggerFactory.getLogger(SensorTurnoutOperator.class);
+
 }

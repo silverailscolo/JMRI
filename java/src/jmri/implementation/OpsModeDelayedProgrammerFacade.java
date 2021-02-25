@@ -151,7 +151,9 @@ public class OpsModeDelayedProgrammerFacade extends AbstractProgrammerFacade imp
             log.debug("going NOTPROGRAMMING after value {}, status={}", value, status);
             jmri.ProgListener temp = _usingProgrammer;
             _usingProgrammer = null; // done
-            state = ProgState.NOTPROGRAMMING;
+            synchronized (this) {
+                state = ProgState.NOTPROGRAMMING;
+            }
             log.debug("notifying value {} status {}", value, status);
             temp.programmingOpReply(value, status);
         }, _delay);

@@ -1,6 +1,7 @@
 package jmri.implementation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.annotation.concurrent.GuardedBy;
 import javax.swing.Timer;
 import jmri.ProgListener;
 import jmri.Programmer;
@@ -118,15 +119,14 @@ public class TwoIndexTcsProgrammerFacade extends AbstractProgrammerFacade implem
         }
     }
 
+    @GuardedBy("this")
     private jmri.ProgListener _usingProgrammer = null;
 
     // internal method to remember who's using the programmer
-    protected void useProgrammer(jmri.ProgListener p) throws jmri.ProgrammerException {
+    protected synchronized void useProgrammer(jmri.ProgListener p) throws jmri.ProgrammerException {
         // test for only one!
         if (_usingProgrammer != null && _usingProgrammer != p) {
-            if (log.isInfoEnabled()) {
-                log.info("programmer already in use by {}", _usingProgrammer);
-            }
+            log.info("programmer already in use by {}", _usingProgrammer);
             throw new jmri.ProgrammerException("programmer in use");
         } else {
             _usingProgrammer = p;
@@ -134,7 +134,6 @@ public class TwoIndexTcsProgrammerFacade extends AbstractProgrammerFacade implem
     }
 
     enum ProgState {
-
         PROGRAMMING, // doing last read/write, next reply is end
         DOSIFORREAD, // reading, write to SI next
         DOSTROBEFORREAD,// reading, write to strobe CV next
@@ -187,8 +186,11 @@ public class TwoIndexTcsProgrammerFacade extends AbstractProgrammerFacade implem
         if (status != OK ) {
             // pass abort up
             log.debug("Reset and pass abort up");
-            jmri.ProgListener temp = _usingProgrammer;
-            _usingProgrammer = null; // done
+            final jmri.ProgListener temp;
+            synchronized (this) {
+                temp = _usingProgrammer;
+                _usingProgrammer = null; // done
+            }
             state = ProgState.NOTPROGRAMMING;
             temp.programmingOpReply(value, status);
             return;
@@ -222,7 +224,11 @@ public class TwoIndexTcsProgrammerFacade extends AbstractProgrammerFacade implem
             case FINISHREAD:
                 try {
                     state = ProgState.PROGRAMMING;
-                    if (valuePI != -1 && valueSI == -1) {
+                    final int tempValuePI;
+                    synchronized (this) {
+                        tempValuePI = valuePI;
+                    }
+                    if (tempValuePI != -1 && valueSI == -1) {
                         upperByte = 0;
                         prog.readCV(indexSI, this);
                     } else {
@@ -233,7 +239,6 @@ public class TwoIndexTcsProgrammerFacade extends AbstractProgrammerFacade implem
                     log.error("Exception doing final read", e);
                 }
                 break;
-
             case DOMSBFORREAD:
                 try {
                     state = ProgState.DOLSBFORREAD;
@@ -250,7 +255,6 @@ public class TwoIndexTcsProgrammerFacade extends AbstractProgrammerFacade implem
                     log.error("Exception doing write strobe for read", e);
                 }
                 break;
-
             case DOSIFORWRITE:
                 if (valueSI != -1) {
                     // writing SI index after PI
@@ -310,8 +314,11 @@ public class TwoIndexTcsProgrammerFacade extends AbstractProgrammerFacade implem
             case PROGRAMMING:
                 // the programmingOpReply handler might send an immediate reply, so
                 // clear the current listener _first_
-                jmri.ProgListener temp = _usingProgrammer;
-                _usingProgrammer = null; // done
+                final jmri.ProgListener temp;
+                synchronized (this) {
+                    temp = _usingProgrammer;
+                    _usingProgrammer = null; // done
+                }
                 state = ProgState.NOTPROGRAMMING;
                 temp.programmingOpReply(upperByte * 256 + value, status);
                 break;
@@ -319,7 +326,9 @@ public class TwoIndexTcsProgrammerFacade extends AbstractProgrammerFacade implem
             default:
                 log.error("Unexpected state on reply: {}", state);
                 // clean up as much as possible
-                _usingProgrammer = null;
+                synchronized (this) {
+                    _usingProgrammer = null;
+                }
                 state = ProgState.NOTPROGRAMMING;
                 break;
         }

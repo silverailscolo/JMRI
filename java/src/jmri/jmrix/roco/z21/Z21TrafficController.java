@@ -413,7 +413,7 @@ public class Z21TrafficController extends jmri.jmrix.AbstractMRTrafficController
                             // it to clear the block without a timeout.
                             // (do not change the current state)
                             //if(mCurrentState!=IDLESTATE)
-                            xmtRunnable.notify();
+                            xmtRunnable.notifyAll();
                         }
                     } else {
                         unexpectedReplyStateError(mCurrentState,msg.toString());

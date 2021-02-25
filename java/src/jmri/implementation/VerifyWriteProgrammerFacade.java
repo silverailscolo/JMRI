@@ -1,6 +1,8 @@
 package jmri.implementation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
+
 import jmri.ProgListener;
 import jmri.Programmer;
 import jmri.jmrix.AbstractProgrammerFacade;
@@ -49,12 +51,13 @@ public class VerifyWriteProgrammerFacade extends AbstractProgrammerFacade implem
     }
 
     // members for handling the programmer interface
+    @GuardedBy("this")
     int _val;   // remember the value being read/written for confirmative reply
     String _cv; // remember the cv number being read/written
     
     // programming interface
     @Override
-    synchronized public void writeCV(String CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
+    public synchronized void writeCV(String CV, int val, jmri.ProgListener p) throws jmri.ProgrammerException {
         _val = val;
         _cv = CV;
         useProgrammer(p);
@@ -65,7 +68,7 @@ public class VerifyWriteProgrammerFacade extends AbstractProgrammerFacade implem
     }
 
     @Override
-    synchronized public void readCV(String CV, jmri.ProgListener p) throws jmri.ProgrammerException {
+    public synchronized void readCV(String CV, jmri.ProgListener p) throws jmri.ProgrammerException {
         _cv = CV;
         useProgrammer(p);
 
@@ -114,7 +117,8 @@ public class VerifyWriteProgrammerFacade extends AbstractProgrammerFacade implem
         /** No current operation */
         NOTPROGRAMMING
     }
-    ProgState state = ProgState.NOTPROGRAMMING;
+
+    private ProgState state = ProgState.NOTPROGRAMMING;
 
     // Get notified of the result from the underlying programmer, and work
     // through the state machine for needed requests
@@ -170,7 +174,11 @@ public class VerifyWriteProgrammerFacade extends AbstractProgrammerFacade implem
                 _usingProgrammer = null; // done
                 state = ProgState.NOTPROGRAMMING;
                 // check if we got it right
-                if (value == _val) {
+                final int v;
+                synchronized (this) {
+                    v = _val;
+                }
+                if (value == v) {
                     // ok, reply OK
                     temp.programmingOpReply(value, status);
                 } else {
