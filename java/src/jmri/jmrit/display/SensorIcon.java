@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
@@ -35,8 +36,8 @@ import org.slf4j.LoggerFactory;
  */
 public class SensorIcon extends PositionableIcon implements java.beans.PropertyChangeListener {
 
-    static final public int UNKOWN_FONT_COLOR = 0x03;
-    static final public int UNKOWN_BACKGROUND_COLOR = 0x04;
+    static final public int UNKNOWN_FONT_COLOR = 0x03;
+    static final public int UNKNOWN_BACKGROUND_COLOR = 0x04;
     static final public int ACTIVE_FONT_COLOR = 0x05;
     static final public int ACTIVE_BACKGROUND_COLOR = 0x06;
     static final public int INACTIVE_FONT_COLOR = 0x07;
@@ -70,6 +71,7 @@ public class SensorIcon extends PositionableIcon implements java.beans.PropertyC
     }
 
     @Override
+    @Nonnull
     public Positionable deepClone() {
         SensorIcon pos = new SensorIcon(_editor);
         return finishClone(pos);
@@ -351,7 +353,7 @@ public class SensorIcon extends PositionableIcon implements java.beans.PropertyC
     //////// popup AbstractAction.actionPerformed method overrides ////////
 
     @Override
-    public boolean setTextEditMenu(JPopupMenu popup) {
+    public boolean setTextEditMenu(@Nonnull JPopupMenu popup) {
         log.debug("setTextEditMenu isIcon={}, isText={}", isIcon(), isText());
         if (isIcon()) {
             popup.add(CoordinateEdit.getTextEditAction(this, "OverlayText"));
@@ -365,7 +367,7 @@ public class SensorIcon extends PositionableIcon implements java.beans.PropertyC
             });
             if (isText() && !isIcon()) {
                 JMenu stateColor = new JMenu(Bundle.getMessage("StateColors"));
-                stateColor.add(stateMenu(Bundle.getMessage("BeanStateUnknown"), UNKOWN_FONT_COLOR)); //Unknown
+                stateColor.add(stateMenu(Bundle.getMessage("BeanStateUnknown"), UNKNOWN_FONT_COLOR)); //Unknown
                 stateColor.add(stateMenu(Bundle.getMessage("SensorStateActive"), ACTIVE_FONT_COLOR)); //Active
                 stateColor.add(stateMenu(Bundle.getMessage("SensorStateInactive"), INACTIVE_FONT_COLOR)); //Inactive
                 stateColor.add(stateMenu(Bundle.getMessage("BeanStateInconsistent"), INCONSISTENT_FONT_COLOR)); //Inconsistent
@@ -438,7 +440,7 @@ public class SensorIcon extends PositionableIcon implements java.beans.PropertyC
     TableItemPanel<Sensor> _itemPanel;
 
     @Override
-    public boolean setEditItemMenu(JPopupMenu popup) {
+    public boolean setEditItemMenu(@Nonnull JPopupMenu popup) {
         String txt = java.text.MessageFormat.format(Bundle.getMessage("EditItem"), Bundle.getMessage("BeanNameSensor"));
         popup.add(new AbstractAction(txt) {
             @Override
@@ -585,7 +587,7 @@ public class SensorIcon extends PositionableIcon implements java.beans.PropertyC
             try {
                 getSensor().setKnownState(jmri.Sensor.ACTIVE);
             } catch (jmri.JmriException reason) {
-                log.warn("Exception setting momentary sensor: {}", reason);
+                log.warn("Exception setting momentary sensor: ", reason);
             }
         }
         super.doMousePressed(e);
@@ -598,7 +600,7 @@ public class SensorIcon extends PositionableIcon implements java.beans.PropertyC
             try {
                 getSensor().setKnownState(jmri.Sensor.INACTIVE);
             } catch (jmri.JmriException reason) {
-                log.warn("Exception setting momentary sensor: {}", reason);
+                log.warn("Exception setting momentary sensor: ", reason);
             }
         }
         super.doMouseReleased(e);
@@ -616,7 +618,7 @@ public class SensorIcon extends PositionableIcon implements java.beans.PropertyC
                         getSensor().setKnownState(jmri.Sensor.INACTIVE);
                     }
                 } catch (jmri.JmriException reason) {
-                    log.warn("Exception flipping sensor: {}", reason);
+                    log.warn("Exception flipping sensor: ", reason);
                 }
             }
         }
@@ -827,10 +829,10 @@ public class SensorIcon extends PositionableIcon implements java.beans.PropertyC
                 case PositionablePopupUtil.BORDER_COLOR:
                     util.setBorderColor(desiredColor);
                     break;
-                case UNKOWN_FONT_COLOR:
+                case UNKNOWN_FONT_COLOR:
                     setTextUnknown(desiredColor);
                     break;
-                case UNKOWN_BACKGROUND_COLOR:
+                case UNKNOWN_BACKGROUND_COLOR:
                     util.setHasBackground(desiredColor != null);
                     setBackgroundUnknown(desiredColor);
                     break;
@@ -872,9 +874,9 @@ public class SensorIcon extends PositionableIcon implements java.beans.PropertyC
                     return util.getBackground();
                 case PositionablePopupUtil.BORDER_COLOR:
                     return util.getBorderColor();
-                case UNKOWN_FONT_COLOR:
+                case UNKNOWN_FONT_COLOR:
                     return getTextUnknown();
-                case UNKOWN_BACKGROUND_COLOR:
+                case UNKNOWN_BACKGROUND_COLOR:
                     return getBackgroundUnknown();
                 case ACTIVE_FONT_COLOR:
                     return getTextActive();
@@ -921,13 +923,15 @@ public class SensorIcon extends PositionableIcon implements java.beans.PropertyC
         }
     }
 
+    @GuardedBy("this")
     private int flashStateOn = -1;
+    @GuardedBy("this")
     private int flashStateOff = -1;
     private boolean flashon = false;
     private ActionListener taskPerformer;
     private Timer flashTimer;
 
-    synchronized public void flashSensor(int tps, int state1, int state2) {
+    public synchronized void flashSensor(int tps, int state1, int state2) {
         if ((flashTimer != null) && flashTimer.isRunning()) {
             return;
         }
@@ -949,12 +953,14 @@ public class SensorIcon extends PositionableIcon implements java.beans.PropertyC
         flashStateOff = state2;
         if (taskPerformer == null) {
             taskPerformer = (ActionEvent evt) -> {
-                if (flashon) {
-                    flashon = false;
-                    displayState(flashStateOn);
-                } else {
-                    flashon = true;
-                    displayState(flashStateOff);
+                synchronized (this) {
+                    if (flashon) {
+                        flashon = false;
+                        displayState(flashStateOn);
+                    } else {
+                        flashon = true;
+                        displayState(flashStateOff);
+                    }
                 }
             };
         }
@@ -962,7 +968,7 @@ public class SensorIcon extends PositionableIcon implements java.beans.PropertyC
         flashTimer.start();
     }
 
-    synchronized public void stopFlash() {
+    public synchronized void stopFlash() {
         if (flashTimer != null) {
             flashTimer.stop();
         }

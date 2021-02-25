@@ -9,6 +9,8 @@ import jmri.jmrit.catalog.NamedIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+
 /**
  * An icon to display a status of a light.
  * <p>
@@ -34,6 +36,7 @@ public class LightIcon extends PositionableLabel implements java.beans.PropertyC
     // the associated Light object
     Light light = null;
 
+    @Nonnull
     @Override
     public Positionable deepClone() {
         LightIcon pos = new LightIcon(_editor);
@@ -171,6 +174,7 @@ public class LightIcon extends PositionableLabel implements java.beans.PropertyC
         }
     }
 
+    @Nonnull
     @Override
     public String getNameString() {
         String name;

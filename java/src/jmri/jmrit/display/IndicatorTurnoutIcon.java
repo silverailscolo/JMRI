@@ -16,6 +16,8 @@ import jmri.jmrit.picker.PickListModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+
 /**
  * An icon to display a status and state of a color coded turnout.<p>
  * This responds to only KnownState, leaving CommandedState to some other
@@ -81,6 +83,7 @@ public class IndicatorTurnoutIcon extends TurnoutIcon implements IndicatorTrack 
         return iconMaps;
     }
 
+    @Nonnull
     @Override
     public Positionable deepClone() {
         IndicatorTurnoutIcon pos = new IndicatorTurnoutIcon(_editor);
@@ -368,6 +371,7 @@ public class IndicatorTurnoutIcon extends TurnoutIcon implements IndicatorTrack 
         updateSize();
     }
 
+    @Nonnull
     @Override
     public String getNameString() {
         String str = "";

@@ -1,6 +1,7 @@
 package jmri.jmrit.display;
 
 import java.awt.event.ActionEvent;
+import javax.annotation.Nonnull;
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
@@ -60,6 +61,7 @@ public class RpsPositionIcon extends PositionableLabel implements MeasurementLis
         displayState();
     }
 
+    @Nonnull
     @Override
     public String getNameString() {
         return "RPS Position Readout";

@@ -3,6 +3,7 @@ package jmri.jmrit.display;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import javax.annotation.Nonnull;
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -501,6 +502,7 @@ public class SlipTurnoutIcon extends PositionableLabel implements java.beans.Pro
         }
     }
 
+    @Nonnull
     @Override
     public String getNameString() {
         String name;
@@ -1159,7 +1161,7 @@ public class SlipTurnoutIcon extends PositionableLabel implements java.beans.Pro
 
     // overide
     @Override
-    public boolean setTextEditMenu(JPopupMenu popup) {
+    public boolean setTextEditMenu(@Nonnull JPopupMenu popup) {
         String popuptext = Bundle.getMessage("SetSlipText");
         if (turnoutType == THREEWAY) {
             popuptext = Bundle.getMessage("Set3WayText");

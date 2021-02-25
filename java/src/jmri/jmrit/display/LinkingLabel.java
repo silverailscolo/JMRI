@@ -29,6 +29,7 @@ public class LinkingLabel extends PositionableLabel implements LinkingObject {
         setPopupUtility(new PositionablePopupUtil(this, this));
     }
 
+    @Nonnull
     @Override
     public Positionable deepClone() {
         PositionableLabel pos;

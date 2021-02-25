@@ -216,7 +216,7 @@ public class BlockContentsIcon extends MemoryIcon {
      * Text edits cannot be done to Block text - override.
      */
     @Override
-    public boolean setTextEditMenu(JPopupMenu popup) {
+    public boolean setTextEditMenu(@Nonnull JPopupMenu popup) {
         popup.add(new AbstractAction(Bundle.getMessage("EditBlockValue")) {
             @Override
             public void actionPerformed(ActionEvent e) {

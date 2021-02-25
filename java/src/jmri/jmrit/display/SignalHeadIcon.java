@@ -39,6 +39,7 @@ public class SignalHeadIcon extends PositionableIcon implements java.beans.Prope
         _control = true;
     }
 
+    @Nonnull
     @Override
     public Positionable deepClone() {
         SignalHeadIcon pos = new SignalHeadIcon(_editor);
@@ -336,7 +337,7 @@ public class SignalHeadIcon extends PositionableIcon implements java.beans.Prope
     private SignalHeadItemPanel _itemPanel;
 
     @Override
-    public boolean setEditItemMenu(JPopupMenu popup) {
+    public boolean setEditItemMenu(@Nonnull JPopupMenu popup) {
         String txt = java.text.MessageFormat.format(Bundle.getMessage("EditItem"),
                 Bundle.getMessage("BeanNameSignalHead"));
         popup.add(new AbstractAction(txt) {

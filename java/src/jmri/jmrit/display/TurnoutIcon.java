@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map.Entry;
+import javax.annotation.Nonnull;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JPopupMenu;
 import jmri.InstanceManager;
@@ -48,6 +49,7 @@ public class TurnoutIcon extends PositionableIcon implements java.beans.Property
         setPopupUtility(null);
     }
 
+    @Nonnull
     @Override
     public Positionable deepClone() {
         TurnoutIcon pos = new TurnoutIcon(_editor);
@@ -212,6 +214,7 @@ public class TurnoutIcon extends PositionableIcon implements java.beans.Property
 
     }
 
+    @Nonnull
     @Override
     public String getNameString() {
         String name;
@@ -344,7 +347,7 @@ public class TurnoutIcon extends PositionableIcon implements java.beans.Property
     TableItemPanel<Turnout> _itemPanel;
 
     @Override
-    public boolean setEditItemMenu(JPopupMenu popup) {
+    public boolean setEditItemMenu(@Nonnull JPopupMenu popup) {
         String txt = java.text.MessageFormat.format(Bundle.getMessage("EditItem"), Bundle.getMessage("BeanNameTurnout"));
         popup.add(new javax.swing.AbstractAction(txt) {
             @Override

@@ -615,8 +615,7 @@ public class PositionableLabel extends JLabel implements Positionable {
      */
     public DisplayFrame makePaletteFrame(String title) {
         jmri.jmrit.display.palette.ItemPalette.loadIcons();
-        DisplayFrame frame = new DisplayFrame(title, _editor);
-        return frame;
+        return new DisplayFrame(title, _editor);
     }
 
     public void initPaletteFrame(DisplayFrame paletteFrame, @Nonnull ItemPanel itemPanel) {

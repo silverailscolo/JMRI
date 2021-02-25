@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.swing.AbstractAction;
 import javax.swing.JPopupMenu;
 import jmri.InstanceManager;
@@ -54,6 +55,7 @@ public class MultiSensorIcon extends PositionableLabel implements java.beans.Pro
 
     ArrayList<Entry> entries = new ArrayList<>();
 
+    @Nonnull
     @Override
     public Positionable deepClone() {
         MultiSensorIcon pos = new MultiSensorIcon(_editor);
@@ -174,6 +176,7 @@ public class MultiSensorIcon extends PositionableLabel implements java.beans.Pro
         }
     }
 
+    @Nonnull
     @Override
     public String getNameString() {
         StringBuilder name = new StringBuilder();
@@ -228,7 +231,7 @@ public class MultiSensorIcon extends PositionableLabel implements java.beans.Pro
     }
 
     @Override
-    public boolean setEditItemMenu(JPopupMenu popup) {
+    public boolean setEditItemMenu(@Nonnull JPopupMenu popup) {
         String txt = Bundle.getMessage("EditItem", Bundle.getMessage("MultiSensor"));
         popup.add(new javax.swing.AbstractAction(txt) {
             @Override

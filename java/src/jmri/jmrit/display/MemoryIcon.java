@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -59,6 +60,7 @@ public class MemoryIcon extends PositionableLabel implements java.beans.Property
         this.setTransferHandler(new TransferHandler());
     }
 
+    @Nonnull
     @Override
     public Positionable deepClone() {
         MemoryIcon pos = new MemoryIcon("", _editor);
@@ -186,6 +188,7 @@ public class MemoryIcon extends PositionableLabel implements java.beans.Property
         }
     }
 
+    @Nonnull
     @Override
     public String getNameString() {
         String name;
@@ -292,7 +295,7 @@ public class MemoryIcon extends PositionableLabel implements java.beans.Property
      * Text edits cannot be done to Memory text - override
      */
     @Override
-    public boolean setTextEditMenu(JPopupMenu popup) {
+    public boolean setTextEditMenu(@Nonnull JPopupMenu popup) {
         popup.add(new AbstractAction(Bundle.getMessage("EditMemoryValue")) {
 
             @Override

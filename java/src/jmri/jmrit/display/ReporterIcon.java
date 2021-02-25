@@ -1,6 +1,7 @@
 package jmri.jmrit.display;
 
 import java.awt.event.ActionListener;
+import javax.annotation.Nonnull;
 import javax.swing.JPopupMenu;
 import jmri.InstanceManager;
 import jmri.Reporter;
@@ -45,6 +46,7 @@ public class ReporterIcon extends PositionableLabel implements java.beans.Proper
     // the associated Reporter object
     Reporter reporter = null;
 
+    @Nonnull
     @Override
     public Positionable deepClone() {
         ReporterIcon pos = new ReporterIcon(_editor);
@@ -99,6 +101,7 @@ public class ReporterIcon extends PositionableLabel implements java.beans.Proper
         displayState();
     }
 
+    @Nonnull
     @Override
     public String getNameString() {
         String name;

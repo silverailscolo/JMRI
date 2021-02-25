@@ -6,8 +6,10 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import jmri.jmrit.catalog.NamedIcon;
 
+import javax.annotation.Nonnull;
+
 /**
- * Gather common methods for Turnouts, Sensors, SignalHeads, Masts, etc.
+ * Gather common methods for Turnouts, Sensors, SignalHeads, SignalMasts, etc.
  *
  * <a href="doc-files/Heirarchy.png"><img src="doc-files/Heirarchy.png" alt="UML class diagram for package" height="33%" width="33%"></a>
  * @author Pete Cressman Copyright (C) 2011
@@ -35,6 +37,7 @@ public class PositionableIcon extends PositionableLabel {
     }
 
     @Override
+    @Nonnull
     public Positionable deepClone() {
         PositionableIcon pos = new PositionableIcon(_editor);
         return finishClone(pos);
