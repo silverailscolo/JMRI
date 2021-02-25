@@ -222,7 +222,7 @@ public class DefaultCatalogTreeManager extends AbstractManager<CatalogTree> impl
     }
 
     @Override
-    public boolean isIndexChanged() {
+    public synchronized boolean isIndexChanged() {
         return _indexChanged;
     }
 

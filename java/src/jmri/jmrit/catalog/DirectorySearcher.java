@@ -54,7 +54,7 @@ public class DirectorySearcher implements InstanceManagerAutoDefault {
      *                directory so user can continue looking
      * @return chosen directory or null to cancel operation
      */
-    @SuppressFBWarnings(value = "UW_UNCOND_WAIT", justification="false postive, guarded by logic")
+    @SuppressFBWarnings(value = "UW_UNCOND_WAIT", justification="false positive, guarded by logic")
     private File getDirectory(String msg, boolean recurse) {
         if (_directoryChooser == null) {
             _directoryChooser = new JFileChooser(FileSystemView.getFileSystemView());
@@ -339,7 +339,7 @@ public class DirectorySearcher implements InstanceManagerAutoDefault {
 
         } else {
             synchronized (_searcher) {
-                _searcher.notify();
+                _searcher.notifyAll();
             }
         }
     }
@@ -354,7 +354,7 @@ public class DirectorySearcher implements InstanceManagerAutoDefault {
         }
         if (_searcher != null) {
             synchronized (_searcher) {
-                _searcher.notify();
+                _searcher.notifyAll();
             }
         }
     }
@@ -368,7 +368,7 @@ public class DirectorySearcher implements InstanceManagerAutoDefault {
         if (_searcher != null) {
             synchronized (_searcher) {
                 _searcher.quit();
-                _searcher.notify();
+                _searcher.notifyAll();
             }
         }
     }
@@ -379,4 +379,5 @@ public class DirectorySearcher implements InstanceManagerAutoDefault {
     }
 
     private final static Logger log = LoggerFactory.getLogger(DirectorySearcher.class);
+
 }
