@@ -22,7 +22,7 @@ public class SprogOpsModeProgrammer extends SprogProgrammer implements Addressed
 
     int mAddress;
     boolean mLongAddr;
-    private SprogSystemConnectionMemo _memo = null;
+    private final SprogSystemConnectionMemo _memo;
 
     public SprogOpsModeProgrammer(int pAddress, boolean pLongAddr, SprogSystemConnectionMemo memo) {
         super(memo);
@@ -51,7 +51,11 @@ public class SprogOpsModeProgrammer extends SprogProgrammer implements Addressed
         // Delay the reply to allow time for the ops mode packet to be sent and prevent all slots from filling up
         // when writing multiple CVs, e.g. writing a sheet in the comprehensive programmer.
         if (_memo.getCommandStation().opsModepacket(mAddress, mLongAddr, CV, val) != null) {
-            javax.swing.Timer t = new javax.swing.Timer(250, (java.awt.event.ActionEvent evt)->{notifyProgListenerEnd(_val, jmri.ProgListener.OK);});
+            final int tempVal;
+            synchronized (this) {
+                tempVal = _val; // copy while synchronized
+            }
+            javax.swing.Timer t = new javax.swing.Timer(250, (java.awt.event.ActionEvent evt)-> notifyProgListenerEnd(tempVal, ProgListener.OK));
             t.setRepeats(false);
             t.start();
         } else {

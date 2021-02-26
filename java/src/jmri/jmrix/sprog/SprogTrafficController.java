@@ -16,6 +16,8 @@ import purejavacomm.SerialPort;
 import purejavacomm.SerialPortEvent;
 import purejavacomm.SerialPortEventListener;
 
+import javax.annotation.Nonnull;
+
 /**
  * Converts Stream-based I/O to/from Sprog messages. The "SprogInterface" side
  * sends/receives message objects. The connection to a SprogPortController is
@@ -49,7 +51,7 @@ public class SprogTrafficController implements SprogInterface, SerialPortEventLi
      * @param adaptermemo the associated SystemConnectionMemo
      */
     @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value="SC_START_IN_CTOR", justification="done at end, waits for data")
-    public SprogTrafficController(SprogSystemConnectionMemo adaptermemo) {
+    public SprogTrafficController(@Nonnull SprogSystemConnectionMemo adaptermemo) {
         memo = adaptermemo;
 
         // Set the timeout for communication with hardware
@@ -117,7 +119,7 @@ public class SprogTrafficController implements SprogInterface, SerialPortEventLi
             getController().setHandshake(SerialPort.FLOWCONTROL_RTSCTS_IN
                     | SerialPort.FLOWCONTROL_RTSCTS_OUT);
 
-        } else {
+        //} else {
             // disable flow control
             // removed Jan 2010 - this stops SPROG from sending. Could cause problems with
             // serial Sprogs, but I have no way of testing:
@@ -258,7 +260,7 @@ public class SprogTrafficController implements SprogInterface, SerialPortEventLi
         try {
             sendQueue.add(new MessageTuple(m, null));
         } catch (Exception e) {
-            log.error("Could not add message to queue {}", e);
+            log.error("Could not add message to queue ", e);
         }
     }
 
@@ -274,7 +276,7 @@ public class SprogTrafficController implements SprogInterface, SerialPortEventLi
         try {
             sendQueue.add(new MessageTuple(m, replyTo));
         } catch (Exception e) {
-            log.error("Could not add message to queue {}", e);
+            log.error("Could not add message to queue ", e);
         }
     }
 
@@ -298,7 +300,9 @@ public class SprogTrafficController implements SprogInterface, SerialPortEventLi
             }
             log.debug("Message dequeued {} id: {}", messageToSend.message, messageToSend.message.getId());
             // remember who sent this
-            lastSender = messageToSend.listener;
+            synchronized (this) {
+                lastSender = messageToSend.listener;
+            }
             lastId = messageToSend.message.getId();
             // notify all _other_ listeners
             notifyMessage(messageToSend.message, messageToSend.listener);
@@ -405,7 +409,7 @@ public class SprogTrafficController implements SprogInterface, SerialPortEventLi
         return memo;
     }
 
-    private SprogSystemConnectionMemo memo = null;
+    private SprogSystemConnectionMemo memo;
 
     // data members to hold the streams
     DataInputStream istream = null;
@@ -465,10 +469,10 @@ public class SprogTrafficController implements SprogInterface, SerialPortEventLi
                 reply.setElement(i, char1);
 
             } catch (Exception e) {
-                log.warn("Exception in DATA_AVAILABLE state: {}", e);
+                log.warn("Exception in DATA_AVAILABLE state: ", e);
             }
             if (endReply(reply)) {
-                sendreply();
+                sendReply();
                 break;
             }
         }
@@ -477,7 +481,7 @@ public class SprogTrafficController implements SprogInterface, SerialPortEventLi
     /**
      * Send the current reply - built using data from serialEvent.
      */
-    private void sendreply() {
+    private void sendReply() {
         //send the reply
         log.debug("dispatch reply of length {} in SprogState {}", reply.getNumDataElements(), sprogState);
         if (unsolicited) {
@@ -486,7 +490,9 @@ public class SprogTrafficController implements SprogInterface, SerialPortEventLi
         }
         // Insert the id
         reply.setId(lastId);
-        notifyReply(reply, lastSender);
+        synchronized (this) {
+            notifyReply(reply, lastSender);
+        }
         log.debug("Notify() wait");
         replyAvailable = true;
         synchronized(lock) {

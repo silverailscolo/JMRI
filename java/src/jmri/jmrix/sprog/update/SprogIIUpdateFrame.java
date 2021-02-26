@@ -65,7 +65,7 @@ public class SprogIIUpdateFrame
     @Override
     synchronized public void notifyVersion(SprogVersion v) {
         sv = v;
-        if (sv!=null && sv.sprogType.isSprog() == false) {
+        if (sv!=null && !sv.sprogType.isSprog()) {
             // Didn't recognize a SPROG so check if it is in boot mode already
             log.debug("SPROG not found - looking for bootloader");
             statusBar.setText(Bundle.getMessage("StatusSprogNotFound"));
@@ -129,15 +129,11 @@ public class SprogIIUpdateFrame
     @Override
     synchronized protected void stateBootVerReqSent() {
         stopTimer();
-        if (log.isDebugEnabled()) {
-            log.debug("reply in VERREQSENT state");
-        }
+        log.debug("reply in VERREQSENT state");
         // see if reply is the version
         if ((reply.getOpCode() == SprogMessage.RD_VER) && (reply.getElement(1) == 2)) {
             bootVer = reply.getElement(2);
-            if (log.isDebugEnabled()) {
-                log.debug("Found bootloader version {}", bootVer);
-            }
+            log.debug("Found bootloader version {}", bootVer);
             statusBar.setText(Bundle.getMessage("StatusConnectedToBootloader", bootVer));
             // Enable the file chooser button
             setSprogModeButton.setEnabled(true);
@@ -173,9 +169,7 @@ public class SprogIIUpdateFrame
     @Override
     synchronized protected void stateWriteSent() {
         stopTimer();
-        if (log.isDebugEnabled()) {
-            log.debug("reply in WRITESENT state");
-        }
+        log.debug("reply in WRITESENT state");
         // Check for correct response to type of write that was sent
         if ((reply.getOpCode() == msg.getElement(2)) && (reply.getNumDataElements() == 1)
                 || (reply.getElement(reply.getNumDataElements() - 1) == '.')) {
@@ -199,9 +193,7 @@ public class SprogIIUpdateFrame
     @Override
     synchronized protected void stateEraseSent() {
         stopTimer();
-        if (log.isDebugEnabled()) {
-            log.debug("reply in ERASESENT state");
-        }
+        log.debug("reply in ERASESENT state");
         // Check for correct response to erase that was sent
         if ((reply.getOpCode() == msg.getElement(2)) && (reply.getNumDataElements() == 1)) {
             // Don't erase ICD debug executive if in use
@@ -210,9 +202,7 @@ public class SprogIIUpdateFrame
                 // More data to erase
                 sendErase();
             } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("Finished erasing");
-                }
+                log.debug("Finished erasing");
                 statusBar.setText(Bundle.getMessage("StatusEraseComplete"));
                 // Read first line from hexfile
                 if (hexFile.read() > 0) {
@@ -238,14 +228,10 @@ public class SprogIIUpdateFrame
     @Override
     synchronized protected void stateSprogModeSent() {
         stopTimer();
-        if (log.isDebugEnabled()) {
-            log.debug("reply in SROGMODESENT state");
-        }
+        log.debug("reply in SROGMODESENT state");
         // Check for correct response to type of write that was sent
         if ((reply.getOpCode() == msg.getElement(2)) && (reply.getNumDataElements() == 1)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Reset SPROG");
-            }
+            log.debug("Reset SPROG");
             msg = SprogMessage.getReset();
             bootState = BootState.RESETSENT;
             tc.sendSprogMessage(msg, this);
@@ -263,9 +249,7 @@ public class SprogIIUpdateFrame
     @Override
     synchronized protected void stateResetSent() {
         stopTimer();
-        if (log.isDebugEnabled()) {
-            log.debug("reply in RESETSENT state");
-        }
+        log.debug("reply in RESETSENT state");
         // Check for correct response to type of write that was sent
 
         statusBar.setText(Bundle.getMessage("DefaultStatusText")); // Ready, is in jmrixBundle
@@ -277,9 +261,7 @@ public class SprogIIUpdateFrame
     @Override
     synchronized protected void requestBoot() {
         // Look for SPROG in boot mode by requesting bootloader version.
-        if (log.isDebugEnabled()) {
-            log.debug("Request bootloader version");
-        }
+        log.debug("Request bootloader version");
         // allow parsing of bootloader replies
         if (tc == null) {
             log.warn("requestBoot with null tc, ignored");
@@ -339,17 +321,13 @@ public class SprogIIUpdateFrame
     }
 
     synchronized private void sendErase() {
-        if (log.isDebugEnabled()) {
-            log.debug("Erase Flash {}", eraseAddress);
-        }
+        log.debug("Erase Flash {}", eraseAddress);
         int rows = 8; // 512 bytes
         msg = SprogMessage.getEraseFlash(eraseAddress, rows);
         bootState = BootState.ERASESENT;
         statusBar.setText(Bundle.getMessage("StatusEraseX", eraseAddress));
         tc.sendSprogMessage(msg, this);
-        if (log.isDebugEnabled()) {
-            log.debug("Sent erase command to address {}", eraseAddress);
-        }
+        log.debug("Sent erase command to address {}", eraseAddress);
         eraseAddress += (rows * 64);
         startLongTimer();
     }
@@ -357,9 +335,7 @@ public class SprogIIUpdateFrame
     @Override
     synchronized protected void doneWriting() {
         // Finished
-        if (log.isDebugEnabled()) {
-            log.debug("Done writing");
-        }
+        log.debug("Done writing");
         statusBar.setText(Bundle.getMessage("StatusWriteComplete"));
         openFileChooserButton.setEnabled(false);
         programButton.setEnabled(false);
@@ -376,9 +352,7 @@ public class SprogIIUpdateFrame
             setSprogModeButton.setEnabled(false);
             eraseAddress = sv.sprogType.getEraseStart();
             if (eraseAddress > 0) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Start erasing @{}", eraseAddress);
-                }
+                log.debug("Start erasing @{}", eraseAddress);
                 sendErase();
             }
         }
@@ -386,9 +360,7 @@ public class SprogIIUpdateFrame
 
     @Override
     synchronized public void setSprogModeButtonActionPerformed(java.awt.event.ActionEvent e) {
-        if (log.isDebugEnabled()) {
-            log.debug("Set SPROG mode");
-        }
+        log.debug("Set SPROG mode");
         msg = SprogMessage.getWriteEE(0xff, new int[]{0});
         bootState = BootState.SPROGMODESENT;
         // Set TC timeout back to normal

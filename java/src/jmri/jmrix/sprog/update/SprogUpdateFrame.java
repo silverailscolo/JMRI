@@ -74,7 +74,7 @@ abstract public class SprogUpdateFrame
     int blockLen = 0;
 
     protected SprogTrafficController tc = null;
-    protected SprogSystemConnectionMemo _memo = null;
+    protected SprogSystemConnectionMemo _memo;
 
     public SprogUpdateFrame(SprogSystemConnectionMemo memo) {
         super();

@@ -42,7 +42,7 @@ public class SprogSystemConnectionMemo extends DefaultSystemConnectionMemo imple
 
     public SprogSystemConnectionMemo(SprogMode sm, SprogType type) {
         super("S", SprogConnectionTypeList.SPROG); // default to S
-        init(sm, type);
+        init(sm, type); // null tc
     }
     
     private void init(SprogMode sm, SprogType type) {
