@@ -413,7 +413,7 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
         //_targetFrame.pack();
     }
 
-    protected void setTargetPanelSize(int w, int h) {
+    protected synchronized void setTargetPanelSize(int w, int h) {
 //        log.debug("setTargetPanelSize now w={}, h={}", w, h);
         _targetPanel.setSize(w, h);
         _targetPanel.invalidate();
@@ -1037,7 +1037,10 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
                 message = Bundle.getMessage("PanelCloseQuestion") + "\n"
                         + Bundle.getMessage("PanelCloseHelp");
             }
-            Container ancestor = _targetPanel.getTopLevelAncestor();
+            Container ancestor;
+            synchronized (this) {
+                ancestor = _targetPanel.getTopLevelAncestor();
+            }
             if (ancestor instanceof JFrame) {
                 name = ((JFrame) ancestor).getTitle();
             }

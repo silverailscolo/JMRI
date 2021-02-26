@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
+
 import jmri.implementation.AbstractNamedBean;
 import jmri.implementation.SignalSpeedMap;
 import jmri.util.PhysicalLocation;
@@ -273,16 +275,17 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         return _current;
     }
 
+    @GuardedBy("this")
     ArrayList<Path> paths = new ArrayList<>();
 
-    public void addPath(Path p) {
+    public synchronized void addPath(Path p) {
         if (p == null) {
             throw new IllegalArgumentException("Can't add null path");
         }
         paths.add(p);
     }
 
-    public void removePath(Path p) {
+    public synchronized void removePath(Path p) {
         int j = -1;
         for (int i = 0; i < paths.size(); i++) {
             if (p == paths.get(i)) {
@@ -294,7 +297,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         }
     }
 
-    public boolean hasPath(Path p) {
+    public synchronized boolean hasPath(Path p) {
         return paths.stream().anyMatch((t) -> (t.equals(p)));
     }
 
@@ -303,7 +306,8 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
      *
      * @return the paths or an empty list
      */
-    public List<Path> getPaths() {
+    @Nonnull
+    public synchronized List<Path> getPaths() {
         return new ArrayList<>(paths);
     }
 
@@ -454,7 +458,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         }
 
         try {
-            return Float.valueOf(speed);
+            return Float.parseFloat(speed);
         } catch (NumberFormatException nx) {
             //considered normal if the speed is not a number.
         }
@@ -593,7 +597,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         cntOfPossibleEntrancePaths = 0;
     }
 
-    boolean setAsEntryBlockIfPossible(Block b) {
+    boolean setAsEntryBlockIfPossible(@Nonnull Block b) {
         for (int i = 0; i < cntOfPossibleEntrancePaths; i++) {
             Block CandidateBlock = pListOfPossibleEntrancePaths[i].getBlock();
             if (CandidateBlock == b) {
@@ -662,10 +666,12 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
      */
     public void goingInactive() {
         log.debug("Block {} goes UNOCCUPIED", getDisplayName());
-        for (Path path : paths) {
-            Block b = path.getBlock();
-            if (b != null) {
-                b.setAsEntryBlockIfPossible(this);
+        synchronized (this) {
+            for (Path path : paths) {
+                Block b = path.getBlock();
+                if (b != null) {
+                    b.setAsEntryBlockIfPossible(this);
+                }
             }
         }
         setValue(null);
@@ -691,14 +697,20 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         int count = 0;
         Path next = null;
         // get statuses of everything once
-        int currPathCnt = paths.size();
+        int currPathCnt;
+        ArrayList<Path> tempPaths; // for synchronized access
+        synchronized (this) {
+            // get statuses of everything once
+            currPathCnt = paths.size();
+            tempPaths = (ArrayList<Path>)getPaths();
+        }
         Path[] pList = new Path[currPathCnt];
         boolean[] isSet = new boolean[currPathCnt];
         boolean[] isActive = new boolean[currPathCnt];
         int[] pDir = new int[currPathCnt];
         int[] pFromDir = new int[currPathCnt];
         for (int i = 0; i < currPathCnt; i++) {
-            pList[i] = paths.get(i);
+            pList[i] = tempPaths.get(i);
             isSet[i] = pList[i].checkPathSet();
             Block b = pList[i].getBlock();
             if (b != null) {
@@ -794,7 +806,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
                             next.getBlock().getDisplayName(), Path.decodeDirection(getDirection()));
                 } else {
                     // no unique path with correct direction - this happens frequently from noise in block detectors!!
-                    log.warn("count of {} ACTIVE neightbors with proper direction can't be handled for block {} but maybe it can be determined when another block becomes free", count, getDisplayName());
+                    log.warn("count of {} ACTIVE neighbors with proper direction can't be handled for block {} but maybe it can be determined when another block becomes free", count, getDisplayName());
                     pListOfPossibleEntrancePaths = new Path[currPathCnt];
                     cntOfPossibleEntrancePaths = 0;
                     for (int i = 0; i < currPathCnt; i++) {
@@ -822,15 +834,20 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         // index through the paths, counting
         int count = 0;
         Path next = null;
-        // get statuses of everything once
-        int currPathCnt = paths.size();
+        int currPathCnt;
+        ArrayList<Path> tempPaths; // for synchronized access
+        synchronized (this) {
+            // get statuses of everything once
+            currPathCnt = paths.size();
+            tempPaths = (ArrayList<Path>)getPaths();
+        }
         Path[] pList = new Path[currPathCnt];
         boolean[] isSet = new boolean[currPathCnt];
         boolean[] isActive = new boolean[currPathCnt];
         int[] pDir = new int[currPathCnt];
         int[] pFromDir = new int[currPathCnt];
         for (int i = 0; i < currPathCnt; i++) {
-            pList[i] = paths.get(i);
+            pList[i] = tempPaths.get(i);
             isSet[i] = pList[i].checkPathSet();
             Block b = pList[i].getBlock();
             if (b != null) {
@@ -847,9 +864,9 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
             }
         }
         // sort on number of neighbors
-        if ((count == 0) || (count == 1)) {
+        //if ((count == 0) || (count == 1)) {
             // do nothing.  OK to return null from this function.  "next" is already set.
-        } else {
+        if (count > 1) {
             // count > 1, check for one with proper direction
             // this time, count ones with proper direction
             log.debug("Block {} - count of active linked blocks = {}", getDisplayName(), count);
@@ -1055,6 +1072,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
     }
 
     @Override
+    @Nonnull
     public String getBeanType() {
         return Bundle.getMessage("BeanNameBlock");
     }
