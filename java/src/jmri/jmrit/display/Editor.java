@@ -401,9 +401,6 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
             _targetFrame = frame;
         }
         _targetFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        _panelScrollPane = new JScrollPane(_targetPanel);
-        Container contentPane = _targetFrame.getContentPane();
-        contentPane.add(_panelScrollPane);
         _targetFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -411,11 +408,14 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
             }
         });
         synchronized (this) {
+            _panelScrollPane = new JScrollPane(_targetPanel);
             _targetPanel.addMouseListener(this);
             _targetPanel.addMouseMotionListener(this);
             _targetPanel.setFocusable(true);
             _targetPanel.addKeyListener(this);
         }
+        Container contentPane = _targetFrame.getContentPane();
+        contentPane.add(_panelScrollPane);
         //_targetFrame.pack();
     }
 
