@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -156,6 +157,7 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
     boolean showCloseInfoMessage = true; //display info message when closing panel
 
     protected ArrayList<Positionable> _contents = new ArrayList<>();
+    @GuardedBy("this")
     protected JLayeredPane _targetPanel;
     private JFrame _targetFrame;
     private JScrollPane _panelScrollPane;
@@ -379,10 +381,12 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
      * @param frame       the frame to embed the panel in
      */
     protected void setTargetPanel(JLayeredPane targetPanel, JmriJFrame frame) {
-        if (targetPanel == null) {
-            _targetPanel = new TargetPane();
-        } else {
-            _targetPanel = targetPanel;
+        synchronized (this) {
+            if (targetPanel == null) {
+                _targetPanel = new TargetPane();
+            } else {
+                _targetPanel = targetPanel;
+            }
         }
         // If on a headless system, set heavyweight components to null
         // and don't attach mouse and keyboard listeners to the panel
@@ -406,10 +410,12 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
                 targetWindowClosingEvent(e);
             }
         });
-        _targetPanel.addMouseListener(this);
-        _targetPanel.addMouseMotionListener(this);
-        _targetPanel.setFocusable(true);
-        _targetPanel.addKeyListener(this);
+        synchronized (this) {
+            _targetPanel.addMouseListener(this);
+            _targetPanel.addMouseMotionListener(this);
+            _targetPanel.setFocusable(true);
+            _targetPanel.addKeyListener(this);
+        }
         //_targetFrame.pack();
     }
 
@@ -419,7 +425,7 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
         _targetPanel.invalidate();
     }
 
-    protected Dimension getTargetPanelSize() {
+    protected synchronized Dimension getTargetPanelSize() {
         return _targetPanel.getSize();
     }
 
@@ -429,7 +435,7 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
      *
      * @return the target panel
      */
-    public final JComponent getTargetPanel() {
+    public synchronized final JComponent getTargetPanel() {
         return _targetPanel;
     }
 
@@ -447,7 +453,7 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
         return _targetFrame;
     }
 
-    public Color getBackgroundColor() {
+    public synchronized Color getBackgroundColor() {
         if (_targetPanel instanceof TargetPane) {
             TargetPane tmp = (TargetPane) _targetPanel;
             return tmp.getBackgroundColor();
@@ -457,17 +463,21 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
     }
 
     public void setBackgroundColor(Color col) {
-        if (_targetPanel instanceof TargetPane) {
-            TargetPane tmp = (TargetPane) _targetPanel;
-            tmp.setBackgroundColor(col);
+        synchronized (this) {
+            if (_targetPanel instanceof TargetPane) {
+                TargetPane tmp = (TargetPane) _targetPanel;
+                tmp.setBackgroundColor(col);
+            }
         }
         JmriColorChooser.addRecentColor(col);
     }
 
     public void clearBackgroundColor() {
-        if (_targetPanel instanceof TargetPane) {
-            TargetPane tmp = (TargetPane) _targetPanel;
-            tmp.clearBackgroundColor();
+        synchronized (this) {
+            if (_targetPanel instanceof TargetPane) {
+                TargetPane tmp = (TargetPane) _targetPanel;
+                tmp.clearBackgroundColor();
+            }
         }
     }
 
@@ -524,7 +534,9 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
         } else {
             _tooltipTimer = null;
         }
-        _targetPanel.repaint();
+        synchronized (this) {
+            _targetPanel.repaint();
+        }
     }
 
     static class ToolTipTimer extends Timer {
@@ -714,10 +726,14 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
 
     private void setScrollbarScale(double ratio) {
         //resize the panel to reflect scaling
-        Dimension dim = _targetPanel.getSize();
-        int tpWidth = (int) ((dim.width) * ratio);
-        int tpHeight = (int) ((dim.height) * ratio);
-        _targetPanel.setSize(tpWidth, tpHeight);
+        int tpWidth;
+        int tpHeight;
+        synchronized (this) {
+            Dimension dim = _targetPanel.getSize();
+            tpWidth = (int) ((dim.width) * ratio);
+            tpHeight = (int) ((dim.height) * ratio);
+            _targetPanel.setSize(tpWidth, tpHeight);
+        }
         log.debug("setScrollbarScale: ratio= {}, tpWidth= {}, tpHeight= {}", ratio, tpWidth, tpHeight);
         // compute new scroll bar positions to keep upper left same
         JScrollBar horScroll = _panelScrollPane.getHorizontalScrollBar();
@@ -1038,14 +1054,16 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
                         + Bundle.getMessage("PanelCloseHelp");
             }
             Container ancestor;
+            JLayeredPane pane;
             synchronized (this) {
                 ancestor = _targetPanel.getTopLevelAncestor();
+                pane = _targetPanel;
             }
             if (ancestor instanceof JFrame) {
                 name = ((JFrame) ancestor).getTitle();
             }
             if (!InstanceManager.getDefault(ShutDownManager.class).isShuttingDown()) {
-                int selectedValue = JOptionPane.showOptionDialog(_targetPanel,
+                int selectedValue = JOptionPane.showOptionDialog(pane,
                         MessageFormat.format(message, name), Bundle.getMessage("ReminderTitle"),
                         JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
                         null, new Object[]{Bundle.getMessage("ButtonHide"), Bundle.getMessage("ButtonDeletePanel"),
@@ -1679,7 +1697,7 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
         }
     }
 
-    protected void addToTarget(Positionable l) {
+    protected synchronized void addToTarget(Positionable l) {
         JComponent c = (JComponent) l;
         c.invalidate();
         _targetPanel.remove(c);
@@ -2373,7 +2391,10 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
 
     public void setTitle() {
         String name = "";
-        Container ancestor = _targetPanel.getTopLevelAncestor();
+        Container ancestor;
+        synchronized (this) {
+            ancestor = _targetPanel.getTopLevelAncestor();
+        }
         if (ancestor instanceof JFrame) {
             name = ((JFrame) ancestor).getTitle();
         }
@@ -2511,7 +2532,7 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
     /*
      * ******************* cleanup ************************
      */
-    protected void removeFromTarget(Positionable l) {
+    protected synchronized void removeFromTarget(Positionable l) {
         _targetPanel.remove((Component) l);
         _highlightcomponent = null;
         Point p = l.getLocation();
@@ -2537,8 +2558,12 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
      */
     public boolean deletePanel() {
         log.debug("deletePanel");
+        JLayeredPane pane;
+        synchronized (this) {
+            pane = _targetPanel;
+        }
         // verify deletion
-        int selectedValue = JOptionPane.showOptionDialog(_targetPanel,
+        int selectedValue = JOptionPane.showOptionDialog(pane,
                 Bundle.getMessage("QuestionA") + "\n" + Bundle.getMessage("QuestionB"),
                 Bundle.getMessage("DeleteVerifyTitle"), JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null,
@@ -3042,7 +3067,9 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
         for (Positionable comp : _selectionGroup) {
             moveItem(comp, x, y);
         }
-        _targetPanel.repaint();
+        synchronized (this) {
+            _targetPanel.repaint();
+        }
     }
 
     @Override
@@ -3080,7 +3107,9 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
             }
             for (Positionable p : toDelete) {
                 removeFromContents(p);
-                _targetPanel.repaint();
+                synchronized (this) {
+                    _targetPanel.repaint();
+                }
             }
         }
     }

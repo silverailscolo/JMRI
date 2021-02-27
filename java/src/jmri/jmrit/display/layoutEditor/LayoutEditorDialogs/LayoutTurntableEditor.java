@@ -68,8 +68,7 @@ public class LayoutTurntableEditor extends LayoutTrackEditor {
         } else {
             log.error("editLayoutTrack called with wrong type {}", layoutTrackView, new Exception("traceback"));
         }
-        sensorList.clear();
-
+        clearSensorList();
         if (editLayoutTurntableOpen) {
             editLayoutTurntableFrame.setVisible(true);
         } else // Initialize if needed

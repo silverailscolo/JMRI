@@ -20,7 +20,7 @@ public class LayoutRHXOverEditor extends LayoutXOverEditor {
         super(layoutEditor);
     }
 
-    // These now reflect to code in the base class; eventually this heirarchy will
+    // These now reflect to code in the base class; eventually this hierarchy will
     // expand and the code will be brought here
     
 

@@ -34,7 +34,6 @@ public class LayoutXOverEditor extends LayoutTurnoutEditor {
         log.trace("LayoutXOverEditor.editLayoutTrack({}) of a {}", layoutTrackView, layoutTrackView.getClass());
         super.editLayoutTrack(layoutTrackView);
     }
-    
 
     // not used by crossover
     @Override
@@ -163,4 +162,5 @@ public class LayoutXOverEditor extends LayoutTurnoutEditor {
     }
 
     private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutXOverEditor.class);
+
 }

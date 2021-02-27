@@ -78,8 +78,7 @@ public class LayoutTurnoutEditor extends LayoutTrackEditor {
         } else {
             log.error("editLayoutTrack called with wrong type {}", layoutTurnout, new Exception("traceback"));
         }
-        sensorList.clear();
-
+        clearSensorList();
         if (editLayoutTurnoutOpen) {
             editLayoutTurnoutFrame.setVisible(true);
         } else if (editLayoutTurnoutFrame == null) { // Initialize if needed

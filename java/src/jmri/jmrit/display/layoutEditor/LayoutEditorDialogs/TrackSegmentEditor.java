@@ -52,14 +52,13 @@ public class TrackSegmentEditor extends LayoutTrackEditor {
     private boolean editTrackSegmentOpen = false;
     private boolean editTrackSegmentNeedsRedraw = false;
 
-
     /**
      * Edit a Track Segment.
      */
     @InvokeOnGuiThread
     @Override
     public void editLayoutTrack(@Nonnull LayoutTrackView layoutTrackView) {
-        if ( layoutTrackView instanceof TrackSegmentView ) {
+        if (layoutTrackView instanceof TrackSegmentView) {
             this.trackSegmentView = (TrackSegmentView) layoutTrackView;
             this.trackSegment = this.trackSegmentView.getTrackSegment();
         } else {
@@ -67,8 +66,7 @@ public class TrackSegmentEditor extends LayoutTrackEditor {
                     layoutTrackView.getClass(), layoutTrackView, 
                     new Exception("traceback"));
         }
-        sensorList.clear();
-
+        clearSensorList();
         if (editTrackSegmentOpen) {
             editTrackSegmentFrame.setVisible(true);
         } else if (editTrackSegmentFrame == null) { // Initialize if needed
@@ -280,6 +278,6 @@ public class TrackSegmentEditor extends LayoutTrackEditor {
         }
     }
 
-
     private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TrackSegmentEditor.class);
+
 }

@@ -506,7 +506,9 @@ public class ControlPanelEditor extends Editor implements DropTargetListener, Cl
         menuItem = new JMenuItem(Bundle.getMessage("SelectAll"));
         menuItem.addActionListener((ActionEvent event) -> {
             _selectionGroup = _contents;
-            _targetPanel.repaint();
+            synchronized (this) {
+                _targetPanel.repaint();
+            }
         });
         setMenuAcceleratorKey(menuItem, KeyEvent.VK_A);
         _editMenu.add(menuItem);
@@ -585,7 +587,9 @@ public class ControlPanelEditor extends Editor implements DropTargetListener, Cl
         } catch (ClassNotFoundException cnfe) {
             log.error("selectType Menu {}", cnfe.toString());
         }
-        _targetPanel.repaint();
+        synchronized (this) {
+            _targetPanel.repaint();
+        }
     }
 
     private JMenu makeSelectLevelMenu() {
@@ -620,7 +624,9 @@ public class ControlPanelEditor extends Editor implements DropTargetListener, Cl
                 _selectionGroup.add(pos);
             }
         }
-        _targetPanel.repaint();
+        synchronized (this) {
+            _targetPanel.repaint();
+        }
     }
 
     ////////////////////////// end Menus //////////////////////////
@@ -1191,7 +1197,9 @@ public class ControlPanelEditor extends Editor implements DropTargetListener, Cl
             deselectSelectionGroup();
         }
         _circuitBuilder.doMousePressed(event);
-        _targetPanel.repaint(); // needed for ToolTip
+        synchronized (this) {
+            _targetPanel.repaint(); // needed for ToolTip
+        }
     }
 
     @Override
@@ -1256,9 +1264,11 @@ public class ControlPanelEditor extends Editor implements DropTargetListener, Cl
         _lastY = event.getY();
         _dragging = false;
         _currentSelection = null;
-        _targetPanel.repaint(); // needed for ToolTip
-//        if (_debug) log.debug("mouseReleased at ("+event.getX()+","+event.getY()+
-//        " _selectionGroup= "+(_selectionGroup==null?"null":_selectionGroup.size()));
+        synchronized (this) {
+            _targetPanel.repaint(); // needed for ToolTip
+        }
+//        log.debug("mouseReleased at ("+event.getX()+","+event.getY()+
+//        " _selectionGroup= "+(_selectionGroup==null?"null":_selectionGroup.size());
     }
 
     private long _clickTime;
@@ -1301,7 +1311,9 @@ public class ControlPanelEditor extends Editor implements DropTargetListener, Cl
             _currentSelection = null;
             _highlightcomponent = null;
         }
-        _targetPanel.repaint(); // needed for ToolTip
+        synchronized (this) {
+            _targetPanel.repaint(); // needed for ToolTip
+        }
     }
 
     @Override
@@ -1366,7 +1378,9 @@ public class ControlPanelEditor extends Editor implements DropTargetListener, Cl
         _highlightGroup.clear();
         _lastX = event.getX();
         _lastY = event.getY();
-        _targetPanel.repaint(); // needed for ToolTip
+        synchronized (this) {
+            _targetPanel.repaint(); // needed for ToolTip
+        }
     }
 
     @Override
@@ -1384,18 +1398,24 @@ public class ControlPanelEditor extends Editor implements DropTargetListener, Cl
                 setToolTip(null);
             }
         }
-        _targetPanel.repaint();
+        synchronized (this) {
+            _targetPanel.repaint();
+        }
     }
 
     @Override
     public void mouseEntered(MouseEvent event) {
-        _targetPanel.repaint();
+        synchronized (this) {
+            _targetPanel.repaint();
+        }
     }
 
     @Override
     public void mouseExited(MouseEvent event) {
         setToolTip(null);
-        _targetPanel.repaint();  // needed for ToolTip
+        synchronized (this) {
+            _targetPanel.repaint(); // needed for ToolTip
+        }
     }
 
     ////////////////// implementation of Abstract Editor methods //////////////////
@@ -1772,7 +1792,10 @@ public class ControlPanelEditor extends Editor implements DropTargetListener, Cl
     public void drop(DropTargetDropEvent evt) {
         try {
             //Point pt = evt.getLocation(); coords relative to entire window
-            Point pt = _targetPanel.getMousePosition(true);
+            Point pt;
+            synchronized (this) {
+                pt = _targetPanel.getMousePosition(true);
+            }
             if (pt == null) {
                 return;
             }

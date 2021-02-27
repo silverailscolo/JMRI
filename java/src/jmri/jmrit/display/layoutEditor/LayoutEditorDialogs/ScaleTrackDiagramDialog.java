@@ -18,11 +18,11 @@ import jmri.util.JmriJFrame;
 public class ScaleTrackDiagramDialog {
 
     // operational instance variables shared between tools
-    private LayoutEditor layoutEditor = null;
+    private final LayoutEditor le;
 
     // constructor method
     public ScaleTrackDiagramDialog(@Nonnull LayoutEditor thePanel) {
-        layoutEditor = thePanel;
+        le = thePanel;
     }
 
     /*===============================*\
@@ -186,7 +186,7 @@ public class ScaleTrackDiagramDialog {
         // here when all numbers read in successfully - check for translation
         if ((xTranslation != 0.0F) || (yTranslation != 0.0F)) {
             //apply translation
-            if (layoutEditor.translateTrack(xTranslation, yTranslation)) {
+            if (le.translateTrack(xTranslation, yTranslation)) {
                 changeFlag = true;
             } else {
                 log.error("Error translating track diagram");
@@ -196,19 +196,19 @@ public class ScaleTrackDiagramDialog {
 
         if (!translateError && ((xFactor != 1.0) || (yFactor != 1.0))) {
             //apply scale change
-            if (layoutEditor.scaleTrack(xFactor, yFactor)) {
+            if (le.scaleTrack(xFactor, yFactor)) {
                 changeFlag = true;
             } else {
                 log.error("Error scaling track diagram");
             }
         }
-        layoutEditor.clearSelectionGroups();
+        le.clearSelectionGroups();
 
         scaleTrackDiagramCancelPressed(null);
 
         if (changeFlag) {
-            layoutEditor.redrawPanel();
-            layoutEditor.setDirty();
+            le.redrawPanel();
+            le.setDirty();
         }
     }
 

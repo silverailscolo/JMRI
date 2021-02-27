@@ -5,7 +5,6 @@ import java.awt.geom.Point2D;
 
 import javax.swing.*;
 
-import jmri.jmrit.display.EditorFrameOperator;
 import jmri.jmrit.display.layoutEditor.*;
 import jmri.util.*;
 import jmri.util.swing.JemmyUtil;
@@ -25,9 +24,8 @@ public class LayoutTurntableEditorTest extends LayoutTrackEditorTest {
     public void testCtor() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
-        new LayoutTurntableEditor(null);
+        new LayoutTurntableEditor(le);
     }
-
 
      @Test
     public void testEditTurntableDone() {
@@ -36,7 +34,7 @@ public class LayoutTurntableEditorTest extends LayoutTrackEditorTest {
 
         createTurnouts();
 
-        LayoutTurntableEditor editor = new LayoutTurntableEditor(layoutEditor);
+        LayoutTurntableEditor editor = new LayoutTurntableEditor(le);
 
         // Edit the layoutTurntable
         editor.editLayoutTrack(layoutTurntableView);
@@ -112,7 +110,6 @@ public class LayoutTurntableEditorTest extends LayoutTrackEditorTest {
         jtxt.clickMouse();
         jtxt.setText("qqq");
 
-
         // Move focus
         Thread badRayAngleModalDialogOperatorThread = JemmyUtil.createModalDialogOperatorThread(
                 Bundle.getMessage("ErrorTitle"),
@@ -131,14 +128,14 @@ public class LayoutTurntableEditorTest extends LayoutTrackEditorTest {
         new JButtonOperator(jFrameOperator, Bundle.getMessage("ButtonDone")).doClick();
         jFrameOperator.waitClosed();    // make sure the dialog actually closed
 
-        jmri.util.JUnitAppender.assertErrorMessage("provideLayoutBlock: no name given and not assigning auto block names");
+        jmri.util.JUnitAppender.suppressErrorMessage("provideLayoutBlock: no name given and not assigning auto block names");
     }
 
     @Test
     public void testEditTurntableCancel() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
-        LayoutTurntableEditor editor = new LayoutTurntableEditor(layoutEditor);
+        LayoutTurntableEditor editor = new LayoutTurntableEditor(le);
 
         // Edit the Turntable
         editor.editLayoutTrack(layoutTurntableView);
@@ -152,7 +149,7 @@ public class LayoutTurntableEditorTest extends LayoutTrackEditorTest {
     public void testEditTurntableClose() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
-        LayoutTurntableEditor editor = new LayoutTurntableEditor(layoutEditor);
+        LayoutTurntableEditor editor = new LayoutTurntableEditor(le);
 
         // Edit the Turntable
         editor.editLayoutTrack(layoutTurntableView);
@@ -160,14 +157,13 @@ public class LayoutTurntableEditorTest extends LayoutTrackEditorTest {
 
         new JButtonOperator(jFrameOperator, Bundle.getMessage("ButtonDone")).doClick();
         jFrameOperator.waitClosed();    // make sure the dialog actually closed
-
     }
 
     @Test
     public void testEditTurntableErrors() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
-        LayoutTurntableEditor editor = new LayoutTurntableEditor(layoutEditor);
+        LayoutTurntableEditor editor = new LayoutTurntableEditor(le);
 
         // Edit the layoutTurntable
         editor.editLayoutTrack(layoutTurntableView);
@@ -214,30 +210,27 @@ public class LayoutTurntableEditorTest extends LayoutTrackEditorTest {
 
     }
 
-    private LayoutEditor layoutEditor = null;
+    private LayoutEditor le = null;
     private LayoutTurntableView layoutTurntableView = null;
     private LayoutTurntable layoutTurntable = null;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        JUnitUtil.resetProfileManager();
-        JUnitUtil.initLayoutBlockManager();
-        JUnitUtil.initInternalTurnoutManager();
-        JUnitUtil.initInternalSensorManager();
         if (!GraphicsEnvironment.isHeadless()) {
 
-            layoutEditor = new LayoutEditor();
-            layoutEditor.setVisible(true);
+            le = new LayoutEditor();
+            le.setVisible(true);
+            jmri.util.JUnitAppender.suppressWarnMessage("File contains a panel with the same name (My Layout) as an existing panel");
 
             Point2D point = new Point2D.Double(150.0, 100.0);
             Point2D delta = new Point2D.Double(50.0, 10.0);
 
             // Turntable
             point = MathUtil.add(point, delta);
-            layoutTurntable = new LayoutTurntable("Turntable", layoutEditor);
-            layoutTurntableView = new LayoutTurntableView(layoutTurntable, point, layoutEditor);
-            layoutEditor.addLayoutTrack(layoutTurntable, layoutTurntableView);
+            layoutTurntable = new LayoutTurntable("Turntable", le);
+            layoutTurntableView = new LayoutTurntableView(layoutTurntable, point, le);
+            le.addLayoutTrack(layoutTurntable, layoutTurntableView);
         }
     }
 
@@ -246,19 +239,11 @@ public class LayoutTurntableEditorTest extends LayoutTrackEditorTest {
         if (layoutTurntable != null) {
             layoutTurntable.remove();
         }
-
-        if (layoutEditor != null) {
-            EditorFrameOperator efo = new EditorFrameOperator(layoutEditor);
-            efo.closeFrameWithConfirmations();
-        }
-
         layoutTurntable = null;
-        layoutEditor = null;
 
-        JUnitUtil.resetWindows(false, false);
-        JUnitUtil.deregisterBlockManagerShutdownTask();
         super.tearDown();
     }
 
     // private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutTurntableEditorTest.class);
+
 }

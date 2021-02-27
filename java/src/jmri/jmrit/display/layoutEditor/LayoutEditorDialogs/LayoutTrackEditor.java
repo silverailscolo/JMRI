@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 import javax.swing.*;
 
 import jmri.InstanceManager;
 import jmri.InvokeOnGuiThread;
+import jmri.Sensor;
 import jmri.jmrit.display.layoutEditor.*;
 
 /**
@@ -80,6 +82,7 @@ abstract public class LayoutTrackEditor {
     
     final protected LayoutEditor layoutEditor;
 
+    @GuardedBy("this")
     List<String> sensorList = new ArrayList<>();
 
     protected void addDoneCancelButtons(JPanel target, JRootPane rp, ActionListener doneCallback, ActionListener cancelCallback) {
@@ -101,29 +104,30 @@ abstract public class LayoutTrackEditor {
                 KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "close"); // NOI18N
     }
 
-
     /**
      * Display a message describing the reason for the block selection combo box
-     * being disabled. An option is provided to hide the message. Note: The
-     * PanelMenu class is being used to satisfy the showInfoMessage requirement
-     * for a default manager type class.
+     * being disabled. An option is provided to hide the message.<br>
+     * Note: The PanelMenu class is being used to satisfy the showInfoMessage
+     * requirement for a default manager type class.
      *
      * @since 4.11.2
      */
     @InvokeOnGuiThread
     void showSensorMessage() {
-        if (sensorList.isEmpty()) {
-            return;
-        }
         StringBuilder msg = new StringBuilder(Bundle.getMessage("BlockSensorLine1"));  // NOI18N
         msg.append(Bundle.getMessage("BlockSensorLine2"));  // NOI18N
         String chkDup = "";
-        sensorList.sort(null);
-        for (String sName : sensorList) {
-            if (!sName.equals(chkDup)) {
-                msg.append("<br>&nbsp;&nbsp;&nbsp; " + sName);  // NOI18N
+        synchronized(this) {
+            if (sensorList.isEmpty()) { // wait till here to put call inside synchro block
+                return;
             }
-            chkDup = sName;
+            sensorList.sort(null);
+            for (String sName : sensorList) {
+                if (!sName.equals(chkDup)) {
+                    msg.append("<br>&nbsp;&nbsp;&nbsp; ").append(sName);  // NOI18N
+                }
+                chkDup = sName;
+            }
         }
         msg.append("<br>&nbsp;</html>");  // NOI18N
         jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class).
@@ -134,7 +138,6 @@ abstract public class LayoutTrackEditor {
                         "BlockSensorMessage");  // NOI18N
     }
 
-    
     /**
      * Create a list of NX sensors that refer to the current layout block. This
      * is used to disable block selection in the edit dialog. The list is built
@@ -153,10 +156,24 @@ abstract public class LayoutTrackEditor {
         if (blockSensors.isEmpty()) {
             return false;
         }
-        sensorList.addAll(blockSensors);
+        synchronized(this) {
+            sensorList.addAll(blockSensors);
+        }
         return true;
     }
 
+    protected synchronized void clearSensorList() {
+        sensorList.clear();
+    }
+
+    // testing methods
+    protected synchronized void addToSensorList(String s) {
+        sensorList.add(s);
+    }
+    protected synchronized boolean sensorListEmpty() {
+        return sensorList.isEmpty();
+    }
 
     private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutTrackEditor.class);
+
 }

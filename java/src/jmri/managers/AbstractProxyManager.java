@@ -10,6 +10,7 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
+import javax.annotation.concurrent.GuardedBy;
 
 import jmri.*;
 import jmri.beans.VetoableChangeSupport;
@@ -43,11 +44,13 @@ abstract public class AbstractProxyManager<E extends NamedBean> extends Vetoable
      * List of names of bound properties requested to be listened to by
      * PropertyChangeListeners.
      */
+    @GuardedBy("this")
     private final List<String> boundPropertyNames = new ArrayList<>();
     /**
      * List of names of bound properties requested to be listened to by
      * VetoableChangeListeners.
      */
+    @GuardedBy("this")
     private final List<String> vetoablePropertyNames = new ArrayList<>();
     protected final Map<String, Boolean> silencedProperties = new HashMap<>();
     protected final Set<String> silenceableProperties = new HashSet<>();
@@ -118,12 +121,14 @@ abstract public class AbstractProxyManager<E extends NamedBean> extends Vetoable
 
         Arrays.stream(getPropertyChangeListeners()).forEach(l -> m.addPropertyChangeListener(l));
         Arrays.stream(getVetoableChangeListeners()).forEach(l -> m.addVetoableChangeListener(l));
+        synchronized (this) {
         boundPropertyNames
                 .forEach(n -> Arrays.stream(getPropertyChangeListeners(n))
                 .forEach(l -> m.addPropertyChangeListener(n, l)));
         vetoablePropertyNames
                 .forEach(n -> Arrays.stream(getVetoableChangeListeners(n))
                 .forEach(l -> m.addVetoableChangeListener(n, l)));
+        }
         m.addPropertyChangeListener("beans", this);
         m.addDataListener(this);
         recomputeNamedBeanSet();
@@ -463,7 +468,9 @@ abstract public class AbstractProxyManager<E extends NamedBean> extends Vetoable
     @OverridingMethodsMustInvokeSuper
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         super.addPropertyChangeListener(propertyName, listener);
-        boundPropertyNames.add(propertyName);
+        synchronized (this) {
+            boundPropertyNames.add(propertyName);
+        }
         mgrs.forEach(m -> m.addPropertyChangeListener(propertyName, listener));
     }
 
@@ -496,7 +503,9 @@ abstract public class AbstractProxyManager<E extends NamedBean> extends Vetoable
     @OverridingMethodsMustInvokeSuper
     public void addVetoableChangeListener(String propertyName, VetoableChangeListener listener) {
         super.addVetoableChangeListener(propertyName, listener);
-        vetoablePropertyNames.add(propertyName);
+        synchronized (this) {
+            vetoablePropertyNames.add(propertyName);
+        }
         mgrs.forEach(m -> m.addVetoableChangeListener(propertyName, listener));
     }
 

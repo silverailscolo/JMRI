@@ -724,7 +724,9 @@ public class PanelEditor extends Editor implements ItemListener {
             _selectRect = null;
             _selectionGroup = null;
         }
-        _targetPanel.repaint(); // needed for ToolTip
+        synchronized (this) {
+            _targetPanel.repaint(); // needed for ToolTip
+        }
     }
 
     @Override
@@ -790,7 +792,9 @@ public class PanelEditor extends Editor implements ItemListener {
         if (InstanceManager.getDefault(GuiLafPreferencesManager.class).isNonStandardMouseEvent()) {
             mouseClicked(event);
         }
-        _targetPanel.repaint(); // needed for ToolTip
+        synchronized (this) {
+            _targetPanel.repaint(); // needed for ToolTip
+        }
     }
 
     @Override
@@ -844,7 +848,9 @@ public class PanelEditor extends Editor implements ItemListener {
         _dragging = true;
         _lastX = event.getX();
         _lastY = event.getY();
-        _targetPanel.repaint(); // needed for ToolTip
+        synchronized (this) {
+            _targetPanel.repaint(); // needed for ToolTip
+        }
     }
 
     @Override
@@ -865,19 +871,18 @@ public class PanelEditor extends Editor implements ItemListener {
         }
         if (isEditable() && selection != null && selection.getDisplayLevel() > BKG) {
             _highlightcomponent = new Rectangle(selection.getX(), selection.getY(), selection.maxWidth(), selection.maxHeight());
-            _targetPanel.repaint();
         } else {
             _highlightcomponent = null;
-            _targetPanel.repaint();
         }
         if (selection != null && selection.getDisplayLevel() > BKG && selection.showToolTip()) {
             showToolTip(selection, event);
             //selection.highlightlabel(true);
-            _targetPanel.repaint();
         } else {
             setToolTip(null);
             _highlightcomponent = null;
-            _targetPanel.repaint();
+        }
+        synchronized (this) {
+            _targetPanel.repaint(); // just once
         }
     }
 
@@ -919,7 +924,9 @@ public class PanelEditor extends Editor implements ItemListener {
                 _currentSelection.doMouseClicked(event);
             }
         }
-        _targetPanel.repaint(); // needed for ToolTip
+        synchronized (this) {
+            _targetPanel.repaint(); // needed for ToolTip
+        }
         if (event.isControlDown() && _currentSelection != null && !event.isPopupTrigger()) {
             amendSelectionGroup(_currentSelection);
         }
@@ -932,7 +939,9 @@ public class PanelEditor extends Editor implements ItemListener {
     @Override
     public void mouseExited(MouseEvent event) {
         setToolTip(null);
-        _targetPanel.repaint();  // needed for ToolTip
+        synchronized (this) {
+            _targetPanel.repaint(); // needed for ToolTip
+        }
     }
 
     protected ArrayList<Positionable> _multiItemCopyGroup = null;  // items gathered inside fence
@@ -1074,7 +1083,9 @@ public class PanelEditor extends Editor implements ItemListener {
         } else if (_selectionGroup.isEmpty()) {
             _selectionGroup = null;
         }
-        _targetPanel.repaint();
+        synchronized (this) {
+            _targetPanel.repaint();
+        }
     }
 
     protected boolean pasteItemFlag = false;
@@ -1131,7 +1142,9 @@ public class PanelEditor extends Editor implements ItemListener {
             _selectionGroup = null;
         }
         pasteItemFlag = false;
-        _targetPanel.repaint();
+        synchronized (this) {
+            _targetPanel.repaint();
+        }
     }
 
     /**

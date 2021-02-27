@@ -6,6 +6,7 @@ import java.awt.geom.Point2D;
 
 import javax.swing.*;
 
+import jmri.Turnout;
 import jmri.jmrit.display.EditorFrameOperator;
 import jmri.jmrit.display.layoutEditor.*;
 import jmri.util.*;
@@ -27,7 +28,7 @@ public class LayoutSingleSlipEditorTest extends LayoutSlipEditorTest {
     public void testCtor() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
-        new LayoutSingleSlipEditor(null);
+        new LayoutSingleSlipEditor(layoutEditor);
     }
 
     @Test
@@ -48,14 +49,14 @@ public class LayoutSingleSlipEditorTest extends LayoutSlipEditorTest {
         JLabelOperator firstTurnoutLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("BeanNameTurnout") + " A");
         JComboBoxOperator firstTurnoutComboBoxOperator = new JComboBoxOperator(
-                (JComboBox) firstTurnoutLabelOperator.getLabelFor());
+                (JComboBox<Turnout>) firstTurnoutLabelOperator.getLabelFor());
         firstTurnoutComboBoxOperator.selectItem(1); //TODO: fix hardcoded index
 
         // Select turnout B
         JLabelOperator secondTurnoutLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("BeanNameTurnout") + " B");
         JComboBoxOperator secondTurnoutComboBoxOperator = new JComboBoxOperator(
-                (JComboBox) secondTurnoutLabelOperator.getLabelFor());
+                (JComboBox<Turnout>) secondTurnoutLabelOperator.getLabelFor());
         secondTurnoutComboBoxOperator.selectItem(2);  //TODO:fix hardcoded index
 
         // Create a (new) block
@@ -90,21 +91,13 @@ public class LayoutSingleSlipEditorTest extends LayoutSlipEditorTest {
         jFrameOperator.waitClosed();    // make sure the dialog actually closed
     }
 
-    private LayoutEditor layoutEditor = null;
     private LayoutSingleSlip singleLayoutSlip = null;
     private LayoutSingleSlipView singleLayoutSlipView = null;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        JUnitUtil.resetProfileManager();
-        JUnitUtil.initLayoutBlockManager();
-        JUnitUtil.initInternalTurnoutManager();
-        JUnitUtil.initInternalSensorManager();
         if (!GraphicsEnvironment.isHeadless()) {
-
-            layoutEditor = new LayoutEditor();
-            layoutEditor.setVisible(true);
 
             Point2D point = new Point2D.Double(150.0, 100.0);
             Point2D delta = new Point2D.Double(50.0, 10.0);
@@ -117,7 +110,6 @@ public class LayoutSingleSlipEditorTest extends LayoutSlipEditorTest {
                     point, 0.0, 
                     layoutEditor);
             layoutEditor.addLayoutTrack(singleLayoutSlip, singleLayoutSlipView);
-
         }
     }
 
@@ -126,17 +118,8 @@ public class LayoutSingleSlipEditorTest extends LayoutSlipEditorTest {
         if (singleLayoutSlip != null) {
             singleLayoutSlip.remove();
         }
-
-        if (layoutEditor != null) {
-            EditorFrameOperator efo = new EditorFrameOperator(layoutEditor);
-            efo.closeFrameWithConfirmations();
-        }
-
         singleLayoutSlip = null;
-        layoutEditor = null;
 
-        JUnitUtil.resetWindows(false, false);
-        JUnitUtil.deregisterBlockManagerShutdownTask();
         super.tearDown();
     }
 
@@ -145,8 +128,8 @@ public class LayoutSingleSlipEditorTest extends LayoutSlipEditorTest {
      */
     protected static class ToolTipComponentChooser implements ComponentChooser {
 
-        private String buttonTooltip;
-        private StringComparator comparator = Operator.getDefaultStringComparator();
+        private final String buttonTooltip;
+        private final StringComparator comparator = Operator.getDefaultStringComparator();
 
         public ToolTipComponentChooser(String buttonTooltip) {
             this.buttonTooltip = buttonTooltip;
@@ -161,6 +144,6 @@ public class LayoutSingleSlipEditorTest extends LayoutSlipEditorTest {
         }
     }
 
-
     // private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutSingleSlipEditorTest.class);
+
 }

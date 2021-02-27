@@ -14,7 +14,9 @@ public class LayoutDoubleXOverEditorTest extends LayoutXOverEditorTest {
 
     @Test
     public void testCtor() {
-        new LayoutDoubleXOverEditor(null);
+        Assume.assumeFalse(GraphicsEnvironment.isHeadless());
+
+        new LayoutDoubleXOverEditor(layoutEditor);
 
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
     }

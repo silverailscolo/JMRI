@@ -18,12 +18,13 @@ import org.junit.jupiter.api.*;
 public class LayoutTrackDrawingOptionsDialogTest {
 
     private LayoutEditor le;
+
     @Test
     public void testCTor() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
         LayoutTrackDrawingOptions ltdo = new LayoutTrackDrawingOptions("test");
-        LayoutTrackDrawingOptionsDialog t = new LayoutTrackDrawingOptionsDialog(le,false,ltdo);
-        Assert.assertNotNull("exists",t);
+        LayoutTrackDrawingOptionsDialog t = new LayoutTrackDrawingOptionsDialog(le,false, ltdo);
+        Assert.assertNotNull("exists", t);
         le.dispose();
     }
 
@@ -31,7 +32,7 @@ public class LayoutTrackDrawingOptionsDialogTest {
     public void setUp() {
         JUnitUtil.setUp();
         JUnitUtil.resetProfileManager();
-        if(!GraphicsEnvironment.isHeadless()) {
+        if (!GraphicsEnvironment.isHeadless()) {
             le = new LayoutEditor("Layout Track Drawing Options Dialog Test Layout");
             le.setVisible(true);
         }
@@ -39,7 +40,7 @@ public class LayoutTrackDrawingOptionsDialogTest {
 
     @AfterEach
     public void tearDown() {
-        if(le!=null){
+        if (le != null){
             EditorFrameOperator efo = new EditorFrameOperator(le);
             efo.closeFrameWithConfirmations();
         }

@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 
 import javax.swing.*;
 
+import jmri.Block;
 import jmri.jmrit.display.EditorFrameOperator;
 import jmri.jmrit.display.layoutEditor.*;
 import jmri.util.*;
@@ -25,13 +26,12 @@ public class TrackSegmentEditorTest extends LayoutTrackEditorTest {
     @Test
     public void testCtor() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
-        new TrackSegmentEditor(null);
+        new TrackSegmentEditor(layoutEditor);
     }
 
     @Test
     public void testEditTrackSegmentDone() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
-        Assume.assumeFalse("Ignoring intermittent test", Boolean.getBoolean("jmri.skipTestsRequiringSeparateRunning"));
 
         trackSegmentView.setArc(true);
         trackSegmentView.setCircle(true);
@@ -47,7 +47,7 @@ public class TrackSegmentEditorTest extends LayoutTrackEditorTest {
         JLabelOperator styleLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("MakeLabel", Bundle.getMessage("Style")));
         JComboBoxOperator styleComboBoxOperator = new JComboBoxOperator(
-                (JComboBox) styleLabelOperator.getLabelFor());
+                (JComboBox<String>) styleLabelOperator.getLabelFor());
         styleComboBoxOperator.selectItem(Bundle.getMessage("Dashed"));
 
         // Select mainline
@@ -62,7 +62,7 @@ public class TrackSegmentEditorTest extends LayoutTrackEditorTest {
         JLabelOperator blockNameLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("BlockID"));
         JComboBoxOperator blockComboBoxOperator = new JComboBoxOperator(
-                (JComboBox) blockNameLabelOperator.getLabelFor());
+                (JComboBox<Block>) blockNameLabelOperator.getLabelFor());
         blockComboBoxOperator.getTextField().setText("Blk 2");
 
         // Set arc angle
@@ -108,7 +108,6 @@ public class TrackSegmentEditorTest extends LayoutTrackEditorTest {
 
         new JButtonOperator(jFrameOperator, Bundle.getMessage("ButtonCancel")).doClick();
         jFrameOperator.waitClosed();    // make sure the dialog actually closed
-
     }
 
     @Test
@@ -123,7 +122,6 @@ public class TrackSegmentEditorTest extends LayoutTrackEditorTest {
 
         new JButtonOperator(jFrameOperator, Bundle.getMessage("ButtonDone")).doClick();
         jFrameOperator.waitClosed();    // make sure the dialog actually closed
-
     }
 
     @Test
@@ -144,10 +142,7 @@ public class TrackSegmentEditorTest extends LayoutTrackEditorTest {
 
         new JButtonOperator(jFrameOperator, Bundle.getMessage("ButtonDone")).doClick();
         jFrameOperator.waitClosed();    // make sure the dialog actually closed
-
     }
-
-
 
     private LayoutEditor layoutEditor = null;
     private TrackSegment trackSegment = null;
@@ -157,14 +152,9 @@ public class TrackSegmentEditorTest extends LayoutTrackEditorTest {
     public void setUp() {
         super.setUp();
 
-        JUnitUtil.resetProfileManager();
-        JUnitUtil.initLayoutBlockManager();
-        JUnitUtil.initInternalTurnoutManager();
-        JUnitUtil.initInternalSensorManager();
         if (!GraphicsEnvironment.isHeadless()) {
-
             layoutEditor = new LayoutEditor();
-            layoutEditor.setVisible(true);
+            jmri.util.JUnitAppender.suppressWarnMessage("File contains a panel with the same name (My Layout) as an existing panel");
 
             Point2D point = new Point2D.Double(150.0, 100.0);
             Point2D delta = new Point2D.Double(50.0, 10.0);
@@ -192,19 +182,17 @@ public class TrackSegmentEditorTest extends LayoutTrackEditorTest {
             trackSegmentView.dispose();
             trackSegment.remove();
         }
+        trackSegment = null;
+        trackSegmentView = null;
 
         if (layoutEditor != null) {
             EditorFrameOperator efo = new EditorFrameOperator(layoutEditor);
             efo.closeFrameWithConfirmations();
         }
-        trackSegment = null;
-        trackSegmentView = null;
         layoutEditor = null;
-
-        JUnitUtil.resetWindows(false, false);
-        JUnitUtil.deregisterBlockManagerShutdownTask();
         super.tearDown();
     }
 
     // private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TrackSegmentEditorTest.class);
+
 }

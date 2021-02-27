@@ -64,8 +64,7 @@ public class LayoutSlipEditor extends LayoutTurnoutEditor {
         } else {
             log.error("editLayoutTrack called with wrong type {}", layoutTrackView, new Exception("traceback"));
         }
-        sensorList.clear();
-
+        clearSensorList();
         if (editLayoutSlipOpen) {
             editLayoutSlipFrame.setVisible(true);
         } else if (editLayoutSlipFrame == null) {   // Initialize if needed

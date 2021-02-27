@@ -21,7 +21,7 @@ public class LayoutLHTurnoutEditorTest extends LayoutTurnoutEditorTest {
     public void testCtor() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
-        new LayoutLHTurnoutEditor(null);
+        new LayoutLHTurnoutEditor(layoutEditor);
     }
     
     @Test
@@ -34,21 +34,13 @@ public class LayoutLHTurnoutEditorTest extends LayoutTurnoutEditorTest {
     }
 
 
-    private LayoutEditor layoutEditor = null;
     private LayoutLHTurnout leftHandLayoutTurnout = null;
     private LayoutLHTurnoutView leftHandLayoutTurnoutView = null;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        JUnitUtil.resetProfileManager();
-        JUnitUtil.initLayoutBlockManager();
-        JUnitUtil.initInternalTurnoutManager();
-        JUnitUtil.initInternalSensorManager();
         if (!GraphicsEnvironment.isHeadless()) {
-
-            layoutEditor = new LayoutEditor();
-            layoutEditor.setVisible(true);
 
             Point2D point = new Point2D.Double(150.0, 100.0);
             Point2D delta = new Point2D.Double(50.0, 10.0);
@@ -65,24 +57,16 @@ public class LayoutLHTurnoutEditorTest extends LayoutTurnoutEditorTest {
 
     @AfterEach
     public void tearDown() {
-    
         if (leftHandLayoutTurnout != null) {
             leftHandLayoutTurnout.remove();
         }
 
-        if (layoutEditor != null) {
-            EditorFrameOperator efo = new EditorFrameOperator(layoutEditor);
-            efo.closeFrameWithConfirmations();
-        }
-
         leftHandLayoutTurnout = null;
         leftHandLayoutTurnoutView = null;
-        layoutEditor = null;
 
-        JUnitUtil.resetWindows(false, false);
-        JUnitUtil.deregisterBlockManagerShutdownTask();
         super.tearDown();
     }
 
     // private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutLHTurnoutEditorTest.class);
+
 }

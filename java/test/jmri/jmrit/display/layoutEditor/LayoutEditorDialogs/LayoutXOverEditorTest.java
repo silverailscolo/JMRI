@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 
 import javax.swing.*;
 
+import jmri.Turnout;
 import jmri.jmrit.display.EditorFrameOperator;
 import jmri.jmrit.display.layoutEditor.*;
 import jmri.util.*;
@@ -25,7 +26,7 @@ public class LayoutXOverEditorTest extends LayoutTrackEditorTest {
     public void testCtor() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
-        new LayoutXOverEditor(null);
+        new LayoutXOverEditor(layoutEditor); // Nonnull LE
     }
 
     @Test
@@ -45,7 +46,7 @@ public class LayoutXOverEditorTest extends LayoutTrackEditorTest {
         JLabelOperator mainTurnoutLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("MakeLabel", Bundle.getMessage("BeanNameTurnout")));
         JComboBoxOperator mainTurnoutComboBoxOperator = new JComboBoxOperator(
-                (JComboBox) mainTurnoutLabelOperator.getLabelFor());
+                (JComboBox<Turnout>) mainTurnoutLabelOperator.getLabelFor());
         mainTurnoutComboBoxOperator.selectItem(1);  //TODO:fix hardcoded index
 
         // Enable second turnout and select it
@@ -54,7 +55,7 @@ public class LayoutXOverEditorTest extends LayoutTrackEditorTest {
         JLabelOperator supportingTurnoutLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("Supporting", Bundle.getMessage("BeanNameTurnout")));
         JComboBoxOperator supportingTurnoutComboBoxOperator = new JComboBoxOperator(
-                (JComboBox) supportingTurnoutLabelOperator.getLabelFor());
+                (JComboBox<Turnout>) supportingTurnoutLabelOperator.getLabelFor());
         supportingTurnoutComboBoxOperator.selectItem(2);  //TODO:fix hardcoded index
 
         // Enable Invert and Hide
@@ -123,7 +124,6 @@ public class LayoutXOverEditorTest extends LayoutTrackEditorTest {
         jFrameOperator.waitClosed();    // make sure the dialog actually closed
     }
 
-
    @Test
     public void testEditTurnoutCancel() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
@@ -186,21 +186,13 @@ public class LayoutXOverEditorTest extends LayoutTrackEditorTest {
     }
 
 
-    private LayoutEditor layoutEditor = null;
     private LayoutDoubleXOver doubleXoverLayoutTurnout = null;
     private LayoutDoubleXOverView doubleXoverLayoutTurnoutView = null;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        JUnitUtil.resetProfileManager();
-        JUnitUtil.initLayoutBlockManager();
-        JUnitUtil.initInternalTurnoutManager();
-        JUnitUtil.initInternalSensorManager();
         if (!GraphicsEnvironment.isHeadless()) {
-
-            layoutEditor = new LayoutEditor();
-            layoutEditor.setVisible(true);
 
             Point2D point = new Point2D.Double(150.0, 100.0);
             Point2D delta = new Point2D.Double(50.0, 10.0);
@@ -213,7 +205,6 @@ public class LayoutXOverEditorTest extends LayoutTrackEditorTest {
                                                     point, 33.0, 1.1, 1.2, 
                                                     layoutEditor);
             layoutEditor.addLayoutTrack(doubleXoverLayoutTurnout, doubleXoverLayoutTurnoutView);
-
         }
     }
 
@@ -222,19 +213,11 @@ public class LayoutXOverEditorTest extends LayoutTrackEditorTest {
         if (doubleXoverLayoutTurnout != null) {
             doubleXoverLayoutTurnout.remove();
         }
-
-        if (layoutEditor != null) {
-            EditorFrameOperator efo = new EditorFrameOperator(layoutEditor);
-            efo.closeFrameWithConfirmations();
-        }
-
         doubleXoverLayoutTurnout = null;
-        layoutEditor = null;
 
-        JUnitUtil.resetWindows(false, false);
-        JUnitUtil.deregisterBlockManagerShutdownTask();
         super.tearDown();
     }
 
     // private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutXOverEditorTest.class);
+
 }

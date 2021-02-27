@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 
 import javax.swing.*;
 
+import jmri.Block;
 import jmri.jmrit.display.EditorFrameOperator;
 import jmri.jmrit.display.layoutEditor.*;
 import jmri.util.*;
@@ -25,7 +26,7 @@ public class LevelXingEditorTest extends LayoutTrackEditorTest {
     public void testCtor() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
-        new LevelXingEditor(null);
+        new LevelXingEditor(layoutEditor);
     }
 
     @Test
@@ -45,14 +46,14 @@ public class LevelXingEditorTest extends LayoutTrackEditorTest {
         JLabelOperator acBlockLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("Block_ID", "AC"));
         JComboBoxOperator acBlockComboBoxOperator = new JComboBoxOperator(
-                (JComboBox) acBlockLabelOperator.getLabelFor());
+                (JComboBox<Block>) acBlockLabelOperator.getLabelFor());
         acBlockComboBoxOperator.selectItem(1);  //TODO:fix hardcoded index
 
         // Select BD block
         JLabelOperator bdBlockLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("Block_ID", "BD"));
         JComboBoxOperator bdBlockComboBoxOperator = new JComboBoxOperator(
-                (JComboBox) bdBlockLabelOperator.getLabelFor());
+                (JComboBox<Block>) bdBlockLabelOperator.getLabelFor());
         bdBlockComboBoxOperator.selectItem(2);  //TODO:fix hardcoded index
 
         // Enable Hide
@@ -137,20 +138,14 @@ public class LevelXingEditorTest extends LayoutTrackEditorTest {
     }
 
 
-    private LayoutEditor layoutEditor = null;
     private LevelXing levelXing = null;
     private LevelXingView levelXingView = null;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        JUnitUtil.resetProfileManager();
-        JUnitUtil.initLayoutBlockManager();
-        JUnitUtil.initInternalTurnoutManager();
-        JUnitUtil.initInternalSensorManager();
         if (!GraphicsEnvironment.isHeadless()) {
 
-            layoutEditor = new LayoutEditor();
             layoutEditor.setVisible(true);
 
             Point2D point = new Point2D.Double(150.0, 100.0);
@@ -169,19 +164,11 @@ public class LevelXingEditorTest extends LayoutTrackEditorTest {
         if (levelXing != null) {
             levelXing.remove();
         }
-
-        if (layoutEditor != null) {
-            EditorFrameOperator efo = new EditorFrameOperator(layoutEditor);
-            efo.closeFrameWithConfirmations();
-        }
-
-        layoutEditor = null;
         levelXing = null;
 
-        JUnitUtil.resetWindows(false, false);
-        JUnitUtil.deregisterBlockManagerShutdownTask();
         super.tearDown();
     }
     
     private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutTrackEditorTest.class);
+
 }

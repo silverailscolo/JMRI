@@ -1552,12 +1552,12 @@ public class SwitchboardEditor extends Editor {
     }
 
     @Override
-    public void mouseEntered(MouseEvent event) {
+    public synchronized void mouseEntered(MouseEvent event) {
         _targetPanel.repaint();
     }
 
     @Override
-    public void mouseExited(MouseEvent event) {
+    public synchronized void mouseExited(MouseEvent event) {
         setToolTip(null);
         _targetPanel.repaint(); // needed for ToolTip on targetPane
     }

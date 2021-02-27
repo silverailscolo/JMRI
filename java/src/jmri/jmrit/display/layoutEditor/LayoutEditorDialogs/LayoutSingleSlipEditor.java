@@ -22,9 +22,9 @@ public class LayoutSingleSlipEditor extends LayoutSlipEditor {
         super(layoutEditor);
     }
 
-    // These now reflect to code in the base class; eventually this heirarchy will
+    // These now reflect to code in the base class; eventually this hierarchy will
     // expand and the code will be brought here
-    
 
     // private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutSingleSlipEditor.class);
+
 }

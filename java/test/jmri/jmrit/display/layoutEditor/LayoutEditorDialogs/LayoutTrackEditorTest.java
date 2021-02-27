@@ -1,11 +1,12 @@
 package jmri.jmrit.display.layoutEditor.LayoutEditorDialogs;
 
-import java.awt.Component;
+import java.awt.*;
 
 import javax.swing.*;
 import javax.annotation.*;
 
 import jmri.*;
+import jmri.jmrit.display.EditorFrameOperator;
 import jmri.jmrit.display.layoutEditor.*;
 import jmri.util.*;
 
@@ -27,7 +28,7 @@ public class LayoutTrackEditorTest {
 
     @Test
     public void testHasNxSensorPairsNull() {
-        LayoutTrackEditor layoutTrackEditor = new LayoutTrackEditor(null) { // core of abstract class
+        LayoutTrackEditor layoutTrackEditor = new LayoutTrackEditor(layoutEditor) { // core of abstract class
             public void editLayoutTrack(@Nonnull LayoutTrackView layoutTrack) {}
         };
 
@@ -36,22 +37,22 @@ public class LayoutTrackEditorTest {
 
     @Test
     public void testHasNxSensorPairsDisconnectedBlock() {
-        LayoutTrackEditor layoutTrackEditor = new LayoutTrackEditor(null) { // core of abstract class
+        LayoutTrackEditor layoutTrackEditor = new LayoutTrackEditor(layoutEditor) { // core of abstract class
             public void editLayoutTrack(@Nonnull LayoutTrackView layoutTrack) {}
         };
 
-        LayoutBlock b = new LayoutBlock("test", "test");
+        LayoutBlock b = new LayoutBlock("TEST", "test_");
         assertThat(layoutTrackEditor.hasNxSensorPairs(b)).withFailMessage("disconnected block NxSensorPairs").isFalse();
     }
 
     @Test
     public void testShowSensorMessage() {
-        LayoutTrackEditor layoutTrackEditor = new LayoutTrackEditor(null) { // core of abstract class
+        LayoutTrackEditor layoutTrackEditor = new LayoutTrackEditor(layoutEditor) { // core of abstract class
             public void editLayoutTrack(@Nonnull LayoutTrackView layoutTrack) {}
         };
 
-        layoutTrackEditor.sensorList.add("Test");
-        assertThat(layoutTrackEditor.sensorList).isNotEmpty();
+        layoutTrackEditor.addToSensorList("Test");
+        Assertions.assertFalse(layoutTrackEditor.sensorListEmpty());
         
         layoutTrackEditor.showSensorMessage();
     }
@@ -60,15 +61,35 @@ public class LayoutTrackEditorTest {
     @OverridingMethodsMustInvokeSuper  // invoke first
     public void setUp() {
         JUnitUtil.setUp();
+        JUnitUtil.resetProfileManager();
+        JUnitUtil.initLayoutBlockManager();
+        JUnitUtil.initInternalTurnoutManager();
+        JUnitUtil.initInternalSensorManager();
+        if (!GraphicsEnvironment.isHeadless()) {
+            layoutEditor = new LayoutEditor();
+            layoutEditor.setVisible(true);
+        }
     }
 
     @AfterEach
     @OverridingMethodsMustInvokeSuper  // invoke last
     public void tearDown()  {
-        JUnitUtil.clearShutDownManager();
+        if (layoutEditor != null) {
+            EditorFrameOperator efo = new EditorFrameOperator(layoutEditor);
+            efo.closeFrameWithConfirmations();
+        }
+
+        layoutEditor = null;
+        turnout0 = null;
+        turnout1 = null;
+
+        JUnitUtil.resetWindows(false, false);
+        JUnitUtil.deregisterBlockManagerShutdownTask();
+
         JUnitUtil.tearDown();
     }
 
+    protected LayoutEditor layoutEditor = null;
     protected Turnout turnout0 = null;
     protected Turnout turnout1 = null;
     
@@ -77,8 +98,8 @@ public class LayoutTrackEditorTest {
      */
     protected static class ToolTipComponentChooser implements ComponentChooser {
 
-        private String buttonTooltip;
-        private StringComparator comparator = Operator.getDefaultStringComparator();
+        private final String buttonTooltip;
+        private final StringComparator comparator = Operator.getDefaultStringComparator();
 
         public ToolTipComponentChooser(String buttonTooltip) {
             this.buttonTooltip = buttonTooltip;
@@ -93,7 +114,7 @@ public class LayoutTrackEditorTest {
         }
     }
 
-
+    // service methods for all Layout-x-EditorTests
     protected void createTurnouts() {
         turnout0 = InstanceManager.getDefault(TurnoutManager.class).provideTurnout("IT101");
         turnout0.setUserName("Turnout 101");
@@ -111,6 +132,6 @@ public class LayoutTrackEditorTest {
         block2.setUserName("Blk 2");
     }
 
-
     // private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutTrackEditorTest.class);
+
 }

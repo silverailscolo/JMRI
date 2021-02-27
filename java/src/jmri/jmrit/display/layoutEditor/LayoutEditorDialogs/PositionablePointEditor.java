@@ -13,7 +13,6 @@ import jmri.jmrit.display.layoutEditor.LayoutTrackView;
  * doesn't have an editor.
  *
  * @author Bob Jacobsen  Copyright (c) 2020
- * 
  */
 public class PositionablePointEditor extends LayoutTrackEditor {
 
@@ -32,7 +31,7 @@ public class PositionablePointEditor extends LayoutTrackEditor {
     public void editLayoutTrack(@Nonnull LayoutTrackView layoutTrackView) {
         log.error("no editor installed for PositionablePoint", new Exception("traceback"));
     }
-    
 
     private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PositionablePointEditor.class);
+
 }

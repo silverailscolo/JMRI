@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 
 import javax.swing.*;
 
+import jmri.Turnout;
 import jmri.jmrit.display.EditorFrameOperator;
 import jmri.jmrit.display.layoutEditor.*;
 import jmri.util.*;
@@ -25,7 +26,7 @@ public class LayoutDoubleSlipEditorTest extends LayoutSlipEditorTest {
     public void testCtor() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
-        new LayoutDoubleSlipEditor(null);
+        new LayoutDoubleSlipEditor(layoutEditor);
     }
 
     @Test
@@ -46,14 +47,14 @@ public class LayoutDoubleSlipEditorTest extends LayoutSlipEditorTest {
         JLabelOperator firstTurnoutLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("BeanNameTurnout") + " A");
         JComboBoxOperator firstTurnoutComboBoxOperator = new JComboBoxOperator(
-                (JComboBox) firstTurnoutLabelOperator.getLabelFor());
+                (JComboBox<Turnout>) firstTurnoutLabelOperator.getLabelFor());
         firstTurnoutComboBoxOperator.selectItem(1); //TODO: fix hardcoded index
 
         // Select turnout B
         JLabelOperator secondTurnoutLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("BeanNameTurnout") + " B");
         JComboBoxOperator secondTurnoutComboBoxOperator = new JComboBoxOperator(
-                (JComboBox) secondTurnoutLabelOperator.getLabelFor());
+                (JComboBox<Turnout>) secondTurnoutLabelOperator.getLabelFor());
         secondTurnoutComboBoxOperator.selectItem(2);  //TODO:fix hardcoded index
 
         // Create a (new) block
@@ -88,7 +89,6 @@ public class LayoutDoubleSlipEditorTest extends LayoutSlipEditorTest {
         new JButtonOperator(jFrameOperator, Bundle.getMessage("ButtonDone")).doClick();
         jFrameOperator.waitClosed();    // make sure the dialog actually closed
     }
-
 
     @Test
     public void testEditSlipCancel() {
@@ -128,8 +128,6 @@ public class LayoutDoubleSlipEditorTest extends LayoutSlipEditorTest {
     }
 
 
-
-    private LayoutEditor layoutEditor = null;
     private LayoutDoubleSlip doubleLayoutSlip = null;
     private LayoutDoubleSlipView doubleLayoutSlipView = null;
 
@@ -137,14 +135,7 @@ public class LayoutDoubleSlipEditorTest extends LayoutSlipEditorTest {
     @Override
     public void setUp() {
         super.setUp();
-        JUnitUtil.resetProfileManager();
-        JUnitUtil.initLayoutBlockManager();
-        JUnitUtil.initInternalTurnoutManager();
-        JUnitUtil.initInternalSensorManager();
         if (!GraphicsEnvironment.isHeadless()) {
-
-            layoutEditor = new LayoutEditor();
-            layoutEditor.setVisible(true);
 
             Point2D point = new Point2D.Double(150.0, 100.0);
             Point2D delta = new Point2D.Double(50.0, 10.0);
@@ -154,7 +145,6 @@ public class LayoutDoubleSlipEditorTest extends LayoutSlipEditorTest {
             doubleLayoutSlip = new LayoutDoubleSlip("Double Slip", layoutEditor); // point, 0.0, 
             doubleLayoutSlipView = new LayoutDoubleSlipView(doubleLayoutSlip, point, 0.0, layoutEditor);
             layoutEditor.addLayoutTrack(doubleLayoutSlip, doubleLayoutSlipView);
-
         }
     }
 
@@ -164,14 +154,7 @@ public class LayoutDoubleSlipEditorTest extends LayoutSlipEditorTest {
         if (doubleLayoutSlip != null) {
             doubleLayoutSlip.remove();
         }
-
-        if (layoutEditor != null) {
-            EditorFrameOperator efo = new EditorFrameOperator(layoutEditor);
-            efo.closeFrameWithConfirmations();
-        }
-
         doubleLayoutSlip = null;
-        layoutEditor = null;
 
         JUnitUtil.resetWindows(false, false);
         JUnitUtil.deregisterBlockManagerShutdownTask();
@@ -179,4 +162,5 @@ public class LayoutDoubleSlipEditorTest extends LayoutSlipEditorTest {
     }
 
     // private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutDoubleSlipEditorTest.class);
+
 }

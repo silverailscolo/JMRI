@@ -4,6 +4,7 @@ import java.awt.GraphicsEnvironment;
 
 import javax.swing.*;
 
+import jmri.Turnout;
 import jmri.jmrit.display.layoutEditor.*;
 
 import org.junit.Assume;
@@ -21,7 +22,7 @@ public class LayoutTurnoutEditorTest extends LayoutTrackEditorTest {
     public void testCtor() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
-        new LayoutTurnoutEditor(null);
+        new LayoutTurnoutEditor(layoutEditor);
     }
  
     protected void turnoutTestSequence(LayoutTurnoutEditor editor, LayoutTurnoutView turnoutView) {
@@ -36,7 +37,7 @@ public class LayoutTurnoutEditorTest extends LayoutTrackEditorTest {
         JLabelOperator mainTurnoutLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("MakeLabel", Bundle.getMessage("BeanNameTurnout")));
         JComboBoxOperator mainTurnoutComboBoxOperator = new JComboBoxOperator(
-                (JComboBox) mainTurnoutLabelOperator.getLabelFor());
+                (JComboBox<Turnout>) mainTurnoutLabelOperator.getLabelFor());
         mainTurnoutComboBoxOperator.selectItem(1);  //TODO:fix hardcoded index
 
         // Enable second turnout and select it
@@ -45,7 +46,7 @@ public class LayoutTurnoutEditorTest extends LayoutTrackEditorTest {
         JLabelOperator supportingTurnoutLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("Supporting", Bundle.getMessage("BeanNameTurnout")));
         JComboBoxOperator supportingTurnoutComboBoxOperator = new JComboBoxOperator(
-                (JComboBox) supportingTurnoutLabelOperator.getLabelFor());
+                (JComboBox<Turnout>) supportingTurnoutLabelOperator.getLabelFor());
         supportingTurnoutComboBoxOperator.selectItem(2);  //TODO:fix hardcoded index
 
         // Enable Invert and Hide
@@ -56,7 +57,7 @@ public class LayoutTurnoutEditorTest extends LayoutTrackEditorTest {
         JLabelOperator continuingTurnoutLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("ContinuingState"));
         JComboBoxOperator continuingTurnoutComboBoxOperator = new JComboBoxOperator(
-                (JComboBox) continuingTurnoutLabelOperator.getLabelFor());
+                (JComboBox<Turnout>) continuingTurnoutLabelOperator.getLabelFor());
         continuingTurnoutComboBoxOperator.selectItem(1);  //TODO:fix hardcoded index
 
         // put a new block name in the block combobox's textfield
@@ -69,4 +70,5 @@ public class LayoutTurnoutEditorTest extends LayoutTrackEditorTest {
     }
 
     // private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutTurnoutEditorTest.class);
+
 }

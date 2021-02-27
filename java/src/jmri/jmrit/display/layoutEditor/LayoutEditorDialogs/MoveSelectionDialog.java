@@ -20,11 +20,11 @@ import jmri.util.JmriJFrame;
 public class MoveSelectionDialog {
 
     // operational instance variables
-    private LayoutEditor layoutEditor = null;
+    private final LayoutEditor le;
 
     // constructor method
     public MoveSelectionDialog(@Nonnull LayoutEditor thePanel) {
-        layoutEditor = thePanel;
+        le = thePanel;
     }
 
     /*=========================================*\
@@ -114,9 +114,9 @@ public class MoveSelectionDialog {
     }
 
     private void moveSelectionDonePressed(@Nonnull ActionEvent event) {
-        String newText = "";
-        float xTranslation = 0.0F;
-        float yTranslation = 0.0F;
+        String newText;
+        float xTranslation;
+        float yTranslation;
 
         //get x translation
         newText = xMoveField.getText().trim();
@@ -136,7 +136,7 @@ public class MoveSelectionDialog {
             return;
         }
 
-        layoutEditor.translate(xTranslation, yTranslation);
+        le.translate(xTranslation, yTranslation);
 
         moveSelectionCancelPressed();
     }
