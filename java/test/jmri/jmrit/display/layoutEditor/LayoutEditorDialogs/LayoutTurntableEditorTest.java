@@ -30,6 +30,7 @@ public class LayoutTurntableEditorTest extends LayoutTrackEditorTest {
      @Test
     public void testEditTurntableDone() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
+        // TODO remove next line after 4.21.5 if "provideLayoutBlock: no name" error wasn't seen any more
         Assume.assumeFalse("Ignoring intermittent test", Boolean.getBoolean("jmri.skipTestsRequiringSeparateRunning"));
 
         createTurnouts();
