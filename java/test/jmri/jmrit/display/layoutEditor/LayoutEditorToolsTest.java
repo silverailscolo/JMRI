@@ -77,6 +77,7 @@ public class LayoutEditorToolsTest {
 
     @Test
     @Ignore("Consistently fails on AppVeyor, macOS and Windows 12/20/2019")
+    @SuppressWarnings("raw") // We only use it here to fetch the combo as object for testing
     public void testSetSignalsAtTurnoutWithDone() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
@@ -273,7 +274,7 @@ public class LayoutEditorToolsTest {
 
         //define connection
         String uName = "T" + (idx + 1);
-        HitPointType types[] = {HitPointType.TURNOUT_B, HitPointType.TURNOUT_C, HitPointType.TURNOUT_A, HitPointType.TURNOUT_A};
+        HitPointType[] types = {HitPointType.TURNOUT_B, HitPointType.TURNOUT_C, HitPointType.TURNOUT_A, HitPointType.TURNOUT_A};
         PositionablePoint[] positionablePoints = {positionablePoint2, positionablePoint3, positionablePoint1, positionablePoint1};
         TrackSegment trackSegment = new TrackSegment(uName,
                 layoutTurnout, types[idx],
@@ -324,7 +325,7 @@ public class LayoutEditorToolsTest {
         jfoSignalsAtTurnout.waitClosed();
 
         //assign block to track segment
-        int lbIndex[] = {2, 3, 1, 1};
+        int[] lbIndex = {2, 3, 1, 1};
         trackSegment.setLayoutBlock(layoutBlocks.get(lbIndex[idx]));
 
         //this causes the "set Signal Heads Turnout" dialog to be (re)displayed.
@@ -665,4 +666,5 @@ public class LayoutEditorToolsTest {
     }
 
     //private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutEditorToolsTest.class);
-}   //class LayoutEditorToolsTest
+
+}

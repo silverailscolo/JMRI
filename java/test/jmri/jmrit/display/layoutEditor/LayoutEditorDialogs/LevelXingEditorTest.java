@@ -30,6 +30,7 @@ public class LevelXingEditorTest extends LayoutTrackEditorTest {
     }
 
     @Test
+    @SuppressWarnings("raw") // We only use it here to fetch the combo as object for testing
     public void testEditXingDone() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
         Assume.assumeFalse("Ignoring intermittent test", Boolean.getBoolean("jmri.skipTestsRequiringSeparateRunning"));
@@ -46,14 +47,14 @@ public class LevelXingEditorTest extends LayoutTrackEditorTest {
         JLabelOperator acBlockLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("Block_ID", "AC"));
         JComboBoxOperator acBlockComboBoxOperator = new JComboBoxOperator(
-                (JComboBox<Block>) acBlockLabelOperator.getLabelFor());
+                (JComboBox) acBlockLabelOperator.getLabelFor());
         acBlockComboBoxOperator.selectItem(1);  //TODO:fix hardcoded index
 
         // Select BD block
         JLabelOperator bdBlockLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("Block_ID", "BD"));
         JComboBoxOperator bdBlockComboBoxOperator = new JComboBoxOperator(
-                (JComboBox<Block>) bdBlockLabelOperator.getLabelFor());
+                (JComboBox) bdBlockLabelOperator.getLabelFor());
         bdBlockComboBoxOperator.selectItem(2);  //TODO:fix hardcoded index
 
         // Enable Hide

@@ -30,6 +30,7 @@ public class TrackSegmentEditorTest extends LayoutTrackEditorTest {
     }
 
     @Test
+    @SuppressWarnings("raw") // We only use it here to fetch the combo as object for testing
     public void testEditTrackSegmentDone() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
@@ -47,7 +48,7 @@ public class TrackSegmentEditorTest extends LayoutTrackEditorTest {
         JLabelOperator styleLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("MakeLabel", Bundle.getMessage("Style")));
         JComboBoxOperator styleComboBoxOperator = new JComboBoxOperator(
-                (JComboBox<String>) styleLabelOperator.getLabelFor());
+                (JComboBox) styleLabelOperator.getLabelFor());
         styleComboBoxOperator.selectItem(Bundle.getMessage("Dashed"));
 
         // Select mainline
@@ -62,7 +63,7 @@ public class TrackSegmentEditorTest extends LayoutTrackEditorTest {
         JLabelOperator blockNameLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("BlockID"));
         JComboBoxOperator blockComboBoxOperator = new JComboBoxOperator(
-                (JComboBox<Block>) blockNameLabelOperator.getLabelFor());
+                (JComboBox) blockNameLabelOperator.getLabelFor());
         blockComboBoxOperator.getTextField().setText("Blk 2");
 
         // Set arc angle

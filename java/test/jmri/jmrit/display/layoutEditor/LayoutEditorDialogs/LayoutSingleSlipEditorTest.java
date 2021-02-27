@@ -32,6 +32,7 @@ public class LayoutSingleSlipEditorTest extends LayoutSlipEditorTest {
     }
 
     @Test
+    @SuppressWarnings("raw") // We only use it here to fetch the combo as object for testing
     public void testEditSingleSlipDone() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
         Assume.assumeFalse("Ignoring intermittent test", Boolean.getBoolean("jmri.skipTestsRequiringSeparateRunning"));
@@ -49,14 +50,14 @@ public class LayoutSingleSlipEditorTest extends LayoutSlipEditorTest {
         JLabelOperator firstTurnoutLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("BeanNameTurnout") + " A");
         JComboBoxOperator firstTurnoutComboBoxOperator = new JComboBoxOperator(
-                (JComboBox<Turnout>) firstTurnoutLabelOperator.getLabelFor());
+                (JComboBox) firstTurnoutLabelOperator.getLabelFor());
         firstTurnoutComboBoxOperator.selectItem(1); //TODO: fix hardcoded index
 
         // Select turnout B
         JLabelOperator secondTurnoutLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("BeanNameTurnout") + " B");
         JComboBoxOperator secondTurnoutComboBoxOperator = new JComboBoxOperator(
-                (JComboBox<Turnout>) secondTurnoutLabelOperator.getLabelFor());
+                (JComboBox) secondTurnoutLabelOperator.getLabelFor());
         secondTurnoutComboBoxOperator.selectItem(2);  //TODO:fix hardcoded index
 
         // Create a (new) block

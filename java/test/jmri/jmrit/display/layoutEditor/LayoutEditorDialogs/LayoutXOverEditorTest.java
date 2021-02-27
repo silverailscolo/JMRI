@@ -30,6 +30,7 @@ public class LayoutXOverEditorTest extends LayoutTrackEditorTest {
     }
 
     @Test
+    @SuppressWarnings("raw") // We only use it here to fetch the combo as object for testing
     public void testEditXOverDone() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
         Assume.assumeFalse("Ignoring intermittent test", Boolean.getBoolean("jmri.skipTestsRequiringSeparateRunning"));
@@ -46,7 +47,7 @@ public class LayoutXOverEditorTest extends LayoutTrackEditorTest {
         JLabelOperator mainTurnoutLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("MakeLabel", Bundle.getMessage("BeanNameTurnout")));
         JComboBoxOperator mainTurnoutComboBoxOperator = new JComboBoxOperator(
-                (JComboBox<Turnout>) mainTurnoutLabelOperator.getLabelFor());
+                (JComboBox) mainTurnoutLabelOperator.getLabelFor());
         mainTurnoutComboBoxOperator.selectItem(1);  //TODO:fix hardcoded index
 
         // Enable second turnout and select it
@@ -55,7 +56,7 @@ public class LayoutXOverEditorTest extends LayoutTrackEditorTest {
         JLabelOperator supportingTurnoutLabelOperator = new JLabelOperator(jFrameOperator,
                 Bundle.getMessage("Supporting", Bundle.getMessage("BeanNameTurnout")));
         JComboBoxOperator supportingTurnoutComboBoxOperator = new JComboBoxOperator(
-                (JComboBox<Turnout>) supportingTurnoutLabelOperator.getLabelFor());
+                (JComboBox) supportingTurnoutLabelOperator.getLabelFor());
         supportingTurnoutComboBoxOperator.selectItem(2);  //TODO:fix hardcoded index
 
         // Enable Invert and Hide
