@@ -234,8 +234,10 @@ public class CircuitBuilder {
             if (!icons.contains(pos)) {
                 icons.add(pos);
             }
+            synchronized (this) {
+                _darkTrack.removeIf(pos::equals);
+            }
         }
-        _darkTrack.remove(pos);
         // if (log.isDebugEnabled()) log.debug("addIcon: block "+block.getDisplayName()+" has "+icons.size()+" icons.");
     }
 
@@ -314,10 +316,7 @@ public class CircuitBuilder {
             iconNeeds.addActionListener((ActionEvent event) -> {
                 if (editingOK()) {
                     hidePortalIcons(true);
-                    ArrayList<Positionable> group = new ArrayList<>();
-                    for (Positionable positionable : _unconvertedTrack) {
-                        group.add(positionable);
-                    }
+                    ArrayList<Positionable> group = new ArrayList<>(_unconvertedTrack);
                     _editor.setSelectionGroup(group);
                 }
             });
@@ -331,10 +330,7 @@ public class CircuitBuilder {
             iconNeeds.addActionListener((ActionEvent event) -> {
                 if (editingOK()) {
                     hidePortalIcons(true);
-                    ArrayList<Positionable> group = new ArrayList<>();
-                    for (Positionable positionable : _darkTrack) {
-                        group.add(positionable);
-                    }
+                    ArrayList<Positionable> group = new ArrayList<>(_darkTrack);
                     _editor.setSelectionGroup(group);
                 }
             });
@@ -920,15 +916,11 @@ public class CircuitBuilder {
         _noPaths.clear();
         _unprotectingMast.clear();
         // initialize _signalMap
-        Iterator<jmri.SignalMast> iter1 =
-                InstanceManager.getDefault(SignalMastManager.class).getNamedBeanSet().iterator();
-        while (iter1.hasNext()) {
-            _signalMap.put(iter1.next(), null);
+        for (jmri.SignalMast signalMast : InstanceManager.getDefault(SignalMastManager.class).getNamedBeanSet()) {
+            _signalMap.put(signalMast, null);
         }
-        Iterator<jmri.SignalHead> iter2 =
-                InstanceManager.getDefault(SignalHeadManager.class).getNamedBeanSet().iterator();
-        while (iter2.hasNext()) {
-            _signalMap.put(iter2.next(), null);
+        for (jmri.SignalHead signalHead : InstanceManager.getDefault(SignalHeadManager.class).getNamedBeanSet()) {
+            _signalMap.put(signalHead, null);
         }
 
         OBlockManager manager = InstanceManager.getDefault(jmri.jmrit.logix.OBlockManager.class);
@@ -1131,7 +1123,7 @@ public class CircuitBuilder {
     }
 
     protected String checkForPortals(@Nonnull OBlock block, String key) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         List<Portal> portals = block.getPortals();
         if (portals.isEmpty()) {
             sb.append(Bundle.getMessage("needPortal", block.getDisplayName(), Bundle.getMessage(key)));
@@ -1163,7 +1155,7 @@ public class CircuitBuilder {
      * @return true if at least one PortalIcon found
      */
     protected String checkForPortalIcons(@Nonnull OBlock block, String key) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         List<Portal> portals = block.getPortals();
         if (portals.isEmpty()) {
             sb.append(Bundle.getMessage("needPortal", block.getDisplayName(), Bundle.getMessage(key)));
@@ -1185,6 +1177,7 @@ public class CircuitBuilder {
             for (Positionable pos : list) {
                 if ((pos instanceof PortalIcon)) {
                     ok = true;
+                    break;
                 }
             }
         }
@@ -1310,10 +1303,8 @@ public class CircuitBuilder {
                     String fileName = icon.getURL();
                     // getURL() returns Unix separatorChar= "/" even on windows
                     // so don't use java.io.File.separatorChar
-                    if (fileName != null && (fileName.contains("/track/")
-                            || (fileName.contains("/tracksegments/") && !fileName.contains("circuit")))) {
-                        return true;
-                    }
+                    return fileName != null && (fileName.contains("/track/") || (fileName.contains("/tracksegments/")
+                            && !fileName.contains("circuit")));
                 }
             }
         }
@@ -1530,6 +1521,7 @@ public class CircuitBuilder {
                         selection = getSelection(tracks);
                     }
                     if (_editFrame instanceof EditCircuitPaths && event.isShiftDown() && !event.isControlDown()) {
+                        assert selection != null;
                         selection.doMouseClicked(event);
                     }
                     handleSelection(selection, event);
@@ -1546,23 +1538,21 @@ public class CircuitBuilder {
             if (tracks.size() == 1) {
                 return tracks.get(0);
             }
-            if (tracks.size() > 1) {
-                String[] selects = new String[tracks.size()];
-                Iterator<Positionable> iter = tracks.iterator();
-                int i = 0;
+            String[] selects = new String[tracks.size()];
+            Iterator<Positionable> iter = tracks.iterator();
+            int i = 0;
+            while (iter.hasNext()) {
+                selects[i++] = iter.next().getNameString();
+            }
+            Object select = JOptionPane.showInputDialog(_editor, Bundle.getMessage("multipleSelections"),
+                    Bundle.getMessage("QuestionTitle"), JOptionPane.QUESTION_MESSAGE,
+                    null, selects, null);
+            if (select != null) {
+                iter = tracks.iterator();
                 while (iter.hasNext()) {
-                    selects[i++] = iter.next().getNameString();
-                }
-                Object select = JOptionPane.showInputDialog(_editor, Bundle.getMessage("multipleSelections"),
-                        Bundle.getMessage("QuestionTitle"), JOptionPane.QUESTION_MESSAGE,
-                        null, selects, null);
-                if (select != null) {
-                    iter = tracks.iterator();
-                    while (iter.hasNext()) {
-                        Positionable pos = iter.next();
-                        if (((String) select).equals(pos.getNameString())) {
-                            return pos;
-                        }
+                    Positionable pos = iter.next();
+                    if (select.equals(pos.getNameString())) {
+                        return pos;
                     }
                 }
             }

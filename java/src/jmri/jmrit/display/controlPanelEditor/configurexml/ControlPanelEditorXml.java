@@ -175,11 +175,7 @@ public class ControlPanelEditorXml extends AbstractXmlAdapter {
             value = false;
         }
         panel.setAllEditable(value);
-
-        value = true;
-        if ((a = shared.getAttribute("positionable")) != null && a.getValue().equals("no")) {
-            value = false;
-        }
+        value = (a = shared.getAttribute("positionable")) == null || !a.getValue().equals("no");
         panel.setAllPositionable(value);
 
         /*
@@ -188,34 +184,15 @@ public class ControlPanelEditorXml extends AbstractXmlAdapter {
          value = true;
          panel.setShowCoordinates(value);
          */
-        value = true;
-        if ((a = shared.getAttribute("showtooltips")) != null && a.getValue().equals("no")) {
-            value = false;
-        }
+        value = (a = shared.getAttribute("showtooltips")) == null || !a.getValue().equals("no");
         panel.setAllShowToolTip(value);
-
-        value = true;
-        if ((a = shared.getAttribute("controlling")) != null && a.getValue().equals("no")) {
-            value = false;
-        }
+        value = (a = shared.getAttribute("controlling")) == null || !a.getValue().equals("no");
         panel.setAllControlling(value);
-
-        value = false;
-        if ((a = shared.getAttribute("hide")) != null && a.getValue().equals("yes")) {
-            value = true;
-        }
+        value = (a = shared.getAttribute("hide")) != null && a.getValue().equals("yes");
         panel.setShowHidden(value);
-
-        value = true;
-        if ((a = shared.getAttribute("panelmenu")) != null && a.getValue().equals("no")) {
-            value = false;
-        }
+        value = (a = shared.getAttribute("panelmenu")) == null || !a.getValue().equals("no");
         panel.setPanelMenuVisible(value);
-
-        value = true;
-        if ((a = shared.getAttribute("shapeSelect")) != null && a.getValue().equals("no")) {
-            value = false;
-        }
+        value = (a = shared.getAttribute("shapeSelect")) == null || !a.getValue().equals("no");
         panel.setShapeSelect(value);
 
         if ((a = shared.getAttribute("state")) != null) {
@@ -229,8 +206,9 @@ public class ControlPanelEditorXml extends AbstractXmlAdapter {
         }
 
         Element elem = shared.getChild("icons");
-        log.warn("Portal elem = {} null", elem == null ? "" : "NOT");
-        if (elem != null) {
+        if (elem == null) {
+            log.warn("Portal elem = null");
+        } else {
             Attribute attr = elem.getAttribute("portalFamily");
             if (attr != null) {
                 panel.setPortalIconFamily(attr.getValue());

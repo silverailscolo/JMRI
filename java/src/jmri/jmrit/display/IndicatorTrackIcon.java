@@ -282,15 +282,11 @@ public class IndicatorTrackIcon extends PositionableIcon
             } catch (Exception e) {
                 // Rare. Observed in tests from add(Component comp, Component comp) in Editor.TargetPane
                 // as "java.lang.IllegalArgumentException: illegal component position"
-                log.error("setStatus on indicator track icon failed  {}", e);
+                log.error("setStatus on indicator track icon failed, ", e);
             }
         }
         repaint();
-        if ((block.getState() & OBlock.OUT_OF_SERVICE) != 0) {
-            setControlling(false);
-        } else {
-            setControlling(true);
-        }
+        setControlling((block.getState() & OBlock.OUT_OF_SERVICE) == 0);
     }
 
     @Override

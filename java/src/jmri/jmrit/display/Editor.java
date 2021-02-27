@@ -472,12 +472,10 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
         JmriColorChooser.addRecentColor(col);
     }
 
-    public void clearBackgroundColor() {
-        synchronized (this) {
-            if (_targetPanel instanceof TargetPane) {
-                TargetPane tmp = (TargetPane) _targetPanel;
-                tmp.clearBackgroundColor();
-            }
+    public synchronized void clearBackgroundColor() {
+        if (_targetPanel instanceof TargetPane) {
+            TargetPane tmp = (TargetPane) _targetPanel;
+            tmp.clearBackgroundColor();
         }
     }
 
