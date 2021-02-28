@@ -687,6 +687,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
      * Handles Block sensor going ACTIVE: this block is now occupied, figure out
      * from who and copy their value.
      */
+    @SuppressWarnings("cast") // cast is safe by getPaths() contract
     public void goingActive() {
         if (getState() == OCCUPIED) {
             return;
@@ -702,7 +703,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         synchronized (this) {
             // get statuses of everything once
             currPathCnt = paths.size();
-            tempPaths = (ArrayList<Path>)getPaths();
+            tempPaths = (ArrayList<Path>)getPaths(); // cast is safe by getPaths()
         }
         Path[] pList = new Path[currPathCnt];
         boolean[] isSet = new boolean[currPathCnt];
@@ -830,6 +831,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
      *
      * @return the next path
      */
+    @SuppressWarnings("cast") // cast is safe by getPaths() contract
     public Path findFromPath() {
         // index through the paths, counting
         int count = 0;
@@ -839,7 +841,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         synchronized (this) {
             // get statuses of everything once
             currPathCnt = paths.size();
-            tempPaths = (ArrayList<Path>)getPaths();
+            tempPaths = (ArrayList<Path>)getPaths(); // cast is safe by getPaths()
         }
         Path[] pList = new Path[currPathCnt];
         boolean[] isSet = new boolean[currPathCnt];
