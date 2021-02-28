@@ -687,7 +687,6 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
      * Handles Block sensor going ACTIVE: this block is now occupied, figure out
      * from who and copy their value.
      */
-    @SuppressWarnings("cast") // cast is safe by getPaths() contract
     public void goingActive() {
         if (getState() == OCCUPIED) {
             return;
@@ -699,11 +698,11 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         Path next = null;
         // get statuses of everything once
         int currPathCnt;
-        ArrayList<Path> tempPaths; // for synchronized access
+        ArrayList<?> tempPaths; // for synchronized access
         synchronized (this) {
             // get statuses of everything once
             currPathCnt = paths.size();
-            tempPaths = (ArrayList<Path>)getPaths(); // cast is safe by getPaths()
+            tempPaths = (ArrayList<Path>)getPaths();
         }
         Path[] pList = new Path[currPathCnt];
         boolean[] isSet = new boolean[currPathCnt];
@@ -711,7 +710,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         int[] pDir = new int[currPathCnt];
         int[] pFromDir = new int[currPathCnt];
         for (int i = 0; i < currPathCnt; i++) {
-            pList[i] = tempPaths.get(i);
+            pList[i] = (Path) tempPaths.get(i);
             isSet[i] = pList[i].checkPathSet();
             Block b = pList[i].getBlock();
             if (b != null) {
@@ -831,17 +830,16 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
      *
      * @return the next path
      */
-    @SuppressWarnings("cast") // cast is safe by getPaths() contract
     public Path findFromPath() {
         // index through the paths, counting
         int count = 0;
         Path next = null;
         int currPathCnt;
-        ArrayList<Path> tempPaths; // for synchronized access
+        ArrayList<?> tempPaths; // for synchronized access
         synchronized (this) {
             // get statuses of everything once
             currPathCnt = paths.size();
-            tempPaths = (ArrayList<Path>)getPaths(); // cast is safe by getPaths()
+            tempPaths = (ArrayList<Path>) getPaths();
         }
         Path[] pList = new Path[currPathCnt];
         boolean[] isSet = new boolean[currPathCnt];
@@ -849,7 +847,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         int[] pDir = new int[currPathCnt];
         int[] pFromDir = new int[currPathCnt];
         for (int i = 0; i < currPathCnt; i++) {
-            pList[i] = tempPaths.get(i);
+            pList[i] = (Path) tempPaths.get(i);
             isSet[i] = pList[i].checkPathSet();
             Block b = pList[i].getBlock();
             if (b != null) {
