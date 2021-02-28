@@ -684,6 +684,7 @@ public class LevelXing extends LayoutTrack {
             }
             blockAC = newLayoutBlock;
             if (newLayoutBlock != null) {
+                assert newLayoutBlock.getUserName() != null;
                 namedLayoutBlockAC = InstanceManager.getDefault(jmri.NamedBeanHandleManager.class).getNamedBeanHandle(newLayoutBlock.getUserName(), newLayoutBlock);
             } else {
                 namedLayoutBlockAC = null;
@@ -707,7 +708,9 @@ public class LevelXing extends LayoutTrack {
             }
             blockBD = newLayoutBlock;
             if (newLayoutBlock != null) {
-                namedLayoutBlockBD = InstanceManager.getDefault(jmri.NamedBeanHandleManager.class).getNamedBeanHandle(newLayoutBlock.getUserName(), newLayoutBlock);
+                assert newLayoutBlock.getUserName() != null;
+                namedLayoutBlockBD = InstanceManager.getDefault(jmri.NamedBeanHandleManager.class).getNamedBeanHandle(
+                        newLayoutBlock.getUserName(), newLayoutBlock);
             } else {
                 namedLayoutBlockBD = null;
             }
@@ -716,14 +719,13 @@ public class LevelXing extends LayoutTrack {
                 blockBD.decrementUse();
             }
         }
-
     }
 
     public void updateBlockInfo() {
         LayoutBlock blockAC = getLayoutBlockAC();
         LayoutBlock blockBD = getLayoutBlockBD();
         LayoutBlock b1 = null;
-        LayoutBlock b2 = null;
+        LayoutBlock b2;
         if (blockAC != null) {
             blockAC.updatePaths();
         }
@@ -773,8 +775,8 @@ public class LevelXing extends LayoutTrack {
      *         not mainline if connecting track segments are missing
      */
     public boolean isMainlineAC() {
-        if (((connectA != null) && (((TrackSegment) connectA).isMainline()))
-                || ((connectC != null) && (((TrackSegment) connectC).isMainline()))) {
+        if (((connectA != null) && (connectA.isMainline()))
+                || ((connectC != null) && (connectC.isMainline()))) {
             return true;
         } else {
             return false;
@@ -782,8 +784,8 @@ public class LevelXing extends LayoutTrack {
     }
 
     public boolean isMainlineBD() {
-        if (((connectB != null) && (((TrackSegment) connectB).isMainline()))
-                || ((connectD != null) && (((TrackSegment) connectD).isMainline()))) {
+        if (((connectB != null) && (connectB.isMainline()))
+                || ((connectD != null) && (connectD.isMainline()))) {
             return true;
         } else {
             return false;
@@ -810,7 +812,7 @@ public class LevelXing extends LayoutTrack {
      * entire LayoutEditor is loaded to set the specific TrackSegment objects.
      */
     @Override
-    public void setObjects(LayoutEditor p) {
+    public void setObjects(@Nonnull LayoutEditor p) {
         connectA = p.getFinder().findTrackSegmentByName(connectAName);
         connectB = p.getFinder().findTrackSegmentByName(connectBName);
         connectC = p.getFinder().findTrackSegmentByName(connectCName);
@@ -1041,6 +1043,7 @@ public class LevelXing extends LayoutTrack {
     /**
      * {@inheritDoc}
      */
+    @Nonnull
     @Override
     public List<HitPointType> checkForFreeConnections() {
         List<HitPointType> result = new ArrayList<>();
@@ -1110,8 +1113,8 @@ public class LevelXing extends LayoutTrack {
             blocksAndTracksMap.put(connectD, getLayoutBlockBD().getDisplayName());
         }
 
-        List<Set<String>> TrackNameSets = null;
-        Set<String> TrackNameSet = null;
+        List<Set<String>> TrackNameSets;
+        Set<String> TrackNameSet;
         for (Map.Entry<LayoutTrack, String> entry : blocksAndTracksMap.entrySet()) {
             LayoutTrack theConnect = entry.getKey();
             String theBlockName = entry.getValue();

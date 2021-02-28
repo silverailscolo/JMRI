@@ -7,8 +7,6 @@ import javax.swing.JPopupMenu;
 import jmri.jmrit.catalog.NamedIcon;
 import jmri.jmrit.roster.RosterEntry;
 import jmri.Reportable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An icon to display a status of a Memory.
@@ -118,21 +116,16 @@ public class MemoryIcon extends jmri.jmrit.display.MemoryIcon {
                 // map exists, use it
                 NamedIcon newicon = map.get(key.toString());
                 if (newicon != null) {
-
                     setText(null);
                     super.setIcon(newicon);
-                    _text = false;
-                    _icon = true;
-                    updateSize();
                 } else {
                     // no match, use default
                     setIcon(getDefaultIcon());
-
                     setText(null);
-                    _text = false;
-                    _icon = true;
-                    updateSize();
                 }
+                _text = false;
+                _icon = true;
+                updateSize();
             }
         } else {
             setIcon(null);

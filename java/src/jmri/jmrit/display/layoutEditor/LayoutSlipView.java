@@ -57,6 +57,7 @@ public class LayoutSlipView extends LayoutTurnoutView {
     public LayoutSlip getSlip() {return slip; }
     // this should only be used for debugging...
     @Override
+    @Nonnull
     public String toString() {
         return String.format("LayoutSlip %s (%s)", getId(), getSlipStateString(getSlipState()));
     }
@@ -141,21 +142,25 @@ public class LayoutSlipView extends LayoutTurnoutView {
     }
 
     @Override
+    @Nonnull
     public Point2D getCoordsA() {
         return pointA;
     }
 
     @Override
+    @Nonnull
     public Point2D getCoordsB() {
         return pointB;
     }
 
     @Override
+    @Nonnull
     public Point2D getCoordsC() {
         return pointC;
     }
 
     @Override
+    @Nonnull
     public Point2D getCoordsD() {
         return pointD;
     }
@@ -181,6 +186,7 @@ public class LayoutSlipView extends LayoutTurnoutView {
      * @return the Point2D coordinates
      */
     @Override
+    @Nonnull
     public Point2D getCoordsForConnectionType(HitPointType connectionType) {
         Point2D result = getCoordsCenter();
         switch (connectionType) {
@@ -213,6 +219,7 @@ public class LayoutSlipView extends LayoutTurnoutView {
      */
     // just here for testing; should be removed when I'm done...
     @Override
+    @Nonnull
     public Rectangle2D getBounds() {
         return super.getBounds();
     }
@@ -539,8 +546,8 @@ public class LayoutSlipView extends LayoutTurnoutView {
                 rotateItem.addActionListener(
                         (ActionEvent event) -> {
                             boolean entering = true;
-                            boolean error = false;
-                            String newAngle = "";
+                            boolean error;
+                            String newAngle;
                             while (entering) {
                                 // prompt for rotation angle
                                 error = false;
@@ -597,6 +604,7 @@ public class LayoutSlipView extends LayoutTurnoutView {
                 for (int i = 0; i < 4; i++) {
                     if (boundaryBetween[i] != null) {
                         blockBoundaries = true;
+                        break;
                     }
                 }
                 if (blockBoundaries) {
@@ -633,9 +641,11 @@ public class LayoutSlipView extends LayoutTurnoutView {
             }
             setAdditionalEditPopUpMenu(popup);
             layoutEditor.setShowAlignmentMenu(popup);
+            assert mouseEvent != null;
             popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
         } else if (!viewAdditionalMenu.isEmpty()) {
             setAdditionalViewPopUpMenu(popup);
+            assert mouseEvent != null;
             popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
         }
         return popup;
@@ -1152,8 +1162,8 @@ public class LayoutSlipView extends LayoutTurnoutView {
 
     public static class TurnoutState {
 
-        private int turnoutA = Turnout.CLOSED;
-        private int turnoutB = Turnout.CLOSED;
+        private int turnoutA;
+        private int turnoutB;
         private JComboBox<String> turnoutABox;
         private JComboBox<String> turnoutBBox;
 
@@ -1296,6 +1306,7 @@ public class LayoutSlipView extends LayoutTurnoutView {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public List<HitPointType> checkForFreeConnections() {
         return slip.checkForFreeConnections();
     }

@@ -1,8 +1,5 @@
 package jmri.jmrit.display.layoutEditor;
 
-import static jmri.jmrit.XmlFile.newDocument;
-import static jmri.jmrit.XmlFile.xsltLocation;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,15 +15,12 @@ import jmri.jmrit.roster.Roster;
 import jmri.jmrit.roster.RosterEntry;
 import jmri.util.FileUtil;
 import jmri.PowerManager;
-import jmri.JmriException;
 import org.jdom2.Attribute;
 import org.jdom2.DataConversionException;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.ProcessingInstruction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Handle saving/restoring block value information to XML files. This class
@@ -43,7 +37,7 @@ public class BlockValueFile extends XmlFile {
     }
 
     // operational variables
-    private BlockManager blockManager = null;
+    private final BlockManager blockManager;
     private final static String defaultFileName = FileUtil.getUserFilesPath() + "blockvalues.xml";
     private Element root = null;
 
@@ -59,9 +53,7 @@ public class BlockValueFile extends XmlFile {
     public void readBlockValues() throws JDOMException, IOException {
         log.debug("entered readBlockValues");
         List<String> blocks = new ArrayList<>(blockManager.getNamedBeanSet().size());
-        blockManager.getNamedBeanSet().forEach(bean -> {
-            blocks.add(bean.getSystemName());
-        });
+        blockManager.getNamedBeanSet().forEach(bean -> blocks.add(bean.getSystemName()));
         // check if file exists
         if (checkFile(defaultFileName)) {
             // file is present,

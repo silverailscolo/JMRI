@@ -61,7 +61,7 @@ public class LayoutTurntable extends LayoutTrack {
     private NamedBeanHandle<LayoutBlock> namedLayoutBlock = null;
 
     private boolean turnoutControlled = false;
-    private double radius = 25.0;
+    private double radius;
     private int lastKnownIndex = -1;
 
     // persistent instance variables (saved between sessions)
@@ -184,6 +184,7 @@ public class LayoutTurntable extends LayoutTrack {
             for (RayTrack rt : rayTrackList) {
                 if (index == rt.getConnectionIndex()) {
                     found = true;
+                    break;
                 }
             }
         }
@@ -307,6 +308,7 @@ public class LayoutTurntable extends LayoutTrack {
         boolean found = false; // assume failure (pessimist!)
         for (RayTrack rt : rayTrackList) {
             if (rt.getConnectionIndex() == index) {
+                assert turnoutName != null;
                 rt.setTurnout(turnoutName, state);
                 found = true;
                 break;
@@ -426,7 +428,7 @@ public class LayoutTurntable extends LayoutTrack {
      */
     @Override
     public LayoutTrack getConnection(HitPointType connectionType) throws jmri.JmriException {
-        LayoutTrack result = null;
+        LayoutTrack result;
         if (HitPointType.isTurntableRayHitType(connectionType)) {
             result = getRayConnectIndexed(connectionType.turntableTrackIndex());
         } else {
@@ -652,12 +654,12 @@ public class LayoutTurntable extends LayoutTrack {
         }
 
         // persistant instance variables
-        private double rayAngle = 0.0;
-        private TrackSegment connect = null;
-        private int connectionIndex = -1;
+        private double rayAngle;
+        private TrackSegment connect;
+        private final int connectionIndex;
 
-        private boolean disabled = false;
-        private boolean disableWhenOccupied = false;
+        private boolean disabled;
+        private boolean disableWhenOccupied;
 
         //
         // Accessor routines

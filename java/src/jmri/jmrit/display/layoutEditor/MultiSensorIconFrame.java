@@ -28,7 +28,7 @@ public class MultiSensorIconFrame extends JmriJFrame {
     private final JPanel content = new JPanel();
     private JmriJFrame defaultsFrame;
     private MultiIconEditor defaultIcons;
-    private LayoutEditor layoutEditor = null;
+    private final LayoutEditor layoutEditor;
     private final JRadioButton updown = new JRadioButton(Bundle.getMessage("UpDown"));
     private final JRadioButton rightleft = new JRadioButton(Bundle.getMessage("RightLeft"));
     private final ButtonGroup group = new ButtonGroup();

@@ -49,7 +49,7 @@ public class PositionablePoint extends LayoutTrack {
 
     // operational instance variables (not saved between sessions)
     // persistent instances variables (saved between sessions)
-    private PointType type = PointType.NONE;
+    private PointType type;
     private TrackSegment connect1 = null;
     private TrackSegment connect2 = null;
 
@@ -77,7 +77,7 @@ public class PositionablePoint extends LayoutTrack {
     // this should only be used for debugging...
     @Override
     public String toString() {
-        String result = "PositionalablePoint";
+        String result;
         switch (type) {
             case ANCHOR: {
                 result = "Anchor";
@@ -533,7 +533,7 @@ public class PositionablePoint extends LayoutTrack {
     }
 
     public void setEastBoundSignalMast(String signalMast) {
-        SignalMast mast = null;
+        SignalMast mast;
         if (signalMast != null && !signalMast.isEmpty()) {
             mast = InstanceManager.getDefault(jmri.SignalMastManager.class).getSignalMast(signalMast);
             if (mast == null) {
@@ -598,7 +598,7 @@ public class PositionablePoint extends LayoutTrack {
     }
 
     public void setWestBoundSignalMast(String signalMast) {
-        SignalMast mast = null;
+        SignalMast mast;
         if (signalMast != null && !signalMast.isEmpty()) {
             mast = InstanceManager.getDefault(jmri.SignalMastManager.class).getSignalMast(signalMast);
             if (mast == null) {
@@ -666,7 +666,7 @@ public class PositionablePoint extends LayoutTrack {
      * entire LayoutEditor is loaded to set the specific TrackSegment objects.
      */
     @Override
-    public void setObjects(LayoutEditor p) {
+    public void setObjects(@Nonnull LayoutEditor p) {
         if (type == PointType.EDGE_CONNECTOR) {
             connect1 = p.getFinder().findTrackSegmentByName(trackSegment1Name);
             if (getConnect2() != null && getLinkedEditor() != null) {
@@ -710,12 +710,12 @@ public class PositionablePoint extends LayoutTrack {
      * @return true if successful
      */
     public boolean replaceTrackConnection(@CheckForNull TrackSegment oldTrack, @CheckForNull TrackSegment newTrack) {
-        boolean result = false; // assume failure (pessimist!)
+        boolean result;
         // trying to replace old track with null?
         if (newTrack == null) {
             // (yes) remove old connection
             if (oldTrack != null) {
-                result = true;  // assume success (optimist!)
+                result = true;  // assume success
                 if (connect1 == oldTrack) {
                     connect1 = null;        // disconnect connect1
                     reCheckBlockBoundary();
@@ -795,7 +795,7 @@ public class PositionablePoint extends LayoutTrack {
         }
 
         if (!itemList.isEmpty()) {
-            String typeName = "";
+            String typeName;
             switch (type) {
                 case ANCHOR:
                     typeName = "Anchor";  // NOI18N
@@ -891,7 +891,7 @@ public class PositionablePoint extends LayoutTrack {
      */
     @Override
     public LayoutTrack getConnection(HitPointType connectionType) throws jmri.JmriException {
-        LayoutTrack result = null;
+        LayoutTrack result;
         if (connectionType == HitPointType.POS_POINT) {
             result = getConnect1();
             if (null == result) {
@@ -1008,8 +1008,9 @@ public class PositionablePoint extends LayoutTrack {
     @Override
     protected List<LayoutConnectivity> getLayoutConnectivity() {
         List<LayoutConnectivity> results = new ArrayList<>();
-        LayoutConnectivity lc = null;
-        LayoutBlock blk1 = null, blk2 = null;
+        LayoutConnectivity lc;
+        LayoutBlock blk1;
+        LayoutBlock blk2;
         TrackSegment ts1 = getConnect1();
 
         if (getType() == PointType.ANCHOR) {
@@ -1075,6 +1076,7 @@ public class PositionablePoint extends LayoutTrack {
     /**
      * {@inheritDoc}
      */
+    @Nonnull
     @Override
     public List<HitPointType> checkForFreeConnections() {
         List<HitPointType> result = new ArrayList<>();
@@ -1116,8 +1118,8 @@ public class PositionablePoint extends LayoutTrack {
          */
         //check the 1st connection points block
         TrackSegment ts1 = getConnect1();
-        String blk1 = null;
-        List<Set<String>> TrackNameSets = null;
+        String blk1;
+        List<Set<String>> TrackNameSets;
         Set<String> TrackNameSet = null;    // assume not found (pessimist!)
 
         // this should never be null... but just in case...

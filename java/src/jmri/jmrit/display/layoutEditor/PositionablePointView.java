@@ -1567,7 +1567,7 @@ public class PositionablePointView extends LayoutTrackView {
      * {@inheritDoc}
      */
     @Override
-    protected HitPointType findHitPointType(Point2D hitPoint, boolean useRectangles, boolean requireUnconnected) {
+    protected HitPointType findHitPointType(@Nonnull Point2D hitPoint, boolean useRectangles, boolean requireUnconnected) {
         HitPointType result = HitPointType.NONE;  // assume point not on connection
         //note: optimization here: instead of creating rectangles for all the
         // points to check below, we create a rectangle for the test point
@@ -1804,6 +1804,7 @@ public class PositionablePointView extends LayoutTrackView {
     /**
      * {@inheritDoc}
      */
+    @Nonnull
     @Override
     public List<HitPointType> checkForFreeConnections() {
         List<HitPointType> result = new ArrayList<>();

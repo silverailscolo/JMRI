@@ -449,6 +449,7 @@ final public class LayoutEditorChecks {
                     }
                 }
             }
+            assert bounds != null;
             layoutEditor.setSelectionRect(bounds);
 
             // setSelectionRect calls createSelectionGroups...

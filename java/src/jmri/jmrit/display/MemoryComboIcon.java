@@ -213,7 +213,7 @@ public class MemoryComboIcon extends PositionableJPanel
     /**
      * Popup menu iconEditor's ActionListener
      */
-    private DefaultListModel<String> _listModel;
+    private DefaultListModel<String> _listModel = null;
 
     @Override
     protected void edit() {

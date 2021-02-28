@@ -16,7 +16,6 @@ import javax.annotation.Nonnull;
  * Provides a temporary setDirty()/isDirty() and redrawPanel() mechanism
  * for marking changes. That may have to grow and/or change. For
  * example, redrawPanel()  (which could be renamed) might fire listeners to cause repaints.
- * 
  *
  * @see LayoutEditorFindItems
  * @see LayoutEditorAuxTools

@@ -3,6 +3,8 @@ package jmri.jmrit.display.layoutEditor;
 import jmri.ExpectedState;
 import jmri.beans.Bean;
 
+import javax.annotation.Nonnull;
+
 /**
  * Retain a LayoutTrack and its expected state.
  *
@@ -32,6 +34,7 @@ public class LayoutTrackExpectedState<T extends LayoutTrack> extends Bean implem
     }
 
     @Override
+    @Nonnull
     public T getObject() {
         return this.layoutTrack;
     }

@@ -481,7 +481,7 @@ public class TrackSegmentView extends LayoutTrackView {
      * {@inheritDoc}
      */
     @Override
-    protected HitPointType findHitPointType(Point2D hitPoint, boolean useRectangles, boolean requireUnconnected) {
+    protected HitPointType findHitPointType(@Nonnull Point2D hitPoint, boolean useRectangles, boolean requireUnconnected) {
         HitPointType result = HitPointType.NONE;  // assume point not on connection
 
         if (!requireUnconnected) {
@@ -2280,11 +2280,11 @@ public class TrackSegmentView extends LayoutTrackView {
     protected void drawDecorations(Graphics2D g2) {
 
         log.trace("TrackSegmentView: drawDecorations arrowStyle {}", arrowStyle);
-// get end points and calculate start/stop angles (in radians)
+        // get end points and calculate start/stop angles (in radians)
         Point2D ep1 = layoutEditor.getCoords(getConnect1(), getType1());
         Point2D ep2 = layoutEditor.getCoords(getConnect2(), getType2());
         Point2D p1, p2, p3, p4, p5, p6, p7;
-        Point2D p1P = ep1, p2P = ep2, p3P, p4P, p5P, p6P, p7P;
+        Point2D p1P, p2P, p3P, p4P, p5P, p6P, p7P;
         double startAngleRAD, stopAngleRAD;
         if (isArc()) {
             calculateTrackSegmentAngle();
@@ -3742,7 +3742,7 @@ public class TrackSegmentView extends LayoutTrackView {
         *     Basically, we're maintaining contiguous track sets for each block found
         *     (in blockNamesToTrackNameSetMap)
          */
-        List<Set<String>> TrackNameSets = null;
+        List<Set<String>> TrackNameSets;
         Set<String> TrackNameSet = null;    // assume not found (pessimist!)
         String blockName = getBlockName();
         if (!blockName.isEmpty()) {

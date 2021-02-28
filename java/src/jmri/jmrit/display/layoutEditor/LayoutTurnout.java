@@ -1349,7 +1349,7 @@ abstract public class LayoutTurnout extends LayoutTrack {
     @Override
     @CheckForNull
     public LayoutTrack getConnection(HitPointType connectionType) {
-        LayoutTrack result = null;
+        LayoutTrack result;
         switch (connectionType) {
             case TURNOUT_A: {
                 result = connectA;
@@ -1466,7 +1466,7 @@ abstract public class LayoutTurnout extends LayoutTrack {
         LayoutBlock bA = null;
         LayoutBlock bB = null;
         LayoutBlock bC = null;
-        LayoutBlock bD = null;
+        LayoutBlock bD;
         models.getLEAuxTools().setBlockConnectivityChanged();
         if (getLayoutBlock() != null) {
             getLayoutBlock().updatePaths();
@@ -1632,6 +1632,7 @@ abstract public class LayoutTurnout extends LayoutTrack {
                 }
             }
         } else {
+            assert newLayoutBlock != null;
             log.error("{}.setLayoutBlockC({}); not a crossover/slip", getName(), newLayoutBlock.getUserName());
         }
     }
@@ -1709,23 +1710,23 @@ abstract public class LayoutTurnout extends LayoutTrack {
      */
     public boolean isMainlineA() {
         if (connectA != null) {
-            return ((TrackSegment) connectA).isMainline();
+            return connectA.isMainline();
         } else {
             // if no connection, depends on type of turnout
             if (isTurnoutTypeXover()) {
                 // All crossovers - straight continuing is B
                 if (connectB != null) {
-                    return ((TrackSegment) connectB).isMainline();
+                    return connectB.isMainline();
                 }
             } else if (isTurnoutTypeSlip()) {
                 if (connectD != null) {
-                    return ((TrackSegment) connectD).isMainline();
+                    return connectD.isMainline();
                 }
             } // must be RH, LH, or WYE turnout - A is the switch throat
             else if (((connectB != null)
-                    && (((TrackSegment) connectB).isMainline()))
+                    && (connectB.isMainline()))
                     || ((connectC != null)
-                    && (((TrackSegment) connectC).isMainline()))) {
+                    && (connectC.isMainline()))) {
                 return true;
             }
         }
@@ -1734,24 +1735,24 @@ abstract public class LayoutTurnout extends LayoutTrack {
 
     public boolean isMainlineB() {
         if (connectB != null) {
-            return ((TrackSegment) connectB).isMainline();
+            return connectB.isMainline();
         } else {
             // if no connection, depends on type of turnout
             if (isTurnoutTypeXover()) {
                 // All crossovers - straight continuing is A
                 if (connectA != null) {
-                    return ((TrackSegment) connectA).isMainline();
+                    return connectA.isMainline();
                 }
             } else if (getTurnoutType() == TurnoutType.DOUBLE_SLIP) {
                 if (connectD != null) {
-                    return ((TrackSegment) connectD).isMainline();
+                    return connectD.isMainline();
                 }
             } // must be RH, LH, or WYE turnout - A is the switch throat,
             //      B is normally the continuing straight
             else if (continuingSense == Turnout.CLOSED) {
                 // user hasn't changed the continuing turnout state
                 if (connectA != null) { // if throat is mainline, this leg must be also
-                    return ((TrackSegment) connectA).isMainline();
+                    return connectA.isMainline();
                 }
             }
         }
@@ -1760,24 +1761,24 @@ abstract public class LayoutTurnout extends LayoutTrack {
 
     public boolean isMainlineC() {
         if (connectC != null) {
-            return ((TrackSegment) connectC).isMainline();
+            return connectC.isMainline();
         } else {
             // if no connection, depends on type of turnout
             if (isTurnoutTypeXover()) {
                 // All crossovers - straight continuing is D
                 if (connectD != null) {
-                    return ((TrackSegment) connectD).isMainline();
+                    return connectD.isMainline();
                 }
             } else if (getTurnoutType() == TurnoutType.DOUBLE_SLIP) {
                 if (connectB != null) {
-                    return ((TrackSegment) connectB).isMainline();
+                    return connectB.isMainline();
                 }
             } // must be RH, LH, or WYE turnout - A is the switch throat,
             //      B is normally the continuing straight
             else if (continuingSense == Turnout.THROWN) {
                 // user has changed the continuing turnout state
                 if (connectA != null) { // if throat is mainline, this leg must be also
-                    return ((TrackSegment) connectA).isMainline();
+                    return connectA.isMainline();
                 }
             }
         }
@@ -1787,13 +1788,13 @@ abstract public class LayoutTurnout extends LayoutTrack {
     public boolean isMainlineD() {
         // this is a crossover turnout
         if (connectD != null) {
-            return ((TrackSegment) connectD).isMainline();
+            return connectD.isMainline();
         } else if (isTurnoutTypeSlip()) {
             if (connectB != null) {
-                return ((TrackSegment) connectB).isMainline();
+                return connectB.isMainline();
             }
         } else if (connectC != null) {
-            return ((TrackSegment) connectC).isMainline();
+            return connectC.isMainline();
         }
         return false;
     }
@@ -2080,7 +2081,7 @@ abstract public class LayoutTurnout extends LayoutTrack {
         if (isTurnoutTypeTurnout()) {
             // This should only be needed where we are looking at a single turnout.
             if (getLayoutBlock() != null) {
-                LayoutBlock aLBlock = null;
+                LayoutBlock aLBlock;
                 if (connectA instanceof TrackSegment) {
                     aLBlock = ((TrackSegment) connectA).getLayoutBlock();
                     if (aLBlock != getLayoutBlock()) {
@@ -2093,7 +2094,7 @@ abstract public class LayoutTurnout extends LayoutTrack {
                     }
                 }
 
-                LayoutBlock bLBlock = null;
+                LayoutBlock bLBlock;
                 if (connectB instanceof TrackSegment) {
                     bLBlock = ((TrackSegment) connectB).getLayoutBlock();
                     if (bLBlock != getLayoutBlock()) {
@@ -2106,7 +2107,7 @@ abstract public class LayoutTurnout extends LayoutTrack {
                     }
                 }
 
-                LayoutBlock cLBlock = null;
+                LayoutBlock cLBlock;
                 if ((connectC instanceof TrackSegment)
                         && (((TrackSegment) connectC).getLayoutBlock() != getLayoutBlock())) {
                     cLBlock = ((TrackSegment) connectC).getLayoutBlock();
@@ -2121,10 +2122,10 @@ abstract public class LayoutTurnout extends LayoutTrack {
                 }
             }
         } else {
-            LayoutBlock aLBlock = null;
-            LayoutBlock bLBlock = null;
-            LayoutBlock cLBlock = null;
-            LayoutBlock dLBlock = null;
+            LayoutBlock aLBlock;
+            LayoutBlock bLBlock;
+            LayoutBlock cLBlock;
+            LayoutBlock dLBlock;
             if (getLayoutBlock() != null) {
                 if (connectA instanceof TrackSegment) {
                     aLBlock = ((TrackSegment) connectA).getLayoutBlock();
@@ -2634,7 +2635,7 @@ abstract public class LayoutTurnout extends LayoutTrack {
 
         log.trace("Start in layoutTurnout.getLayoutConnectivity for {}", getName());
 
-        LayoutConnectivity lc = null;
+        LayoutConnectivity lc;
 
         LayoutBlock lbA = getLayoutBlock(), lbB = getLayoutBlockB(), lbC = getLayoutBlockC(), lbD = getLayoutBlockD();
 
@@ -2799,8 +2800,8 @@ abstract public class LayoutTurnout extends LayoutTrack {
                 blocksAndTracksMap.put(connectD, getBlockDName());
             }
         }
-        List<Set<String>> TrackNameSets = null;
-        Set<String> TrackNameSet = null;
+        List<Set<String>> TrackNameSets;
+        Set<String> TrackNameSet;
         for (Map.Entry<LayoutTrack, String> entry : blocksAndTracksMap.entrySet()) {
             LayoutTrack theConnect = entry.getKey();
             String theBlockName = entry.getValue();

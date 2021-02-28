@@ -32,7 +32,7 @@ public class ScaleTrackDiagramDialogTest {
     public RetryRule retryRule = new RetryRule(2); // allow 2 retries
 
     /*
-     * This is called before each tests
+     * This is called before each test
      */
     @Before
     public void setUp() {

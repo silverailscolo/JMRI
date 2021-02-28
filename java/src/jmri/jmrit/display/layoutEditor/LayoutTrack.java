@@ -59,7 +59,7 @@ abstract public class LayoutTrack {
         return ident;
     }
 
-    private String ident = "";
+    private String ident;
 
     final protected void setIdent(@Nonnull String ident) {
         this.ident = ident;
@@ -77,7 +77,7 @@ abstract public class LayoutTrack {
      * @return the turnout state string
      */
     final public String getTurnoutStateString(int turnoutState) {
-        String result = "";
+        String result;
         if (turnoutState == Turnout.CLOSED) {
             result = Bundle.getMessage("TurnoutStateClosed");
         } else if (turnoutState == Turnout.THROWN) {

@@ -94,7 +94,7 @@ final public class LayoutEditorAuxTools {
             return;
         }
         cList.clear(); 
-        List<LayoutConnectivity> lcs = null;
+        List<LayoutConnectivity> lcs;
 
         for (LayoutTrackView ltv : models.getLayoutTrackViews()) {
             if ((ltv instanceof PositionablePointView)    // effectively, skip LevelXing and LayoutTurntable - why?
@@ -116,7 +116,7 @@ final public class LayoutEditorAuxTools {
         boolean[] found = new boolean[sz];
         Arrays.fill(found, false);
 
-        List<LayoutConnectivity> lcs = null;
+        List<LayoutConnectivity> lcs;
 
         // Check for block boundaries at positionable points.
         for (PositionablePoint p : models.getPositionablePoints()) {
@@ -245,7 +245,7 @@ final public class LayoutEditorAuxTools {
         LayoutTrack prevConnection = null;
         HitPointType typeCurConnection = HitPointType.NONE;
         BeanSetting bs = null;
-        LayoutTurnout lt = null;
+        LayoutTurnout lt;
         // process track at block boundary
         if (lc.getBlock1() == layoutBlock) {    // block1 is this LayoutBlock
             curConnection = lc.getTrackSegment();
@@ -445,7 +445,7 @@ final public class LayoutEditorAuxTools {
                                 p.addSetting(bs);
                             } else {
                                 log.error("No assigned turnout (J): LTO = {}, blk = {}", // NOI18N
-                                        ((LayoutTurnout) curConnection).getName(), ((LayoutTurnout) curConnection).getLayoutBlock().getDisplayName());
+                                        curConnection.getName(), ((LayoutTurnout) curConnection).getLayoutBlock().getDisplayName());
                             }
                             prevConnection = curConnection;
                             if (typeCurConnection == HitPointType.TURNOUT_A) {
@@ -475,7 +475,7 @@ final public class LayoutEditorAuxTools {
                             p.addSetting(bs);
                         } else {
                             log.error("No assigned turnout (K): LTO = {}, blk = {}", // NOI18N
-                                    ((LayoutTurnout) curConnection).getName(), ((LayoutTurnout) curConnection).getLayoutBlock().getDisplayName());
+                                    curConnection.getName(), ((LayoutTurnout) curConnection).getLayoutBlock().getDisplayName());
                         }
                         prevConnection = curConnection;
                         curConnection = ((LayoutTurnout) curConnection).getConnectA();
@@ -491,7 +491,7 @@ final public class LayoutEditorAuxTools {
                             p.addSetting(bs);
                         } else {
                             log.error("No assigned turnout (L): LTO = {}, blk = {}", // NOI18N
-                                    ((LayoutTurnout) curConnection).getName(), ((LayoutTurnout) curConnection).getLayoutBlock().getDisplayName());
+                                    curConnection.getName(), ((LayoutTurnout) curConnection).getLayoutBlock().getDisplayName());
                         }
                         prevConnection = curConnection;
                         curConnection = ((LayoutTurnout) curConnection).getConnectA();
@@ -572,7 +572,7 @@ final public class LayoutEditorAuxTools {
                             curConnection = null;
                         } else {
                             // at an anchor point, find track segment on other side
-                            TrackSegment track = null;
+                            TrackSegment track;
                             if (pt.getConnect1() == prevConnection) {
                                 track = pt.getConnect2();
                             } else {
@@ -744,6 +744,7 @@ final public class LayoutEditorAuxTools {
                 }
             } else if (typeCurConnection == HitPointType.LEVEL_XING_A) {
                 // have a level crossing connected at A
+                assert curConnection instanceof LevelXing;
                 if (((LevelXing) curConnection).getLayoutBlockAC() != layoutBlock) {
                     // moved outside of this block
                     curConnection = null;
@@ -755,6 +756,7 @@ final public class LayoutEditorAuxTools {
                 }
             } else if (typeCurConnection == HitPointType.LEVEL_XING_B) {
                 // have a level crossing connected at B
+                assert curConnection instanceof LevelXing;
                 if (((LevelXing) curConnection).getLayoutBlockBD() != layoutBlock) {
                     // moved outside of this block
                     curConnection = null;
@@ -766,6 +768,7 @@ final public class LayoutEditorAuxTools {
                 }
             } else if (typeCurConnection == HitPointType.LEVEL_XING_C) {
                 // have a level crossing connected at C
+                assert curConnection instanceof LevelXing;
                 if (((LevelXing) curConnection).getLayoutBlockAC() != layoutBlock) {
                     // moved outside of this block
                     curConnection = null;
@@ -777,6 +780,7 @@ final public class LayoutEditorAuxTools {
                 }
             } else if (typeCurConnection == HitPointType.LEVEL_XING_D) {
                 // have a level crossing connected at D
+                assert curConnection instanceof LevelXing;
                 if (((LevelXing) curConnection).getLayoutBlockBD() != layoutBlock) {
                     // moved outside of this block
                     curConnection = null;

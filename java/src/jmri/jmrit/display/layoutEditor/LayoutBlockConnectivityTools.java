@@ -299,7 +299,7 @@ final public class LayoutBlockConnectivityTools {
                 for (LayoutBlock dp : destBlockn1) {
                     log.debug("dest + 1 {}", dp.getDisplayName());
                 }
-            } catch (java.lang.NullPointerException e) {
+            } catch (java.lang.NullPointerException ignore) {
 
             }
         }

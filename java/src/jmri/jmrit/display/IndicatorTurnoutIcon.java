@@ -480,7 +480,7 @@ public class IndicatorTurnoutIcon extends TurnoutIcon implements IndicatorTrack 
         _iconFamily = _itemPanel.getFamilyName();
         _pathUtil.setPaths(_itemPanel.getPaths());
         HashMap<String, HashMap<String, NamedIcon>> iconMap = _itemPanel.getIconMaps();
-        if (iconMap != null) {
+        if (iconMap != null) { // never null, but map array can be empty. Is that intended?
             for (Entry<String, HashMap<String, NamedIcon>> entry : iconMap.entrySet()) {
                 String status = entry.getKey();
                 HashMap<Integer, NamedIcon> oldMap = _iconMaps.get(entry.getKey());

@@ -1,6 +1,5 @@
 package jmri.jmrit.display.layoutEditor;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.awt.FlowLayout;
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -13,8 +12,8 @@ import javax.swing.border.*;
  */
 public class LayoutEditorFloatingToolBarPanel extends LayoutEditorToolBarPanel {
 
-    private JPanel floatEditTabsPanel = new JPanel();
-    private JTabbedPane floatEditTabsPane = new JTabbedPane();
+    private final JPanel floatEditTabsPanel = new JPanel();
+    private final JTabbedPane floatEditTabsPane = new JTabbedPane();
 
     /**
      * constructor for LayoutEditorFloatingToolBarPanel

@@ -43,11 +43,11 @@ public class TrackNode {
     }
 
     // instance variables
-    LayoutTrack _Node = null;
-    HitPointType _NodeType = HitPointType.NONE;
-    TrackSegment _TrackSegment = null;
-    boolean _ReachedEndBumper = false;
-    int _NodeState = 0;
+    LayoutTrack _Node;
+    HitPointType _NodeType;
+    TrackSegment _TrackSegment;
+    boolean _ReachedEndBumper;
+    int _NodeState;
 
     /**
      * Set the node.

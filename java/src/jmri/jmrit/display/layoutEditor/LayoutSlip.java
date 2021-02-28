@@ -78,6 +78,7 @@ abstract public class LayoutSlip extends LayoutTurnout {
 
     // this should only be used for debugging...
     @Override
+    @Nonnull
     public String toString() {
         return String.format("LayoutSlip %s (%s)", getId(), getSlipStateString(getSlipState()));
     }
@@ -193,7 +194,7 @@ abstract public class LayoutSlip extends LayoutTurnout {
         String name = "Slip " + getId();
         String tnA = getTurnoutName();
         String tnB = getTurnoutBName();
-        if ((tnA != null) && !tnA.isEmpty()) {
+        if (!tnA.isEmpty()) {
             name += " (" + tnA;
         }
         if ((tnB != null) && !tnB.isEmpty()) {
@@ -327,7 +328,7 @@ abstract public class LayoutSlip extends LayoutTurnout {
      */
     @Override
     boolean isOccupied() {
-        Boolean result = false; // assume failure (pessimist!)
+        boolean result = false; // assume failure (pessimist!)
         switch (getSlipState()) {
             case STATE_AC: {
                 result = ((getLayoutBlock().getOccupancy() == LayoutBlock.OCCUPIED)
@@ -399,7 +400,7 @@ abstract public class LayoutSlip extends LayoutTurnout {
     @Override
     public void updateBlockInfo() {
         LayoutBlock b1 = null;
-        LayoutBlock b2 = null;
+        LayoutBlock b2;
         if (getLayoutBlock() != null) {
             getLayoutBlock().updatePaths();
         }
@@ -438,10 +439,10 @@ abstract public class LayoutSlip extends LayoutTurnout {
      */
     @Override
     public boolean isMainline() {
-        if (((connectA != null) && (((TrackSegment) connectA).isMainline()))
-                || ((connectB != null) && (((TrackSegment) connectB).isMainline()))
-                || ((connectC != null) && (((TrackSegment) connectC).isMainline()))
-                || ((connectD != null) && (((TrackSegment) connectD).isMainline()))) {
+        if (((connectA != null) && (connectA.isMainline()))
+                || ((connectB != null) && (connectB.isMainline()))
+                || ((connectC != null) && (connectC.isMainline()))
+                || ((connectD != null) && (connectD.isMainline()))) {
             return true;
         } else {
             return false;
@@ -579,8 +580,8 @@ abstract public class LayoutSlip extends LayoutTurnout {
 
     public static class TurnoutState {
 
-        private int turnoutAstate = Turnout.CLOSED;
-        private int turnoutBstate = Turnout.CLOSED;
+        private int turnoutAstate;
+        private int turnoutBstate;
         private JComboBox<String> turnoutABox;
         private JComboBox<String> turnoutBBox;
 
@@ -758,8 +759,6 @@ abstract public class LayoutSlip extends LayoutTurnout {
             } else if (layoutBlockB == thisLayoutBlock) {
                 result = LayoutSlip.STATE_AD;
             }
-        } else {
-            result = LayoutSlip.UNKNOWN;
         }
         if (!suppress && (result == LayoutSlip.UNKNOWN)) {
             log.error("{}.getConnectivityStateForLayoutBlocks(...); Cannot determine slip setting", getName());
@@ -838,6 +837,7 @@ abstract public class LayoutSlip extends LayoutTurnout {
         }
 
         if (connectD instanceof TrackSegment) {
+            assert connectC instanceof TrackSegment;
             trkD = (TrackSegment) connectC;
             if (trkD.getLayoutBlock() == getLayoutBlock()) {
                 if (signalDMastNamed != null) {
@@ -859,7 +859,7 @@ abstract public class LayoutSlip extends LayoutTurnout {
 
         log.trace("Start in LayoutSlip.getLayoutConnectivity for {}", getName());
         
-        LayoutConnectivity lc = null;
+        LayoutConnectivity lc;
         LayoutBlock lbA = getLayoutBlock(), lbB = getLayoutBlockB(), lbC = getLayoutBlockC(), lbD = getLayoutBlockD();
         
         log.trace("    type: {}", type);
@@ -944,6 +944,7 @@ abstract public class LayoutSlip extends LayoutTurnout {
     /**
      * {@inheritDoc}
      */
+    @Nonnull
     @Override
     public List<HitPointType> checkForFreeConnections() {
         List<HitPointType> result = new ArrayList<>();

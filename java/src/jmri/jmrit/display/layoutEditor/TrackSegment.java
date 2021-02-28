@@ -85,7 +85,7 @@ public class TrackSegment extends LayoutTrack {
     protected HitPointType type1 = HitPointType.NONE;
     protected LayoutTrack connect2 = null;
     protected HitPointType type2 = HitPointType.NONE;
-    private boolean mainline = false;
+    private boolean mainline;
 
     /**
      * Get debugging string for the TrackSegment.
@@ -97,7 +97,6 @@ public class TrackSegment extends LayoutTrack {
         return "TrackSegment " + getName()
                 + " c1:{" + getConnect1Name() + " (" + type1 + ")},"
                 + " c2:{" + getConnect2Name() + " (" + type2 + ")}";
-
     }
 
     /*
@@ -319,17 +318,14 @@ public class TrackSegment extends LayoutTrack {
      * PositionablePointXml, then the following method is called after the
      * entire LayoutEditor is loaded to set the specific TrackSegment objects.
      */
-    @SuppressWarnings("deprecation")
-    // NOTE: findObjectByTypeAndName is @Deprecated;
-    // we're using it here for backwards compatibility until it can be removed
     @Override
     @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "Null check performed before using return value")
-    public void setObjects(LayoutEditor p) {
+    public void setObjects(@Nonnull LayoutEditor p) {
 
         LayoutBlock lb;
         if (!tLayoutBlockName.isEmpty()) {
             lb = p.provideLayoutBlock(tLayoutBlockName);
-            if (lb != null) {
+            if (lb != null && lb.getUserName() != null) {
                 namedLayoutBlock = InstanceManager.getDefault(jmri.NamedBeanHandleManager.class).getNamedBeanHandle(lb.getUserName(), lb);
                 lb.incrementUse();
             } else {
@@ -388,11 +384,10 @@ public class TrackSegment extends LayoutTrack {
      */
     @Override
     public boolean canRemove() {
-        List<String> itemList = new ArrayList<>();
 
         HitPointType type1 = getType1();
         LayoutTrack conn1 = getConnect1();
-        itemList.addAll(getPointReferences(type1, conn1));
+        List<String> itemList = new ArrayList<>(getPointReferences(type1, conn1));
 
         HitPointType type2 = getType2();
         LayoutTrack conn2 = getConnect2();
@@ -596,8 +591,9 @@ public class TrackSegment extends LayoutTrack {
     protected List<LayoutConnectivity> getLayoutConnectivity() {
         List<LayoutConnectivity> results = new ArrayList<>();
 
-        LayoutConnectivity lc = null;
-        LayoutBlock lb1 = getLayoutBlock(), lb2 = null;
+        LayoutConnectivity lc;
+        LayoutBlock lb1 = getLayoutBlock();
+        LayoutBlock lb2;
         // ensure that block is assigned
         if (lb1 != null) {
             // check first connection for turnout
@@ -727,6 +723,7 @@ public class TrackSegment extends LayoutTrack {
     /**
      * {@inheritDoc}
      */
+    @Nonnull
     @Override
     public List<HitPointType> checkForFreeConnections() {
         return new ArrayList<>();
@@ -758,7 +755,7 @@ public class TrackSegment extends LayoutTrack {
         *     Basically, we're maintaining contiguous track sets for each block found
         *     (in blockNamesToTrackNameSetMap)
          */
-        List<Set<String>> TrackNameSets = null;
+        List<Set<String>> TrackNameSets;
         Set<String> TrackNameSet = null;    // assume not found (pessimist!)
         String blockName = getBlockName();
         if (!blockName.isEmpty()) {

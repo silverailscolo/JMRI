@@ -338,7 +338,7 @@ abstract public class LayoutTrackView {
      * @return the turnout state string
      */
     final public String getTurnoutStateString(int turnoutState) {
-        String result = "";
+        String result;
         if (turnoutState == Turnout.CLOSED) {
             result = Bundle.getMessage("TurnoutStateClosed");
         } else if (turnoutState == Turnout.THROWN) {
@@ -371,7 +371,7 @@ abstract public class LayoutTrackView {
         StringBuilder msg = new StringBuilder(Bundle.getMessage("MakeLabel", // NOI18N
                 Bundle.getMessage("DeleteTrackItem", Bundle.getMessage(typeKey))));  // NOI18N
         for (String item : itemList) {
-            msg.append("\n    " + item);  // NOI18N
+            msg.append("\n    ").append(item);  // NOI18N
         }
         javax.swing.JOptionPane.showMessageDialog(layoutEditor,
                 msg.toString(),

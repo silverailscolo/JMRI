@@ -350,7 +350,7 @@ public class LevelXingView extends LayoutTrackView {
         return result;
     }
 
-    /**
+    /*
      * Add Layout Blocks.
      */
 //     @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "Null is accepted as a valid value")
@@ -522,7 +522,7 @@ public class LevelXingView extends LayoutTrackView {
      * {@inheritDoc}
      */
     @Override
-    protected HitPointType findHitPointType(Point2D hitPoint, boolean useRectangles, boolean requireUnconnected) {
+    protected HitPointType findHitPointType(@Nonnull Point2D hitPoint, boolean useRectangles, boolean requireUnconnected) {
         HitPointType result = HitPointType.NONE;  // assume point not on connection
         //note: optimization here: instead of creating rectangles for all the
         // points to check below, we create a rectangle for the test point
@@ -858,6 +858,7 @@ public class LevelXingView extends LayoutTrackView {
             for (int i = 0; i < 4; i++) {
                 if (boundaryBetween[i] != null) {
                     blockBoundaries = true;
+                    break;
                 }
             }
             if (blockBoundaries) {
@@ -884,9 +885,11 @@ public class LevelXingView extends LayoutTrackView {
             }
 
             layoutEditor.setShowAlignmentMenu(popup);
+            assert mouseEvent != null;
             popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
         } else if (!viewAdditionalMenu.isEmpty()) {
             setAdditionalViewPopUpMenu(popup);
+            assert mouseEvent != null;
             popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
         }
         return popup;
@@ -1237,6 +1240,7 @@ public class LevelXingView extends LayoutTrackView {
     /**
      * {@inheritDoc}
      */
+     @Nonnull
      @Override
      public List<HitPointType> checkForFreeConnections() {
         throw new IllegalArgumentException("should have called Object instead of view temporary");

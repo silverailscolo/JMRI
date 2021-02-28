@@ -4,8 +4,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.swing.JOptionPane;
 import jmri.Block;
 import jmri.jmrit.roster.RosterEntry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An icon to display a status of a Block Object.
@@ -99,4 +97,5 @@ public class BlockContentsIcon extends jmri.jmrit.display.BlockContentsIcon {
     }
 
     private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BlockContentsIcon.class);
+
 }

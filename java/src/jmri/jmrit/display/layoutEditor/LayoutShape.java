@@ -29,7 +29,7 @@ public class LayoutShape {
     public static final int MAX_LINEWIDTH = 200;
 
     // operational instance variables (not saved between sessions)
-    private LayoutEditor layoutEditor = null;
+    private final LayoutEditor layoutEditor;
     private String name;
     private LayoutShapeType layoutShapeType;
     private int level = 3;
@@ -89,7 +89,7 @@ public class LayoutShape {
         this.setLevel(layoutShape.getLevel());
         this.setLineColor(layoutShape.getLineColor());
         this.setFillColor(layoutShape.getFillColor());
-
+        // constructor does not copy lineWidth and popup, intentional?
         for (LayoutShapePoint lsp : layoutShape.getPoints()) {
             this.shapePoints.add(new LayoutShapePoint(lsp.getType(), lsp.getPoint()));
         }
@@ -820,7 +820,7 @@ public class LayoutShape {
     public enum LayoutShapeType {
         Open, 
         Closed,
-        Filled;
+        Filled
     }
 
     /**
@@ -828,7 +828,7 @@ public class LayoutShape {
      */
     public enum LayoutShapePointType {
         Straight,
-        Curve;
+        Curve
     }
 
     private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutShape.class);

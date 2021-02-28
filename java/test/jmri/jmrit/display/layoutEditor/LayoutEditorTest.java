@@ -60,7 +60,7 @@ public class LayoutEditorTest extends AbstractEditorTestBase<LayoutEditor> {
     @Test
     public void testStringCtor() {
         Assume.assumeFalse(GraphicsEnvironment.isHeadless());
-        LayoutEditor e = new LayoutEditor("Layout Editor Test Layout");
+        LayoutEditor e = new LayoutEditor("Layout Editor Test Layout Two");
         Assert.assertNotNull("exists", e);
         JUnitUtil.dispose(e);
     }

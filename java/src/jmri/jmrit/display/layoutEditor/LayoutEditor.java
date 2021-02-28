@@ -146,9 +146,9 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
     private JRadioButtonMenuItem tooltipInEditMenuItem = null;
     private JRadioButtonMenuItem tooltipNotInEditMenuItem = null;
 
-    private JCheckBoxMenuItem pixelsCheckBoxMenuItem = new JCheckBoxMenuItem(Bundle.getMessage("Pixels"));
-    private JCheckBoxMenuItem metricCMCheckBoxMenuItem = new JCheckBoxMenuItem(Bundle.getMessage("MetricCM"));
-    private JCheckBoxMenuItem englishFeetInchesCheckBoxMenuItem = new JCheckBoxMenuItem(Bundle.getMessage("EnglishFeetInches"));
+    private final JCheckBoxMenuItem pixelsCheckBoxMenuItem = new JCheckBoxMenuItem(Bundle.getMessage("Pixels"));
+    private final JCheckBoxMenuItem metricCMCheckBoxMenuItem = new JCheckBoxMenuItem(Bundle.getMessage("MetricCM"));
+    private final JCheckBoxMenuItem englishFeetInchesCheckBoxMenuItem = new JCheckBoxMenuItem(Bundle.getMessage("EnglishFeetInches"));
 
     private JCheckBoxMenuItem snapToGridOnAddCheckBoxMenuItem = null;
     private JCheckBoxMenuItem snapToGridOnMoveCheckBoxMenuItem = null;
@@ -201,20 +201,20 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
 
     // Lists of items that describe the Layout, and allow it to be drawn
     // Each of the items must be saved to disk over sessions
-    private List<AnalogClock2Display> clocks = new ArrayList<>();           // fast clocks
-    private List<LocoIcon> markerImage = new ArrayList<>();                 // marker images
-    private List<MultiSensorIcon> multiSensors = new ArrayList<>();         // multi-sensor images
-    private List<PositionableLabel> backgroundImage = new ArrayList<>();    // background images
-    private List<PositionableLabel> labelImage = new ArrayList<>();         // positionable label images
-    private List<SensorIcon> sensorImage = new ArrayList<>();               // sensor images
-    private List<SignalHeadIcon> signalHeadImage = new ArrayList<>();       // signal head images
+    private final List<AnalogClock2Display> clocks = new ArrayList<>();               // fast clocks
+    private final List<LocoIcon> markerImage = new ArrayList<>();                     // marker images
+    private final List<MultiSensorIcon> multiSensors = new ArrayList<>();             // multi-sensor images
+    private final List<PositionableLabel> backgroundImage = new ArrayList<>();        // background images
+    private final List<PositionableLabel> labelImage = new ArrayList<>();             // positionable label images
+    private final List<SensorIcon> sensorImage = new ArrayList<>();                   // sensor images
+    private final List<SignalHeadIcon> signalHeadImage = new ArrayList<>();           // signal head images
 
     // PositionableLabel's
-    private List<BlockContentsIcon> blockContentsLabelList = new ArrayList<>(); // BlockContentsIcon Label List
-    private List<MemoryIcon> memoryLabelList = new ArrayList<>();               // Memory Label List
-    private List<SensorIcon> sensorList = new ArrayList<>();                    // Sensor Icons
-    private List<SignalHeadIcon> signalList = new ArrayList<>();                // Signal Head Icons
-    private List<SignalMastIcon> signalMastList = new ArrayList<>();            // Signal Mast Icons
+    private final List<BlockContentsIcon> blockContentsLabelList = new ArrayList<>(); // BlockContentsIcon Label List
+    private final List<MemoryIcon> memoryLabelList = new ArrayList<>();               // Memory Label List
+    private final List<SensorIcon> sensorList = new ArrayList<>();                    // Sensor Icons
+    private final List<SignalHeadIcon> signalList = new ArrayList<>();                // Signal Head Icons
+    private final List<SignalMastIcon> signalMastList = new ArrayList<>();            // Signal Mast Icons
 
     public final LayoutEditorViewContext gContext = new LayoutEditorViewContext(); // public for now, as things work access changes
 
@@ -261,7 +261,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
     private int numLayoutTurntables = 0;
     private int numShapes = 0;
 
-    private LayoutEditorFindItems finder = new LayoutEditorFindItems(this);
+    private final LayoutEditorFindItems finder = new LayoutEditorFindItems(this);
 
     @Nonnull
     public LayoutEditorFindItems getFinder() {
@@ -275,7 +275,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
     private Color defaultAlternativeTrackColor = Color.white;
     private Color defaultTextColor = Color.black;
 
-    private String layoutName = "";
+    private String layoutName;
     private boolean animatingLayout = true;
     private boolean showHelpBar = true;
     private boolean drawGrid = true;
@@ -309,11 +309,11 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
     private boolean savedShowHelpBar = true;
 
     // zoom
-    private double minZoom = 0.25;
+    private final double minZoom = 0.25;
     private final double maxZoom = 8.0;
 
     // A hash to store string -> KeyEvent constants, used to set keyboard shortcuts per locale
-    private HashMap<String, Integer> stringsToVTCodes = new HashMap<>();
+    private final HashMap<String, Integer> stringsToVTCodes = new HashMap<>();
 
     /*==============*\
     |* Toolbar side *|
@@ -380,7 +380,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
         JTextArea helpTextArea2 = new JTextArea(Bundle.getMessage("Help2"));
         helpBar.add(helpTextArea2);
 
-        String helpText3 = "";
+        String helpText3;
 
         switch (SystemType.getType()) {
             case SystemType.MACOSX: {
@@ -1232,7 +1232,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
         snapToGridOnAddCheckBoxMenuItem = new JCheckBoxMenuItem(Bundle.getMessage("SnapToGridOnAdd"));
         snapToGridOnAddCheckBoxMenuItem.setAccelerator(KeyStroke.getKeyStroke(stringsToVTCodes.get(
                 Bundle.getMessage("SnapToGridOnAddAccelerator")),
-                primary_modifier | ActionEvent.SHIFT_MASK));
+                primary_modifier | InputEvent.SHIFT_MASK));
         gridMenu.add(snapToGridOnAddCheckBoxMenuItem);
         snapToGridOnAddCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
             snapToGridOnAdd = snapToGridOnAddCheckBoxMenuItem.isSelected();
@@ -1244,7 +1244,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
         snapToGridOnMoveCheckBoxMenuItem = new JCheckBoxMenuItem(Bundle.getMessage("SnapToGridOnMove"));
         snapToGridOnMoveCheckBoxMenuItem.setAccelerator(KeyStroke.getKeyStroke(stringsToVTCodes.get(
                 Bundle.getMessage("SnapToGridOnMoveAccelerator")),
-                primary_modifier | ActionEvent.SHIFT_MASK));
+                primary_modifier | InputEvent.SHIFT_MASK));
         gridMenu.add(snapToGridOnMoveCheckBoxMenuItem);
         snapToGridOnMoveCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
             snapToGridOnMove = snapToGridOnMoveCheckBoxMenuItem.isSelected();
@@ -2776,7 +2776,6 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
         lt.addRay(180.0);
         lt.addRay(270.0);
         setDirty();
-
     }
 
     /**
@@ -4133,8 +4132,6 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
     }
 
     private void rotateTurnout(@Nonnull LayoutTurnout t) {
-        assert t != null;
-
         LayoutTurnoutView tv = getLayoutTurnoutView(t);
 
         LayoutTurnout be = (LayoutTurnout) beginTrack;
@@ -5022,7 +5019,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
      */
     public void addLayoutSlip(LayoutTurnout.TurnoutType type) {
         // get the rotation entry
-        double rot = 0.0;
+        double rot;
         String s = leToolBarPanel.rotationComboBox.getEditor().getItem().toString().trim();
 
         if (s.isEmpty()) {
@@ -5133,7 +5130,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
      */
     public void addLayoutTurnout(LayoutTurnout.TurnoutType type) {
         // get the rotation entry
-        double rot = 0.0;
+        double rot;
         String s = leToolBarPanel.rotationComboBox.getEditor().getItem().toString().trim();
 
         if (s.isEmpty()) {
@@ -6891,7 +6888,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
         return tools;
     }
 
-    private LayoutEditorAuxTools auxTools = null;
+    private LayoutEditorAuxTools auxTools;
 
     @Nonnull
     public LayoutEditorAuxTools getLEAuxTools() {
@@ -7035,7 +7032,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
     @Nonnull
     @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "coloToColorName only returns null if null passed to it")
     public String getDefaultOccupiedTrackColor() {
-        return ColorUtil.colorToColorName(defaultOccupiedTrackColor);
+        return Objects.requireNonNull(ColorUtil.colorToColorName(defaultOccupiedTrackColor));
     }
 
     /**
@@ -7052,7 +7049,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
     @Nonnull
     @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "coloToColorName only returns null if null passed to it")
     public String getDefaultAlternativeTrackColor() {
-        return ColorUtil.colorToColorName(defaultAlternativeTrackColor);
+        return Objects.requireNonNull(ColorUtil.colorToColorName(defaultAlternativeTrackColor));
     }
 
     /**
@@ -7489,7 +7486,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
         for (Block b : l) {
             LayoutBlock lb = lbm.getLayoutBlock(b);
             if (lb != null) {
-                boolean enable = ((inBlock != null) && b.equals(inBlock));
+                boolean enable = (b.equals(inBlock));
                 lb.setUseExtraColor(enable);
                 result |= enable;
             }
@@ -8067,7 +8064,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
      * LayoutTrackViews via @{link LayoutEditor#getCoords}.
      */
     @Override
-    public int computeDirection(LayoutTrack trk1, HitPointType h1, LayoutTrack trk2, HitPointType h2) {
+    public int computeDirection(@Nonnull LayoutTrack trk1, @Nonnull HitPointType h1, @Nonnull LayoutTrack trk2, @Nonnull HitPointType h2) {
         return Path.computeDirection(
                 getCoords(trk1, h1),
                 getCoords(trk2, h2)
@@ -8116,7 +8113,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
             return;
         }
 
-        List theList = null;
+        List<?> theList = null;
 
         if (nb instanceof Sensor) {
             theList = sensorList;
@@ -8221,18 +8218,15 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
                 }
 
                 for (LayoutTurnout t : getLayoutTurnouts()) {
-                    if (t.getLinkedTurnoutName() != null) {
-                        String uname = nb.getUserName();
+                    String uname = nb.getUserName();
 
-                        if (nb.getSystemName().equals(t.getLinkedTurnoutName())
-                                || ((uname != null) && uname.equals(t.getLinkedTurnoutName()))) {
-                            found = true;
-                            message.append("<li>");
-                            message.append(Bundle.getMessage("VetoLinkedTurnout", t.getTurnoutName()));
-                            message.append("</li>");
-                        }
+                    if (nb.getSystemName().equals(t.getLinkedTurnoutName())
+                            || ((uname != null) && uname.equals(t.getLinkedTurnoutName()))) {
+                        found = true;
+                        message.append("<li>");
+                        message.append(Bundle.getMessage("VetoLinkedTurnout", t.getTurnoutName()));
+                        message.append("</li>");
                     }
-
                     if (nb.equals(t.getSecondTurnout())) {
                         found = true;
                         message.append("<li>");
@@ -8332,13 +8326,10 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
                 }
 
                 for (LayoutTurnout t : getLayoutTurnouts()) {
-                    if (t.getLinkedTurnoutName() != null) {
-                        if (t.getLinkedTurnoutName().equals(nb.getSystemName())
-                                || ((nb.getUserName() != null) && t.getLinkedTurnoutName().equals(nb.getUserName()))) {
-                            t.setLinkedTurnoutName("");
-                        }
+                    if (t.getLinkedTurnoutName().equals(nb.getSystemName())
+                            || ((nb.getUserName() != null) && t.getLinkedTurnoutName().equals(nb.getUserName()))) {
+                        t.setLinkedTurnoutName("");
                     }
-
                     if (nb.equals(t.getSecondTurnout())) {
                         t.setSecondTurnout("");
                     }

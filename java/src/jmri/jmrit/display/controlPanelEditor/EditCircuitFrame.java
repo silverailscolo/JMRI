@@ -389,7 +389,7 @@ public class EditCircuitFrame extends EditFrame implements PropertyChangeListene
 
     @Override
     protected void closingEvent(boolean close) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String msg = checkForSensors();
         if (msg != null) {
             sb.append(msg);
@@ -404,10 +404,8 @@ public class EditCircuitFrame extends EditFrame implements PropertyChangeListene
             }
         } else if (!name.equals(_homeBlock.getUserName())) {
             msg = Bundle.getMessage("changeBlockName", name, _homeBlock.getDisplayName(DisplayOptions.QUOTED_USERNAME_SYSTEMNAME));
-            if (msg != null) {
-                sb.append(msg);
-                sb.append("\n");
-            }
+            sb.append(msg);
+            sb.append("\n");
         }
         _parent.setIconGroup(_homeBlock);
         msg = _parent.checkForTrackIcons(_homeBlock, "PortalOrPath");

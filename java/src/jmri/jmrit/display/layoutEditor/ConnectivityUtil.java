@@ -151,6 +151,7 @@ final public class ConnectivityUtil {
         turnoutConnectivity = true;
         if ((prevLayoutBlock == null) || (nextLayoutBlock == null)) {
             // special search with partial information - not as good, order not assured
+            assert currLayoutBlock != null;
             List<LayoutTurnout> allTurnouts = getAllTurnoutsThisBlock(currLayoutBlock);
             for (LayoutTurnout lt : allTurnouts) {
                 result.add(new LayoutTrackExpectedState<>(lt,
@@ -177,11 +178,11 @@ final public class ConnectivityUtil {
                 switch (lc.getXoverBoundaryType()) {
                     case LayoutConnectivity.XOVER_BOUNDARY_AB: {
                         setting = Turnout.CLOSED;
-                        if (((TrackSegment) xt.getConnectA() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectA()).getLayoutBlock())) {
+                        if ((xt.getConnectA() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectA()).getLayoutBlock())) {
                             // block exits Xover at A
                             trackSegment = (TrackSegment) xt.getConnectA();
                             prevConnectType = HitPointType.TURNOUT_A;
-                        } else if (((TrackSegment) xt.getConnectB() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectB()).getLayoutBlock())) {
+                        } else if ((xt.getConnectB() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectB()).getLayoutBlock())) {
                             // block exits Xover at B
                             trackSegment = (TrackSegment) xt.getConnectB();
                             prevConnectType = HitPointType.TURNOUT_B;
@@ -190,11 +191,11 @@ final public class ConnectivityUtil {
                     }
                     case LayoutConnectivity.XOVER_BOUNDARY_CD: {
                         setting = Turnout.CLOSED;
-                        if (((TrackSegment) xt.getConnectC() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectC()).getLayoutBlock())) {
+                        if ((xt.getConnectC() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectC()).getLayoutBlock())) {
                             // block exits Xover at C
                             trackSegment = (TrackSegment) xt.getConnectC();
                             prevConnectType = HitPointType.TURNOUT_C;
-                        } else if (((TrackSegment) xt.getConnectD() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectD()).getLayoutBlock())) {
+                        } else if ((xt.getConnectD() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectD()).getLayoutBlock())) {
                             // block exits Xover at D
                             trackSegment = (TrackSegment) xt.getConnectD();
                             prevConnectType = HitPointType.TURNOUT_D;
@@ -202,11 +203,11 @@ final public class ConnectivityUtil {
                         break;
                     }
                     case LayoutConnectivity.XOVER_BOUNDARY_AC: {
-                        if (((TrackSegment) xt.getConnectA() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectA()).getLayoutBlock())) {
+                        if ((xt.getConnectA() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectA()).getLayoutBlock())) {
                             // block exits Xover at A
                             trackSegment = (TrackSegment) xt.getConnectA();
                             prevConnectType = HitPointType.TURNOUT_A;
-                        } else if (((TrackSegment) xt.getConnectC() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectC()).getLayoutBlock())) {
+                        } else if ((xt.getConnectC() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectC()).getLayoutBlock())) {
                             // block exits Xover at C
                             trackSegment = (TrackSegment) xt.getConnectC();
                             prevConnectType = HitPointType.TURNOUT_C;
@@ -214,11 +215,11 @@ final public class ConnectivityUtil {
                         break;
                     }
                     case LayoutConnectivity.XOVER_BOUNDARY_BD: {
-                        if (((TrackSegment) xt.getConnectB() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectB()).getLayoutBlock())) {
+                        if ((xt.getConnectB() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectB()).getLayoutBlock())) {
                             // block exits Xover at B
                             trackSegment = (TrackSegment) xt.getConnectB();
                             prevConnectType = HitPointType.TURNOUT_B;
-                        } else if (((TrackSegment) xt.getConnectD() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectD()).getLayoutBlock())) {
+                        } else if ((xt.getConnectD() != null) && (currLayoutBlock == ((TrackSegment) xt.getConnectD()).getLayoutBlock())) {
                             // block exits Xover at D
                             trackSegment = (TrackSegment) xt.getConnectD();
                             prevConnectType = HitPointType.TURNOUT_D;
@@ -1331,8 +1332,7 @@ final public class ConnectivityUtil {
                 if (currentNode instanceof LayoutTurnout) {
                     LayoutTurnout lt = (LayoutTurnout) currentNode;
                     if (lt.isTurnoutTypeTurnout()) {
-                        if ((lt.getLinkedTurnoutName() == null)
-                                || (lt.getLinkedTurnoutName().isEmpty())) {
+                        if (lt.getLinkedTurnoutName().isEmpty()) {
                             // Standard turnout - node type A
                             if (lt.getContinuingSense() == Turnout.CLOSED) {
                                 switch (currentNodeState) {
@@ -1460,8 +1460,7 @@ final public class ConnectivityUtil {
                 if (currentNode instanceof LayoutTurnout) {
                     LayoutTurnout lt = (LayoutTurnout) currentNode;
                     if (lt.isTurnoutTypeTurnout()) {
-                        if ((lt.getLinkedTurnoutName() == null)
-                                || (lt.getLinkedTurnoutName().isEmpty())
+                        if ((lt.getLinkedTurnoutName().isEmpty())
                                 || (lt.getLinkType() == LayoutTurnout.LinkType.FIRST_3_WAY)) {
                             nextTrackSegment = (TrackSegment) (lt.getConnectA());
                             //prevTrackType = LayoutEditor.HitPointType.TURNOUT_A;

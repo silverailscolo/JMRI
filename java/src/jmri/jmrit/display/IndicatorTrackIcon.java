@@ -375,7 +375,7 @@ public class IndicatorTrackIcon extends PositionableIcon
         _iconFamily = _trackPanel.getFamilyName();
         _pathUtil.setPaths(_trackPanel.getPaths());
         HashMap<String, NamedIcon> iconMap = _trackPanel.getIconMap();
-        if (iconMap != null) {
+        if (iconMap != null) { // never null, but map array can be empty. Is that intended?
             HashMap<String, NamedIcon> oldMap = cloneMap(_iconMap, this);
             for (Entry<String, NamedIcon> entry : _iconMap.entrySet()) {
                 if (log.isDebugEnabled()) {

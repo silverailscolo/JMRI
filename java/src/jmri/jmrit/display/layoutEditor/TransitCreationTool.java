@@ -9,8 +9,6 @@ import jmri.Section;
 import jmri.SignalMast;
 import jmri.Transit;
 import jmri.TransitManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The transit creation tool, is designed to be used by higher level tools to
@@ -61,7 +59,7 @@ final public class TransitCreationTool {
                     log.error("will throw {}", error);
                     throw new JmriException(error);
                 }
-            } else {
+            //} else {
                 //Need to add the method to get layout block connectivity.  Also work checking that the Layout Block routing has been initialised.
             }
         }
