@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.List;
 import javax.annotation.Nonnull;
 //import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.GuardedBy;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
@@ -75,6 +76,7 @@ public class SwitchboardEditor extends Editor {
     private final JCheckBox autoItemRange = new JCheckBox(Bundle.getMessage("CheckBoxAutoItemRange"));
     private JButton allOffButton;
     private JButton allOnButton;
+    @GuardedBy("this")
     private TargetPane switchboardLayeredPane; // is a JLayeredPane
     static final String TURNOUT = Bundle.getMessage("Turnouts");
     static final String SENSOR = Bundle.getMessage("Sensors");
@@ -213,8 +215,6 @@ public class SwitchboardEditor extends Editor {
                 verticalMargin = 25;
             }
         }
-        switchboardLayeredPane = new TargetPane(); // extends JLayeredPane();
-        switchboardLayeredPane.setPreferredSize(new Dimension(width, height));
         border = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(defaultTextColor),
                 "temp",
@@ -222,10 +222,19 @@ public class SwitchboardEditor extends Editor {
                 TitledBorder.ABOVE_BOTTOM,
                 getFont(),
                 defaultTextColor);
-        switchboardLayeredPane.setBorder(border);
-        // create contrast with background, should also specify border style
-        // specify title for turnout, sensor, light, mixed? (wait for the Editor to be created)
-        switchboardLayeredPane.addMouseMotionListener(this);
+        synchronized (this) {
+            /* Construct special JFrame to hold the actual switchboard */
+            switchboardLayeredPane = new TargetPane(); // extends JLayeredPane();
+            switchboardLayeredPane.setLayout(new GridLayout(3, 8)); // initial layout params
+            switchboardLayeredPane.setPreferredSize(new Dimension(width, height));
+            switchboardLayeredPane.setBorder(border);
+            // create visual contrast with background, should also specify border style
+            switchboardLayeredPane.addMouseMotionListener(this);
+            // Adding items later, see updatePressed()
+            // link JLayeredPane to super Editor
+            super.setTargetPanel(switchboardLayeredPane, makeFrame(name));
+        }
+        super.getTargetFrame().setSize(550, 330); // width x height
 
         // add control pane and layered pane to this JPanel
         JPanel beanSetupPane = new JPanel();
@@ -332,16 +341,6 @@ public class SwitchboardEditor extends Editor {
         checkboxPane.add(hideUnconnected);
         add(checkboxPane);
 
-        /* Construct special JFrame to hold the actual switchboard */
-        switchboardLayeredPane.setLayout(new GridLayout(3, 8)); // initial layout params
-        // Add at least 1 switch to pane to create switchList: done later, would be deleted soon if added now
-        // see updatePressed()
-
-        // provide a JLayeredPane to place the switches on
-        super.setTargetPanel(switchboardLayeredPane, makeFrame(name));
-        super.getTargetFrame().setSize(550, 330); // width x height
-        //super.getTargetFrame().setSize(width + 6, height + 25); // width x height
-
         // set scrollbar initial state
         setScroll(SCROLL_NONE);
         scrollNone.setSelected(true);
@@ -433,10 +432,12 @@ public class SwitchboardEditor extends Editor {
      * Fired on componentResized(e) event.
      */
     private void resizeInFrame() {
-        Dimension frSize = super.getTargetFrame().getSize(); // 5 px for border, var px for footer, autoRows(int)
-        // some GUIs include (wide) menu bar inside frame
-        switchboardLayeredPane.setSize(new Dimension((int) frSize.getWidth() - 6, (int) frSize.getHeight() - verticalMargin));
-        switchboardLayeredPane.repaint();
+        synchronized (this) {
+            Dimension frSize = super.getTargetFrame().getSize(); // 5 px for border, var px for footer, autoRows(int)
+            // some GUIs include (wide) menu bar inside frame
+            switchboardLayeredPane.setSize(new Dimension((int) frSize.getWidth() - 6, (int) frSize.getHeight() - verticalMargin));
+            switchboardLayeredPane.repaint();
+        }
         //tmp synchronized (this) {
             if (autoRowsBox.isSelected()) { // check if autoRows is active
                 int oldRows = rows;
@@ -487,18 +488,19 @@ public class SwitchboardEditor extends Editor {
         }
         ready = false; // set flag for updating
         // if range is confirmed, go ahead with switchboard update
-        for (int i = switchesOnBoard.size() - 1; i >= 0; i--) {
-            //            if (i >= switchboardLayeredPane.getComponentCount()) { // turn off this check for now
-            //                continue;
-            //            }
-            // remove listeners before removing switches from JLayeredPane
-            ((BeanSwitch) switchboardLayeredPane.getComponent(i)).cleanup();
-            // deleting items starting from 0 will result in skipping the even numbered items
-            switchboardLayeredPane.remove(i);
+        synchronized (this) {
+            for (int i = switchboardLayeredPane.getComponentCount() - 1; i >= 0; i--) {
+                // remove listeners before removing switches from JLayeredPane
+                ((BeanSwitch) switchboardLayeredPane.getComponent(i)).cleanup();
+                // deleting items starting from 0 will result in skipping the even numbered items
+                switchboardLayeredPane.remove(i);
+            }
+            switchboardLayeredPane.setSize(width, height);
+            // param: GridLayout(vertical, horizontal), at least 1x1
+            switchboardLayeredPane.setLayout(new GridLayout(Math.max(rows, 1), 1));
         }
         switchesOnBoard.clear(); // reset beanswitches LinkedHashMap
         log.debug("switchesOnBoard cleared, size is now: 0"); // always 0 at this point
-        switchboardLayeredPane.setSize(width, height);
 
         String memoName = (memo != null ? memo.getUserName() : "UNKNOWN");
         log.debug("creating range for manu index {}", memoName);
@@ -521,13 +523,6 @@ public class SwitchboardEditor extends Editor {
             rowsSpinner.setValue(rows);
         }
         // disable the Rows spinner & Update button on the Switchboard Editor pane
-        // param: GridLayout(vertical, horizontal), at least 1x1
-        switchboardLayeredPane.setLayout(new GridLayout(Math.max(rows, 1), 1));
-
-        // add switches to LayeredPane
-        for (BeanSwitch bs : switchesOnBoard.values()) {
-            switchboardLayeredPane.add(bs);
-        }
         ready = true; // reset flag
         help3.setVisible(switchesOnBoard.size() == 0); // show/hide help3 warning
         help2.setVisible(switchesOnBoard.size() != 0); // hide help2 when help3 is shown vice versa (as no items are dimmed or not)
@@ -539,12 +534,17 @@ public class SwitchboardEditor extends Editor {
         // hide AllOn/Off buttons unless type is Light and control is allowed
         allOnButton.setVisible((beanTypeList.getSelectedIndex() == 2) && allControlling());
         allOffButton.setVisible((beanTypeList.getSelectedIndex() == 2) && allControlling());
-        pack();
-        // must repaint again to fit inside frame
-        Dimension frSize = super.getTargetFrame().getSize(); // 2x3 px for border, var px for footer + optional UI menubar, autoRows(int)
-        switchboardLayeredPane.setSize(new Dimension((int) frSize.getWidth() - 6, (int) frSize.getHeight() - verticalMargin));
-        switchboardLayeredPane.repaint();
-
+        // add switches to LayeredPane
+        synchronized (this) {
+            for (BeanSwitch bs : switchesOnBoard.values()) {
+                switchboardLayeredPane.add(bs);
+            }
+            pack();
+            // must repaint again to fit inside frame
+            Dimension frSize = super.getTargetFrame().getSize(); // 2x3 px for border, var px for footer + optional UI menubar, autoRows(int)
+            switchboardLayeredPane.setSize(new Dimension((int) frSize.getWidth() - 6, (int) frSize.getHeight() - verticalMargin));
+            switchboardLayeredPane.repaint();
+        }
         log.debug("updatePressed END _tileSize = {}", _tileSize);
     }
 
