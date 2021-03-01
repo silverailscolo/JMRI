@@ -702,7 +702,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         synchronized (this) {
             // get statuses of everything once
             currPathCnt = paths.size();
-            tempPaths = (ArrayList<Path>)getPaths();
+            tempPaths = (ArrayList<?>)getPaths();
         }
         Path[] pList = new Path[currPathCnt];
         boolean[] isSet = new boolean[currPathCnt];
@@ -839,7 +839,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         synchronized (this) {
             // get statuses of everything once
             currPathCnt = paths.size();
-            tempPaths = (ArrayList<Path>) getPaths();
+            tempPaths = (ArrayList<?>)getPaths();
         }
         Path[] pList = new Path[currPathCnt];
         boolean[] isSet = new boolean[currPathCnt];
@@ -977,11 +977,8 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
             if (m.find()) {
                 log.debug("Parsed direction: {}", m.group(2));
                 switch (m.group(2)) {
-                    case "enter":
-                        // LocoNet Enter message
-                        return (PhysicalLocationReporter.Direction.ENTER);
-                    case "seen":
-                        // Lissy message.  Treat them all as "entry" messages.
+                    case "enter": // LocoNet Enter message
+                    case "seen": // Lissy message.  Treat them all as "entry" messages.
                         return (PhysicalLocationReporter.Direction.ENTER);
                     default:
                         return (PhysicalLocationReporter.Direction.EXIT);
