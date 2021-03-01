@@ -698,11 +698,11 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         Path next = null;
         // get statuses of everything once
         int currPathCnt;
-        ArrayList<?> tempPaths; // for synchronized access
+        List<Path> tempPaths; // for synchronized access
         synchronized (this) {
             // get statuses of everything once
             currPathCnt = paths.size();
-            tempPaths = (ArrayList<?>)getPaths();
+            tempPaths = getPaths();
         }
         Path[] pList = new Path[currPathCnt];
         boolean[] isSet = new boolean[currPathCnt];
@@ -710,7 +710,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         int[] pDir = new int[currPathCnt];
         int[] pFromDir = new int[currPathCnt];
         for (int i = 0; i < currPathCnt; i++) {
-            pList[i] = (Path) tempPaths.get(i);
+            pList[i] = tempPaths.get(i);
             isSet[i] = pList[i].checkPathSet();
             Block b = pList[i].getBlock();
             if (b != null) {
@@ -835,11 +835,11 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         int count = 0;
         Path next = null;
         int currPathCnt;
-        ArrayList<?> tempPaths; // for synchronized access
+        List<Path> tempPaths; // for synchronized access
         synchronized (this) {
             // get statuses of everything once
             currPathCnt = paths.size();
-            tempPaths = (ArrayList<?>)getPaths();
+            tempPaths = getPaths();
         }
         Path[] pList = new Path[currPathCnt];
         boolean[] isSet = new boolean[currPathCnt];
@@ -847,7 +847,7 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
         int[] pDir = new int[currPathCnt];
         int[] pFromDir = new int[currPathCnt];
         for (int i = 0; i < currPathCnt; i++) {
-            pList[i] = (Path) tempPaths.get(i);
+            pList[i] = tempPaths.get(i);
             isSet[i] = pList[i].checkPathSet();
             Block b = pList[i].getBlock();
             if (b != null) {
@@ -886,9 +886,10 @@ public class Block extends AbstractNamedBean implements PhysicalLocationReporter
             if (next == null) {
                 log.debug("next is null!");
             }
-            if (next != null && count == 1) {
+            //if (next != null && count == 1) {
                 // found one block with proper direction, assume that
-            } else {
+            //} else {
+            if (next == null || count != 1) {
                 // no unique path with correct direction - this happens frequently from noise in block detectors!!
                 log.warn("count of {} ACTIVE neighbors with proper direction can't be handled for block {}", count, getDisplayName());
             }
