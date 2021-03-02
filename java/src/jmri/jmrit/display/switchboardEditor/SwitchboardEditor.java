@@ -248,7 +248,9 @@ public class SwitchboardEditor extends Editor {
             if (typeChoice != null) {
                 displayManagerComboBoxes(typeChoice); // so these boxes should already be instantiated by now
             }
-            updatePressed();
+            if (ready) {
+                updatePressed();
+            }
             setDirty();
         });
         beanSetupPane.add(beanTypeList);
@@ -295,8 +297,10 @@ public class SwitchboardEditor extends Editor {
         shapeList.setSelectedIndex(0); // select Button choice in comboBox
         shapeList.addActionListener((ActionEvent event) -> {
             shape = (Math.max(shapeList.getSelectedIndex(), 0)); // picks 1st item when no selection
-            updatePressed();
-            setDirty();
+            if (ready) {
+                updatePressed();
+                setDirty();
+            }
         });
         switchShapePane.add(shapeList);
         // add column spinner
@@ -307,8 +311,10 @@ public class SwitchboardEditor extends Editor {
             //tmp synchronized (this) {
                 if (!autoRowsBox.isSelected()) { // spinner is disabled when autoRows is on, but just in case
                     rows = (Integer) rowsSpinner.getValue();
-                    updatePressed();
-                    setDirty();
+                    if (ready) {
+                        updatePressed();
+                        setDirty();
+                    }
                 }
             //tmp }
         });
@@ -444,7 +450,10 @@ public class SwitchboardEditor extends Editor {
                 rows = autoRows(cellProportion); // if it suggests a different value for rows, call updatePressed()
                 if (rows != oldRows) {
                     rowsSpinner.setValue(rows); // updatePressed will update rows spinner in display, but spinner will not propagate when disabled
-                    updatePressed(); // redraw if rows value changed
+                    if (ready) {
+                        updatePressed(); // redraw if rows value changed
+                        setDirty();
+                    }
                 }
             }
         //tmp }
@@ -458,6 +467,7 @@ public class SwitchboardEditor extends Editor {
      * Switchboard JPanel WindowResize() event is handled by resizeInFrame()
      */
     public void updatePressed() {
+        ready = false; // set flag for updating
         log.debug("updatePressed START _tileSize = {}", _tileSize);
 
         if (_autoItemRange && !autoItemRange.isSelected()) {
@@ -486,7 +496,6 @@ public class SwitchboardEditor extends Editor {
                 return;
             }
         }
-        ready = false; // set flag for updating
         // if range is confirmed, go ahead with switchboard update
         synchronized (this) {
             for (int i = switchboardLayeredPane.getComponentCount() - 1; i >= 0; i--) {
@@ -523,7 +532,6 @@ public class SwitchboardEditor extends Editor {
             rowsSpinner.setValue(rows);
         }
         // disable the Rows spinner & Update button on the Switchboard Editor pane
-        ready = true; // reset flag
         help3.setVisible(switchesOnBoard.size() == 0); // show/hide help3 warning
         help2.setVisible(switchesOnBoard.size() != 0); // hide help2 when help3 is shown vice versa (as no items are dimmed or not)
         // update the title at the bottom of the switchboard to match (no) layout control
@@ -546,6 +554,7 @@ public class SwitchboardEditor extends Editor {
             switchboardLayeredPane.repaint();
         }
         log.debug("updatePressed END _tileSize = {}", _tileSize);
+        ready = true; // reset flag
     }
 
     /**
@@ -653,8 +662,10 @@ public class SwitchboardEditor extends Editor {
                 if (_autoItemRange) {
                     setMaxSpinner(Math.max((oldMax - range), range));   // set new max (only if auto)
                 }
-                updatePressed();
-                setDirty();
+                if (ready) {
+                    updatePressed(); // redraw if rows value changed
+                    setDirty();
+                }
                 log.debug("new prev range = {}, newMin ={}, newMax ={}", range, getMinSpinner(), getMaxSpinner());
             }
         });
@@ -671,8 +682,10 @@ public class SwitchboardEditor extends Editor {
             if (value >= (Integer) maxSpinner.getValue() - 1) {
                 maxSpinner.setValue(value + 1);
             }
-            updatePressed();
-            setDirty();
+            if (ready) {
+                updatePressed(); // redraw if rows value changed
+                setDirty();
+            }
         });
         navBarPanel.add(minSpinner);
         navBarPanel.add(new JLabel(Bundle.getMessage("MakeLabel", Bundle.getMessage("UpTo"))));
@@ -687,8 +700,10 @@ public class SwitchboardEditor extends Editor {
             if (value <= (Integer) minSpinner.getValue() + 1) {
                 minSpinner.setValue(value - 1);
             }
-            updatePressed();
-            setDirty();
+            if (ready) {
+                updatePressed(); // redraw if rows value changed
+                setDirty();
+            }
         });
         navBarPanel.add(maxSpinner);
 
@@ -704,8 +719,10 @@ public class SwitchboardEditor extends Editor {
                 if (_autoItemRange) {
                     setMinSpinner(Math.min(oldMin + range, rangeTop - range + 1)); // set new min (only if auto)
                 }
-                updatePressed();
-                setDirty();
+                if (ready) {
+                    updatePressed(); // redraw if rows value changed
+                    setDirty();
+                }
                 log.debug("new next range = {}, newMin ={}, newMax ={}", range, getMinSpinner(), getMaxSpinner());
             }
         });
@@ -773,7 +790,9 @@ public class SwitchboardEditor extends Editor {
             }
             allOnButton.setVisible((beanTypeList.getSelectedIndex() == 2) && allControlling());
             allOffButton.setVisible((beanTypeList.getSelectedIndex() == 2) && allControlling());
-            switchboardLayeredPane.repaint();
+            synchronized (this) {
+                switchboardLayeredPane.repaint();
+            }
             log.debug("border title updated");
         });
         controllingBox.setSelected(allControlling());
@@ -805,7 +824,10 @@ public class SwitchboardEditor extends Editor {
                     // hide rowsSpinner + rowsLabel?
                     if (rows != oldRows) {
                         // rowsSpinner will be recalculated by auto so we don't copy the old value
-                        updatePressed(); // redraw if rows value changed
+                        if (ready) {
+                            updatePressed(); // redraw if rows value changed
+                            setDirty();
+                        }
                     }
                 } else {
                     log.debug("autoRows was turned OFF");
@@ -826,7 +848,12 @@ public class SwitchboardEditor extends Editor {
         showToolTipBox.setSelected(showToolTip());
         // show user name on switches item
         _optionMenu.add(showUserNameBox);
-        showUserNameBox.addActionListener((ActionEvent e) -> updatePressed());
+        showUserNameBox.addActionListener((ActionEvent e) -> {
+            if (ready) {
+                updatePressed(); // redraw if rows value changed
+                setDirty();
+            }
+        });
         showUserNameBox.setSelected(true); // default on
 
         // hideUnconnected item
@@ -836,8 +863,10 @@ public class SwitchboardEditor extends Editor {
             setHideUnconnected(hideUnconnectedBox.isSelected());
             hideUnconnected.setSelected(_hideUnconnected); // also (un)check the box on the editor
             help2.setVisible(!_hideUnconnected && (switchesOnBoard.size() != 0)); // and show/hide instruction line unless no items on board
-            updatePressed();
-            setDirty();
+            if (ready) {
+                updatePressed(); // redraw if rows value changed
+                setDirty();
+            }
         });
 
         // Show/Hide Scroll Bars
@@ -896,7 +925,10 @@ public class SwitchboardEditor extends Editor {
                 border.setTitleColor(desiredColor);
                 setDirty(true);
                 JmriColorChooser.addRecentColor(desiredColor);
-                updatePressed();
+                if (ready) {
+                    updatePressed();
+                    setDirty();
+                }
             }
         });
         // add background color menu item
@@ -923,7 +955,10 @@ public class SwitchboardEditor extends Editor {
                 setBackgroundColor(desiredColor);
                 setDirty(true);
                 JmriColorChooser.addRecentColor(desiredColor);
-                updatePressed();
+                if (ready) {
+                    updatePressed();
+                    setDirty();
+                }
             }
         });
         // add ActiveColor menu item
@@ -948,7 +983,10 @@ public class SwitchboardEditor extends Editor {
                 defaultActiveColor = desiredColor;
                 setDirty(true);
                 JmriColorChooser.addRecentColor(desiredColor);
-                updatePressed();
+                if (ready) {
+                    updatePressed(); // redraw if rows value changed
+                    setDirty();
+                }
             }
         });
         // add InctiveColor menu item
@@ -973,7 +1011,10 @@ public class SwitchboardEditor extends Editor {
                 defaultInactiveColor = desiredColor;
                 setDirty(true);
                 JmriColorChooser.addRecentColor(desiredColor);
-                updatePressed();
+                if (ready) {
+                    updatePressed(); // redraw if rows value changed
+                    setDirty();
+                }
             }
         });
     }
@@ -1371,7 +1412,6 @@ public class SwitchboardEditor extends Editor {
             }
             if (memo.get(SensorManager.class) != null) { // we expect the user has same preference for the other types
                 sensorManComboBox.setSelectedItem(memo.get(SensorManager.class));
-                // TODO LocoNet does not provide a sensormanager via the memo
                 log.debug("sensorManComboBox set to {} for {}", memo.getUserName(), manuPrefix);
             }
             if (memo.get(LightManager.class) != null) { // so we set them the same (only 1 value stored as set on store)
@@ -1859,7 +1899,10 @@ public class SwitchboardEditor extends Editor {
         } else {
             sizeDefault.setSelected(true);
         }
-        updatePressed();
+        if (ready) {
+            updatePressed(); // redraw if rows value changed
+            setDirty();
+        }
     }
 
     public int getIconScale() {
