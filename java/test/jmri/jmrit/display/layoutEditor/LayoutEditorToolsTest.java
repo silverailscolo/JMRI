@@ -2,6 +2,7 @@ package jmri.jmrit.display.layoutEditor;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.*;
 import java.util.stream.Collectors;
@@ -609,30 +610,25 @@ public class LayoutEditorToolsTest {
 
         if (!GraphicsEnvironment.isHeadless()) {
 
-            layoutEditor = new LayoutEditor();
-            layoutEditor.setVisible(true);
-
-            let = layoutEditor.getLETools();
-
             for (int i = 0; i < 5; i++) {
                 String sBlockName = "IB" + i;
                 String uBlockName = "Block " + i;
                 InstanceManager.getDefault(LayoutBlockManager.class).createNewLayoutBlock(sBlockName, uBlockName);
             }
-            layoutBlocks = InstanceManager.getDefault(LayoutBlockManager.class).getNamedBeanSet().stream().collect(Collectors.toList());
+            layoutBlocks = new ArrayList<>(InstanceManager.getDefault(LayoutBlockManager.class).getNamedBeanSet());
 
             for (int i = 0; i < 5; i++) {
                 String toName = "IT" + i;
                 InstanceManager.getDefault(jmri.TurnoutManager.class).provideTurnout(toName);
             }
-            turnouts = InstanceManager.getDefault(TurnoutManager.class).getNamedBeanSet().stream().collect(Collectors.toList());
+            turnouts = new ArrayList<>(InstanceManager.getDefault(TurnoutManager.class).getNamedBeanSet());
 
             for (int i = 0; i < 5; i++) {
                 String sName = "IS" + i;
                 String uName = "sensor " + i;
                 InstanceManager.getDefault(SensorManager.class).provideSensor(sName).setUserName(uName);
             }
-            sensors = InstanceManager.getDefault(SensorManager.class).getNamedBeanSet().stream().collect(Collectors.toList());
+            sensors = new ArrayList<>(InstanceManager.getDefault(SensorManager.class).getNamedBeanSet());
 
             for (int i = 0; i < 5; i++) {
                 String sName = "IH" + i;
@@ -640,17 +636,22 @@ public class LayoutEditorToolsTest {
                 VirtualSignalHead signalHead = new VirtualSignalHead(sName, uName);
                 InstanceManager.getDefault(SignalHeadManager.class).register(signalHead);
             }
-            signalHeads = InstanceManager.getDefault(SignalHeadManager.class).getNamedBeanSet().stream().collect(Collectors.toList());
+            signalHeads = new ArrayList<>(InstanceManager.getDefault(SignalHeadManager.class).getNamedBeanSet());
+
+            layoutEditor = new LayoutEditor();
+            layoutEditor.setVisible(true);
+
+            let = layoutEditor.getLETools();
         }
     }
 
     @After
     public void tearDown() throws Exception {
         if (!GraphicsEnvironment.isHeadless()) {
-            layoutBlocks.stream().forEach(LayoutBlock::dispose);
-            turnouts.stream().forEach(Turnout::dispose);
-            signalHeads.stream().forEach(SignalHead::dispose);
-            sensors.stream().forEach(Sensor::dispose);
+            layoutBlocks.forEach(LayoutBlock::dispose);
+            turnouts.forEach(Turnout::dispose);
+            signalHeads.forEach(SignalHead::dispose);
+            sensors.forEach(Sensor::dispose);
             EditorFrameOperator operator = new EditorFrameOperator(layoutEditor);
             operator.closeFrameWithConfirmations();
             JUnitUtil.dispose(layoutEditor);
