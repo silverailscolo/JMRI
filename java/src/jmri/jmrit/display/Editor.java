@@ -593,7 +593,7 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
         }
 
         @Override
-        public Component add(Component c, int i) {
+        public Component add(@Nonnull Component c, int i) {
             int hnew = Math.max(this.h, c.getLocation().y + c.getSize().height);
             int wnew = Math.max(this.w, c.getLocation().x + c.getSize().width);
             if (hnew > h || wnew > w) {
@@ -604,7 +604,7 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
         }
 
         @Override
-        public void add(Component c, Object o) {
+        public void add(@Nonnull Component c, Object o) {
             super.add(c, o);
             int hnew = Math.max(h, c.getLocation().y + c.getSize().height);
             int wnew = Math.max(w, c.getLocation().x + c.getSize().width);
@@ -1175,7 +1175,7 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
      */
     public boolean setShowCoordinatesMenu(Positionable p, JPopupMenu popup) {
         //if (showCoordinates()) {
-        JMenuItem edit = null;
+        JMenuItem edit;
         if ((p instanceof MemoryIcon) && (p.getPopupUtility().getFixedWidth() == 0)) {
             MemoryIcon pm = (MemoryIcon) p;
 
@@ -1373,7 +1373,7 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
     }
 
     /**
-     * Display display 'z' level of the Positionable item and provide a dialog
+     * Display 'z' level of the Positionable item and provide a dialog
      * menu item to edit it.
      *
      * @param p     The item
@@ -1599,7 +1599,7 @@ abstract public class Editor extends JmriJFrame implements MouseListener, MouseM
         for (int i = _contents.size() - 1; i >= 0; i--) {
             Positionable il = _contents.get(i);
             if (il instanceof LocoIcon) {
-                ((LocoIcon) il).remove();
+                il.remove();
             }
         }
     }

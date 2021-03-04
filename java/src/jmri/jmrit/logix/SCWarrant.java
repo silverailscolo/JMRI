@@ -433,15 +433,15 @@ public class SCWarrant extends Warrant {
         } else if (activeIdx == _idxCurrentOrder) {
             // Unusual case of current block losing detection, then regaining it.  i.e. dirty track, derail etc.
             log.debug("{} Current block becoming active - ignored",_trainName);
-        } else if (activeIdx == _idxCurrentOrder+1) {
+        } else if (activeIdx == _idxCurrentOrder + 1) {
             // not necessary: It is done in the main loop in SCTrainRunner.run:  allocateBlocksAndSetTurnouts(_idxCurrentOrder+1)
             // update our present location
             _idxCurrentOrder++;
             // fire property change (entered new block)
-            firePropertyChange("blockChange", getBlockAt(_idxCurrentOrder-1), getBlockAt(_idxCurrentOrder));
+            firePropertyChange("blockChange", getBlockAt(_idxCurrentOrder - 1), getBlockAt(_idxCurrentOrder));
             // now let the main loop adjust speed.
             synchronized(this) {
-                notify();
+                notifyAll();
             }
         } else {
             log.debug("{} Rogue occupation of block.",_trainName);
@@ -520,7 +520,6 @@ public class SCWarrant extends Warrant {
         }
     }
 
-
     /**
      * Something has fired a property change event.
      * React if:
@@ -542,7 +541,7 @@ public class SCWarrant extends Warrant {
             if (property.equals("Aspect") || property.equals("Appearance")) {
                 // The signal controlling this warrant has changed. Adjust the speed (in runSignalControlledTrain)
                 synchronized(this) {
-                    notify();
+                    notifyAll();
                 }
                 return;
             }
