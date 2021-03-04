@@ -103,7 +103,7 @@ public interface Positionable extends Cloneable {
     Positionable deepClone();
 
     /**
-     * Get the name of the positional as a String. This is often the display
+     * Get the name of the positionable as a String. This is often the display
      * name of the NamedBean being positioned.
      *
      * @return the name to display

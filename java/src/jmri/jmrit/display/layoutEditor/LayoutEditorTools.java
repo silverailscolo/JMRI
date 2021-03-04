@@ -7996,7 +7996,7 @@ final public class LayoutEditorTools {
     }
 
     /**
-     * Attached a sensor to the block boundary positional point.
+     * Attached a sensor to the block boundary positionable point.
      *
      * @since 4.11.2
      * @param newSensor  The sensor that is being added.

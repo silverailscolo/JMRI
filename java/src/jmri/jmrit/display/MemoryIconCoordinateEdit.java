@@ -31,7 +31,7 @@ import javax.swing.event.ChangeListener;
  */
 public class MemoryIconCoordinateEdit extends CoordinateEdit {
 
-    MemoryIcon pl;    // positional label tracked by this frame
+    MemoryIcon pl;    // positionable label tracked by this frame
     int oldX;
     int oldY;
     double oldD;

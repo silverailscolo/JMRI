@@ -218,7 +218,7 @@ public class MemoryComboIcon extends PositionableJPanel
     @Override
     protected void edit() {
         _iconEditor = new IconAdder("Memory") {
-            JList<String> list;
+            JList<String> list = null;
             final JButton bDel = new JButton(Bundle.getMessage("deleteSelection"));
             final JButton bAdd = new JButton(Bundle.getMessage("addItem"));
             final JTextField textfield = new JTextField(30);

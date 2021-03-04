@@ -297,12 +297,14 @@ public class LayoutTurnoutView extends LayoutTrackView {
         return useBlockSpeed;
     }
 
-    // @CheckForNull - can this be null? or ""?
+    // can be empty string, never null
+    @Nonnull
     public String getTurnoutName() {
         return turnout.getTurnoutName();
     }
 
-    // @CheckForNull - can this be null? or ""?
+    // can be empty string, never null
+    @Nonnull
     public String getSecondTurnoutName() {
         return turnout.getSecondTurnoutName();
     }

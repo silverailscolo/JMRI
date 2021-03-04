@@ -1283,7 +1283,7 @@ abstract public class LayoutTurnout extends LayoutTrack {
         activateTurnout(); // Even if secondary is null, the primary Turnout may still need to be re-activated
         if (isTurnoutTypeTurnout()) {
             LayoutEditorFindItems lf = new LayoutEditorFindItems(models);
-            if (oldSecondTurnoutName != null && !oldSecondTurnoutName.isEmpty()) {
+            if (!oldSecondTurnoutName.isEmpty()) {
                 Turnout oldTurnout = InstanceManager.turnoutManagerInstance().getTurnout(oldSecondTurnoutName);
                 String oldSystemName = (oldTurnout == null) ? null : oldTurnout.getSystemName();
                 LayoutTurnout oldLinked = (oldSystemName == null) ? null
@@ -1723,10 +1723,8 @@ abstract public class LayoutTurnout extends LayoutTrack {
                     return connectD.isMainline();
                 }
             } // must be RH, LH, or WYE turnout - A is the switch throat
-            else if (((connectB != null)
-                    && (connectB.isMainline()))
-                    || ((connectC != null)
-                    && (connectC.isMainline()))) {
+            else if (((connectB != null) && (connectB.isMainline()))
+                    || ((connectC != null) && (connectC.isMainline()))) {
                 return true;
             }
         }

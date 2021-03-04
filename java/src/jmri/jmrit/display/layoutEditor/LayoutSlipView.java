@@ -70,6 +70,8 @@ public class LayoutSlipView extends LayoutTurnoutView {
         return slip.getSlipState();
     }
 
+    // can be empty string, never null
+    @Nonnull
     public String getTurnoutBName() {
        return slip.getTurnoutBName();
     }
@@ -102,10 +104,10 @@ public class LayoutSlipView extends LayoutTurnoutView {
         String name = "Slip " + getId();
         String tnA = getTurnoutName();
         String tnB = getTurnoutBName();
-        if ((tnA != null) && !tnA.isEmpty()) {
+        if (!tnA.isEmpty()) {
             name += " (" + tnA;
         }
-        if ((tnB != null) && !tnB.isEmpty()) {
+        if (!tnB.isEmpty()) {
             if (name.contains(" (")) {
                 name += ", ";
             } else {

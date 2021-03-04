@@ -340,7 +340,7 @@ public class MemoryIcon extends PositionableLabel implements java.beans.Property
      *
      * @since 4.11.6
      * @param util The LE popup util object.
-     * @param that The current positional object (this).
+     * @param that The current positionable object (this).
      */
     public void setAttributes(PositionablePopupUtil util, Positionable that) {
         _editor.setAttributes(util, that);

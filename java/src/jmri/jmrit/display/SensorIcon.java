@@ -949,8 +949,10 @@ public class SensorIcon extends PositionableIcon implements java.beans.PropertyC
             return;
         }
         int interval = (1000 / tps) / 2;
-        flashStateOn = state1;
-        flashStateOff = state2;
+        synchronized (this) {
+            flashStateOn = state1;
+            flashStateOff = state2;
+        }
         if (taskPerformer == null) {
             taskPerformer = (ActionEvent evt) -> {
                 synchronized (this) {

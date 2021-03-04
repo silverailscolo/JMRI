@@ -438,7 +438,7 @@ public class PositionableLabelXml extends AbstractXmlAdapter {
             x = element.getAttribute("x").getIntValue();
             y = element.getAttribute("y").getIntValue();
         } catch (org.jdom2.DataConversionException e) {
-            log.error("failed to convert positional attribute");
+            log.error("failed to convert positionable attribute");
         }
         l.setLocation(x, y);
 

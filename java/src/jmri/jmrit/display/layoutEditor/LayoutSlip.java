@@ -91,6 +91,7 @@ abstract public class LayoutSlip extends LayoutTurnout {
         return currentState;
     }
 
+    @Nonnull
     public String getTurnoutBName() {
         if (namedTurnoutB != null) {
             return namedTurnoutB.getName();

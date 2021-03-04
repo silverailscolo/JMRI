@@ -62,7 +62,7 @@ public class PortalIconXml extends PositionableLabelXml {
         element.setAttribute("arrowHide", "" + (p.getArrowHide() ? "yes" : "no"));
 
         HashMap<String, NamedIcon> map = p.getIconMap();
-        if (map != null) { // never null, but map array can be empty. Is that intended?
+        if (!map.isEmpty()) { // never null, but map array can be empty. Don't store in that case
             Element elem = new Element("icons");
             String family = p.getFamily();
             if (family != null) {

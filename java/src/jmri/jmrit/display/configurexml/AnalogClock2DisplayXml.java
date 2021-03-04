@@ -89,7 +89,7 @@ public class AnalogClock2DisplayXml
                 log.error("Invalid color {}; using black", element.getAttribute("color").getValue());
             }
         } catch (org.jdom2.DataConversionException e) {
-            log.error("failed to convert positional attribute");
+            log.error("failed to convert positionable attribute");
         }
         if (element.getAttribute("link") != null) {
             l.setULRL(element.getAttribute("link").getValue());

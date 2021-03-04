@@ -239,7 +239,7 @@ public class PositionablePointView extends LayoutTrackView {
     }
 
     /**
-     * @return the bounds of this positional point
+     * @return the bounds of this positionable point
      */
     @Override
     public Rectangle2D getBounds() {

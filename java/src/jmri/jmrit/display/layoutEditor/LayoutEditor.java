@@ -5754,7 +5754,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
     }
 
     /**
-     * NX Sensors, Signal Heads and Signal Masts can be attached to positional
+     * NX Sensors, Signal Heads and Signal Masts can be attached to positionable
      * points, turnouts and level crossings. If an attachment exists, present an
      * option to cancel the remove action, remove the attachement or retain the
      * attachment.

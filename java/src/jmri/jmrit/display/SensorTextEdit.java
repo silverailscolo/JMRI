@@ -19,7 +19,7 @@ import jmri.util.JmriJFrame;
  */
 public class SensorTextEdit extends JmriJFrame {
 
-    SensorIcon pl = null; // layout positional label tracked by this frame
+    SensorIcon pl = null; // layout positionable label tracked by this frame
     static final String INIT = null;
     String oldActive = INIT;
     String oldInactive = INIT;
@@ -151,7 +151,6 @@ public class SensorTextEdit extends JmriJFrame {
     }
 
     public void buttonActionPerformed(java.awt.event.ActionEvent ae) {
-
         if (ae.getSource() == okButton) {
             // save current values in case user cancels
             if (oldActive == null) {

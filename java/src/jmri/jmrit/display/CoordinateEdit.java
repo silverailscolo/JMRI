@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CoordinateEdit extends JmriJFrame {
 
-    Positionable pl;    // positional label tracked by this frame
+    Positionable pl;    // positionable label tracked by this frame
     int oldX;
     int oldY;
     double oldD;
