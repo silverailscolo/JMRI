@@ -1024,7 +1024,7 @@ public class SwitchboardEditor extends Editor {
         _menuBar.add(_fileMenu, 0);
         _fileMenu.add(new jmri.jmrit.display.NewPanelAction(Bundle.getMessage("MenuItemNew")));
 
-        _fileMenu.add(new jmri.configurexml.StoreXmlUserAction(Bundle.getMessage("MenuItemStore")));
+        _fileMenu.add(new jmri.configurexml.StoreXmlUserAction(Bundle.getMessage("FileMenuItemStore")));
 
         JMenuItem editItem = new JMenuItem(Bundle.getMessage("renamePanelMenu", "..."));
         PositionableJComponent z = new PositionableJComponent(this);
@@ -1038,6 +1038,7 @@ public class SwitchboardEditor extends Editor {
         _fileMenu.add(deleteItem);
         deleteItem.addActionListener((ActionEvent event) -> {
             if (deletePanel()) {
+                getTargetFrame().dispose();
                 dispose();
             }
         });
@@ -1678,7 +1679,8 @@ public class SwitchboardEditor extends Editor {
     protected void targetWindowClosingEvent(java.awt.event.WindowEvent e) {
         boolean save = (isDirty() || (savedEditMode != isEditable())
                 || (savedControlLayout != allControlling()));
-        targetWindowClosing(save);
+        log.trace("Temp fix to disable CI errors: save = {}", save);
+        targetWindowClosing();
     }
 
     /**
