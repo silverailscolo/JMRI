@@ -143,7 +143,7 @@ public class LayoutDoubleSlipEditorTest extends LayoutSlipEditorTest {
 
             // doubleLayoutSlip
             point = MathUtil.add(point, delta);
-            doubleLayoutSlip = new LayoutDoubleSlip("Double Slip", layoutEditor); // point, 0.0, 
+            doubleLayoutSlip = new LayoutDoubleSlip("Double Slip", layoutEditor); // point, 0.0,
             doubleLayoutSlipView = new LayoutDoubleSlipView(doubleLayoutSlip, point, 0.0, layoutEditor);
             layoutEditor.addLayoutTrack(doubleLayoutSlip, doubleLayoutSlipView);
         }
@@ -159,6 +159,7 @@ public class LayoutDoubleSlipEditorTest extends LayoutSlipEditorTest {
 
         JUnitUtil.resetWindows(false, false);
         JUnitUtil.deregisterBlockManagerShutdownTask();
+        JUnitUtil.deregisterEditorManagerShutdownTask();
         super.tearDown();
     }
 

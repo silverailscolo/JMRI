@@ -201,9 +201,9 @@ public class LayoutXOverEditorTest extends LayoutTrackEditorTest {
             point = MathUtil.add(point, delta);
 
             // Double crossover
-            doubleXoverLayoutTurnout = new LayoutDoubleXOver("Double Xover", layoutEditor); // point, 33.0, 1.1, 1.2, 
-            doubleXoverLayoutTurnoutView = new LayoutDoubleXOverView(doubleXoverLayoutTurnout, 
-                                                    point, 33.0, 1.1, 1.2, 
+            doubleXoverLayoutTurnout = new LayoutDoubleXOver("Double Xover", layoutEditor); // point, 33.0, 1.1, 1.2,
+            doubleXoverLayoutTurnoutView = new LayoutDoubleXOverView(doubleXoverLayoutTurnout,
+                                                    point, 33.0, 1.1, 1.2,
                                                     layoutEditor);
             layoutEditor.addLayoutTrack(doubleXoverLayoutTurnout, doubleXoverLayoutTurnoutView);
         }

@@ -84,7 +84,7 @@ public class LevelXingEditorTest extends LayoutTrackEditorTest {
            the following force tests of the normal create process handled by done. */
         acBlockComboBoxOperator.getTextField().setText("Xing New AC");
         bdBlockComboBoxOperator.getTextField().setText("Xing New BD");
-    
+
         try {
             new JButtonOperator(jFrameOperator, Bundle.getMessage("ButtonDone")).doClick();
             jFrameOperator.waitClosed();    // make sure the dialog actually closed
@@ -169,7 +169,7 @@ public class LevelXingEditorTest extends LayoutTrackEditorTest {
 
         super.tearDown();
     }
-    
+
     private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutTrackEditorTest.class);
 
 }

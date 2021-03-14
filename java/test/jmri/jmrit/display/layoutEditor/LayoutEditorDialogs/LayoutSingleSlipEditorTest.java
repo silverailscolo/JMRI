@@ -105,10 +105,10 @@ public class LayoutSingleSlipEditorTest extends LayoutSlipEditorTest {
 
             // Single doubleLayoutSlip
             point = MathUtil.add(point, delta);
-            singleLayoutSlip = new LayoutSingleSlip("Single Slip",  // point, 0.0, 
+            singleLayoutSlip = new LayoutSingleSlip("Single Slip",  // point, 0.0,
                     layoutEditor);
             singleLayoutSlipView = new LayoutSingleSlipView(singleLayoutSlip,
-                    point, 0.0, 
+                    point, 0.0,
                     layoutEditor);
             layoutEditor.addLayoutTrack(singleLayoutSlip, singleLayoutSlipView);
         }
