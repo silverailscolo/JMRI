@@ -2,6 +2,7 @@ package jmri;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Locate a Memory object representing some specific information.
@@ -12,7 +13,7 @@ import javax.annotation.Nonnull;
  * Memory memory = InstanceManager.memoryManagerInstance().provideMemory("status");
  * </pre>
  * <p>
- * Each Memory has a two names. The "user" name is entirely free form, and can
+ * Each Memory has two names. The "user" name is entirely free form, and can
  * be used for any purpose. The "system" name is provided by the system-specific
  * implementations, if any, and provides a unique mapping to the layout control
  * system (for example LocoNet or NCE) and address within that system. Note that
@@ -42,22 +43,18 @@ import javax.annotation.Nonnull;
 public interface MemoryManager extends ProvidingManager<Memory> {
 
     /**
-     * Get the Memory with the user name, then system name if needed; if that fails, create a
-     * new Memory. 
-     * If the name is a valid system name, it will be used for the
-     * new Memory. Otherwise, the makeSystemName method will attempt to turn it
-     * into a valid system name.
+     * Create a new Memory if it does not exist.
      *
-     * @param name User name, system name, or address which can be promoted to
-     *             system name
-     * @return Never null
-     * @throws IllegalArgumentException if Memory doesn't already exist and the
-     *                                  manager cannot create the Memory due to
-     *                                  an illegal name or name that can't
-     *                                  be parsed.
+     * @param systemName the system name for the Memory
+     * @param userName   the user name for the Memory
+     * @return null if a Memory with the same systemName or userName already
+     *         exists or if there is trouble creating a new Memory
      */
     @Nonnull
-    public Memory provideMemory(@Nonnull String name) throws IllegalArgumentException;
+    abstract Memory provideMemory(@Nonnull String systemName, String userName);
+
+    @Nonnull
+    abstract Memory provideMemory(@Nonnull String systemNamee);
 
     /**
      * Get an existing Turnout or return null if it doesn't exist. 
@@ -123,7 +120,7 @@ public interface MemoryManager extends ProvidingManager<Memory> {
     public Memory newMemory(@Nonnull String systemName, String userName);
 
     /**
-     * For use with User GUI, to allow the auto generation of systemNames, where
+     * For use with GUI, to allow the auto generation of systemNames, where
      * the user can optionally supply a username.
      * <p>
      * This will always return a valid object reference; a new object will be
@@ -136,13 +133,13 @@ public interface MemoryManager extends ProvidingManager<Memory> {
      * except to issue warnings. This will mostly happen if you're creating
      * Memory objects when you should be looking them up.
      *
-     * @param userName the user name
+     * @param userName the user name, can be null
      * @return requested Memory object (never null)
      * @throws IllegalArgumentException if cannot create the Memory due to e.g.
      *                                  an illegal name or name that can't be
      *                                  parsed.
      */
     @Nonnull
-    public Memory newMemory(@Nonnull String userName);
+    public Memory newMemory(@Nullable String userName);
 
 }

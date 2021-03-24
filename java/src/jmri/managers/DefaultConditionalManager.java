@@ -217,7 +217,7 @@ public class DefaultConditionalManager extends AbstractManager<Conditional>
      * @return the conditional or null when not found or a duplicate
      */
     @Override
-    public Conditional getByUserName(String key) {
+    public Conditional getByUserName(@Nonnull String key) {
         if (key == null) {
             return null;
         }
@@ -256,7 +256,7 @@ public class DefaultConditionalManager extends AbstractManager<Conditional>
     }
 
     @Override
-    public Conditional getBySystemName(String name) {
+    public Conditional getBySystemName(@Nonnull String name) {
         if (name == null) {
             return null;
         }

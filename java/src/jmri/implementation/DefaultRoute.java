@@ -6,6 +6,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import jmri.InstanceManager;
 import jmri.JmriException;
 import jmri.NamedBean;
@@ -53,6 +55,7 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
 
     /** {@inheritDoc} */
     @Override
+    @Nonnull
     public String getBeanType() {
         return Bundle.getMessage("BeanNameRoute");
     }
@@ -155,8 +158,8 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
         @Override
         public void propertyChange(PropertyChangeEvent e) {
             if (e.getPropertyName().equals("KnownState")) {
-                int now = ((Integer) e.getNewValue()).intValue();
-                int then = ((Integer) e.getOldValue()).intValue();
+                int now = (Integer) e.getNewValue();
+                int then = (Integer) e.getOldValue();
                 checkSensor(now, then, (Sensor) e.getSource());
             }
         }
@@ -224,7 +227,7 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
         public void propertyChange(PropertyChangeEvent e) {
             if (e.getPropertyName().equals("KnownState")
                     || e.getPropertyName().equals("CommandedState")) {
-                //check alignement of all turnouts in route
+                //check alignment of all turnouts in route
                 checkTurnoutAlignment();
             }
         }
@@ -270,8 +273,8 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
     /** {@inheritDoc} */
     @Override
     public boolean canLock() {
-        for (int i = 0; i < _outputTurnoutList.size(); i++) {
-            if (_outputTurnoutList.get(i).getTurnout().canLock(Turnout.CABLOCKOUT)) {
+        for (OutputTurnout outputTurnout : _outputTurnoutList) {
+            if (outputTurnout.getTurnout().canLock(Turnout.CABLOCKOUT)) {
                 return true;
             }
         }
@@ -319,8 +322,8 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
     }
 
     boolean isOutputTurnoutIncluded(Turnout t1) {
-        for (int i = 0; i < _outputTurnoutList.size(); i++) {
-            if (_outputTurnoutList.get(i).getTurnout() == t1) {
+        for (OutputTurnout outputTurnout : _outputTurnoutList) {
+            if (outputTurnout.getTurnout() == t1) {
                 // Found turnout
                 return true;
             }
@@ -345,10 +348,10 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
     @Override
     public int getOutputTurnoutSetState(String name) throws IllegalArgumentException {
         Turnout t1 = InstanceManager.turnoutManagerInstance().provideTurnout(name);
-        for (int i = 0; i < _outputTurnoutList.size(); i++) {
-            if (_outputTurnoutList.get(i).getTurnout() == t1) {
+        for (OutputTurnout outputTurnout : _outputTurnoutList) {
+            if (outputTurnout.getTurnout() == t1) {
                 // Found turnout
-                return _outputTurnoutList.get(i).getState();
+                return outputTurnout.getState();
             }
         }
         return -1;
@@ -414,8 +417,8 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
     }
 
     boolean isOutputSensorIncluded(Sensor s1) {
-        for (int i = 0; i < _outputSensorList.size(); i++) {
-            if (_outputSensorList.get(i).getSensor() == s1) {
+        for (OutputSensor outputSensor : _outputSensorList) {
+            if (outputSensor.getSensor() == s1) {
                 // Found turnout
                 return true;
             }
@@ -427,10 +430,10 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
     @Override
     public int getOutputSensorSetState(String name) throws IllegalArgumentException {
         Sensor s1 = InstanceManager.sensorManagerInstance().provideSensor(name);
-        for (int i = 0; i < _outputSensorList.size(); i++) {
-            if (_outputSensorList.get(i).getSensor() == s1) {
+        for (OutputSensor outputSensor : _outputSensorList) {
+            if (outputSensor.getSensor() == s1) {
                 // Found turnout
-                return _outputSensorList.get(i).getState();
+                return outputSensor.getState();
             }
         }
         return -1;
@@ -529,6 +532,7 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
         }
         return null;
     }
+
     // Inputs ----------------
 
     /** {@inheritDoc} */
@@ -610,8 +614,8 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
     }
 
     boolean isRouteSensorIncluded(Sensor s) {
-        for (int i = 0; i < _controlSensorList.size(); i++) {
-            if (_controlSensorList.get(i).getSensor() == s) {
+        for (ControlSensor controlSensor : _controlSensorList) {
+            if (controlSensor.getSensor() == s) {
                 // Found turnout
                 return true;
             }
@@ -759,9 +763,8 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
      */
     private void lockTurnouts(boolean lock) {
         // determine if turnout should be locked
-        for (int i = 0; i < _outputTurnoutList.size(); i++) {
-            _outputTurnoutList.get(i).getTurnout().setLocked(
-                    Turnout.CABLOCKOUT + Turnout.PUSHBUTTONLOCKOUT, lock);
+        for (OutputTurnout outputTurnout : _outputTurnoutList) {
+            outputTurnout.getTurnout().setLocked(Turnout.CABLOCKOUT + Turnout.PUSHBUTTONLOCKOUT, lock);
         }
     }
 
@@ -866,8 +869,7 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
                 }
                 return;
             default:
-                // if not a firing state, return
-                return;
+                // if not a firing state, ready
         }
     }
 
@@ -881,36 +883,23 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
     void checkLockTurnout(int newState, int oldState, Turnout t) {
         switch (mLockControlTurnoutState) {
             case ONCLOSED:
-                if (newState == Turnout.CLOSED) {
-                    setLocked(true);
-                } else {
-                    setLocked(false);
-                }
+                setLocked(newState == Turnout.CLOSED);
                 return;
             case ONTHROWN:
-                if (newState == Turnout.THROWN) {
-                    setLocked(true);
-                } else {
-                    setLocked(false);
-                }
+                setLocked(newState == Turnout.THROWN);
                 return;
             case ONCHANGE:
                 if (newState != oldState) {
-                    if (getLocked()) {
-                        setLocked(false);
-                    } else {
-                        setLocked(true);
-                    }
+                    setLocked(!getLocked());
                 }
                 return;
             default:
-                // if none, return
-                return;
+                // if none, ready
         }
     }
 
     /**
-     * Method to check if the turnouts for this route are correctly aligned.
+     * Check if the turnouts for this route are correctly aligned.
      * Sets turnouits aligned sensor (if there is one) to active if the turnouts
      * are aligned. Sets the sensor to inactive if they are not aligned
      */
@@ -958,14 +947,13 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
 
         //register output turnouts to return Known State if a turnouts aligned sensor is defined
         if (!getTurnoutsAlignedSensor().equals("")) {
-
-            for (int k = 0; k < _outputTurnoutList.size(); k++) {
-                _outputTurnoutList.get(k).addListener();
+            for (OutputTurnout outputTurnout : _outputTurnoutList) {
+                outputTurnout.addListener();
             }
         }
 
-        for (int k = 0; k < _controlSensorList.size(); k++) {
-            _controlSensorList.get(k).addListener();
+        for (ControlSensor controlSensor : _controlSensorList) {
+            controlSensor.addListener();
         }
         Turnout ctl = getCtlTurnout();
         if (ctl != null) {
@@ -1008,12 +996,10 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
         }
 
         // check sensors
-        for (int i = 0; i < _controlSensorList.size(); i++) {
-            ControlSensor controlSensor = _controlSensorList.get(i);
+        for (ControlSensor controlSensor : _controlSensorList) {
             int s = controlSensor.getSensor().getKnownState();
             int mode = controlSensor.getState();
-            if (((mode == VETOACTIVE) && (s == Sensor.ACTIVE))
-                    || ((mode == VETOINACTIVE) && (s == Sensor.INACTIVE))) {
+            if (((mode == VETOACTIVE) && (s == Sensor.ACTIVE)) || ((mode == VETOINACTIVE) && (s == Sensor.INACTIVE))) {
                 return true;  // veto set
             }
         }
@@ -1024,9 +1010,7 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
             if (mControlTurnoutState == Route.VETOCLOSED && tstate == Turnout.CLOSED) {
                 return true;
             }
-            if (mControlTurnoutState == Route.VETOTHROWN && tstate == Turnout.THROWN) {
-                return true;
-            }
+            return mControlTurnoutState == Route.VETOTHROWN && tstate == Turnout.THROWN;
         }
         return false;
     }
@@ -1041,7 +1025,7 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
 
         activatedRoute = false;
         // remove control turnout if there's one
-        for (int k = 0; k < _controlSensorList.size(); k++) {
+        for (int k = _controlSensorList.size() - 1; k >= 0; k--) {
             _controlSensorList.get(k).removeListener();
         }
         if (mTurnoutListener != null) {
@@ -1061,7 +1045,7 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
         }
         //remove listeners on output turnouts if there are any
         if (!mTurnoutsAlignedSensor.isEmpty()) {
-            for (int k = 0; k < _outputTurnoutList.size(); k++) {
+            for (int k = _outputTurnoutList.size() - 1; k >= 0; k--) {
                 _outputTurnoutList.get(k).removeListener();
             }
         }
@@ -1309,7 +1293,7 @@ public class DefaultRoute extends AbstractNamedBean implements Route, java.beans
             r.setRouteBusy(false);
         }
 
-        private DefaultRoute r;
+        private final DefaultRoute r;
 
         private final static Logger log = LoggerFactory.getLogger(SetRouteThread.class);
     }

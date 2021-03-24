@@ -4,6 +4,7 @@ import java.awt.GraphicsEnvironment;
 import java.util.List;
 import java.util.SortedSet;
 
+import javax.annotation.Nonnull;
 import javax.swing.JOptionPane;
 
 import jmri.InstanceManager;
@@ -217,7 +218,7 @@ public class DefaultRouteManagerXml extends jmri.managers.configurexml.AbstractN
      * @return true if successful
      */
     @Override
-    public boolean load(Element sharedRoutes, Element perNodeRoutes) {
+    public boolean load(@Nonnull Element sharedRoutes, Element perNodeRoutes) {
         // create the master object
         replaceRouteManager();
         // load individual sharedRoutes
@@ -235,7 +236,7 @@ public class DefaultRouteManagerXml extends jmri.managers.configurexml.AbstractN
     public void loadRoutes(Element routes) {
         List<Element> routeList = routes.getChildren("route");
         log.debug("Found {} routes", routeList.size());
-        RouteManager tm = InstanceManager.getDefault(jmri.RouteManager.class);
+        RouteManager rm = InstanceManager.getDefault(jmri.RouteManager.class);
         int namesChanged = 0;
 
         for (Element el : routeList) {
@@ -245,17 +246,17 @@ public class DefaultRouteManagerXml extends jmri.managers.configurexml.AbstractN
                 log.warn("unexpected null in systemName {}", el);
                 break;
             }
-            // convert typeLetter from R to tm.typeLetter()
-            if (sysName.startsWith(tm.getSystemPrefix() + 'R')) {
+            // convert typeLetter from R to rm.typeLetter()
+            if (sysName.startsWith(rm.getSystemPrefix() + 'R')) {
                 String old = sysName;
-                sysName = tm.getSystemNamePrefix() + sysName.substring(tm.getSystemNamePrefix().length());
+                sysName = rm.getSystemNamePrefix() + sysName.substring(rm.getSystemNamePrefix().length());
                 log.warn("Converting route system name {} to {}", old, sysName);
                 namesChanged++;
             }
             // prepend systemNamePrefix if missing
-            if (!sysName.startsWith(tm.getSystemNamePrefix())) {
+            if (!sysName.startsWith(rm.getSystemNamePrefix())) {
                 String old = sysName;
-                sysName = tm.getSystemNamePrefix() + sysName;
+                sysName = rm.getSystemNamePrefix() + sysName;
                 log.warn("Converting route system name {} to {}", old, sysName);
                 namesChanged++;
             }
@@ -295,7 +296,7 @@ public class DefaultRouteManagerXml extends jmri.managers.configurexml.AbstractN
             
             Route r;
             try {
-                r = tm.provideRoute(sysName, userName);
+                r = rm.provideRoute(sysName, userName);
             } catch (IllegalArgumentException ex) {
                 log.error("failed to create Route: {}", sysName);
                 return;
@@ -495,7 +496,7 @@ public class DefaultRouteManagerXml extends jmri.managers.configurexml.AbstractN
             if (!GraphicsEnvironment.isHeadless() && !Boolean.getBoolean("jmri.test.no-dialogs")) {
                 JOptionPane.showMessageDialog(null,
                         Bundle.getMessage(namesChanged > 1 ? "RouteManager.SystemNamesChanged.Message" : "RouteManager.SystemNameChanged.Message", namesChanged),
-                        Bundle.getMessage("Manager.SystemNamesChanged.Title", namesChanged, tm.getBeanTypeHandled(namesChanged > 1)),
+                        Bundle.getMessage("Manager.SystemNamesChanged.Title", namesChanged, rm.getBeanTypeHandled(namesChanged > 1)),
                         JOptionPane.WARNING_MESSAGE);
             }
             log.warn("System names for {} Routes changed; this may have operational impacts.", namesChanged); 

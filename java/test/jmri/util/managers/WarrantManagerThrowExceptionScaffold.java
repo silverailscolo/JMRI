@@ -43,7 +43,7 @@ public class WarrantManagerThrowExceptionScaffold extends WarrantManager {
     
     /** {@inheritDoc} */
     @Override
-    public Warrant getByUserName(String key) {
+    public Warrant getByUserName(@Nonnull String key) {
         throw new IllegalArgumentException("Illegal argument");
     }
     

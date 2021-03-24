@@ -191,6 +191,7 @@ public class SerialSensorManager extends jmri.managers.AbstractSensorManager
     private int address = 0;
     private int iName = 0;
 
+    @Nonnull
     @Override
     public String getNextValidAddress(@Nonnull String curAddress, @Nonnull String prefix, boolean ignoreInitialExisting) throws JmriException {
 

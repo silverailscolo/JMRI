@@ -32,7 +32,7 @@ public abstract class AbstractIdTag extends AbstractNamedBean implements IdTag, 
     @Override
     @Nonnull
     public String getTagID() {
-        if(prefix == null) {
+        if (prefix == null) {
             try {
                 prefix = findPrefix();
             } catch ( NullPointerException | BadSystemNameException e) {

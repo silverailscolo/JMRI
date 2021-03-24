@@ -3,10 +3,13 @@ package jmri.managers;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
+
 import jmri.Manager;
 import jmri.Memory;
 import jmri.MemoryManager;
 import jmri.SystemConnectionMemo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,16 +44,9 @@ public abstract class AbstractMemoryManager extends AbstractManager<Memory>
 
     /** {@inheritDoc} */
     @Override
-    public @Nonnull Memory provideMemory(@Nonnull String sName) {
-        Memory m = getMemory(sName);
-        if (m != null) {
-            return m;
-        }
-        if (sName.startsWith(getSystemNamePrefix())) {
-            return newMemory(sName, null);
-        } else {
-            return newMemory(makeSystemName(sName), null);
-        }
+    @Nonnull
+    public Memory provideMemory(@Nonnull String systemName) {
+        return this.provideMemory(systemName, null);
     }
 
     /** {@inheritDoc} */
@@ -94,12 +90,7 @@ public abstract class AbstractMemoryManager extends AbstractManager<Memory>
         }
 
         // doesn't exist, make a new one
-        m = createNewMemory(systemName, userName);
-
-        // if that failed, blame it on the input arguments
-        if (m == null) {
-            throw new IllegalArgumentException();
-        }
+        m = createNewMemory(systemName, userName); // never returns null
 
         // save in the maps
         register(m);
@@ -109,9 +100,10 @@ public abstract class AbstractMemoryManager extends AbstractManager<Memory>
         return m;
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     * @param userName*/
     @Override
-    public @Nonnull Memory newMemory(@Nonnull String userName) {
+    public @Nonnull Memory newMemory(@Nullable String userName) {
         return newMemory(getAutoSystemName(), userName);
     }
 
@@ -144,7 +136,7 @@ public abstract class AbstractMemoryManager extends AbstractManager<Memory>
     @Override
     @Nonnull
     public Memory provide(@Nonnull String name) throws IllegalArgumentException {
-        return provideMemory(name);
+        return provideMemory(name, null);
     }
 
     private final static Logger log = LoggerFactory.getLogger(AbstractMemoryManager.class);

@@ -1,5 +1,7 @@
 package jmri;
 
+import javax.annotation.Nonnull;
+
 /**
  * Interface for obtaining Logixs
  * <p>
@@ -47,9 +49,9 @@ public interface LogixManager extends Manager<Logix> {
      */
     public Logix getLogix(String name);
 
-    public Logix getByUserName(String s);
+    public Logix getByUserName(@Nonnull String s);
 
-    public Logix getBySystemName(String s);
+    public Logix getBySystemName(@Nonnull String s);
 
     /**
      * Activate all Logixs that are not currently active This method is called

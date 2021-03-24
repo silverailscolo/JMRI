@@ -751,8 +751,9 @@ public class DecoderIndexFile extends XmlFile {
     @ServiceProvider(service = InstanceInitializer.class)
     public static class Initializer extends AbstractInstanceInitializer {
 
+        @Nonnull
         @Override
-        public <T> Object getDefault(Class<T> type) {
+        public <T> Object getDefault(@Nonnull Class<T> type) {
             if (type.equals(DecoderIndexFile.class)) {
                 // create and load
                 DecoderIndexFile instance = new DecoderIndexFile();
@@ -781,6 +782,7 @@ public class DecoderIndexFile extends XmlFile {
             return super.getDefault(type);
         }
 
+        @Nonnull
         @Override
         public Set<Class<?>> getInitalizes() {
             Set<Class<?>> set = super.getInitalizes();

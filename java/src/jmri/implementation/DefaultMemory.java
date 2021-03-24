@@ -29,9 +29,7 @@ public class DefaultMemory extends AbstractMemory {
     public int getState() {
         try {
             return Integer.parseInt(getValue().toString());
-        } catch (java.lang.NumberFormatException ex1) {
-            return -1;
-        } catch (java.lang.NullPointerException ex2) {
+        } catch (NumberFormatException | NullPointerException ex1) {
             return -1;
         }
     }
@@ -40,4 +38,5 @@ public class DefaultMemory extends AbstractMemory {
     public void setState(int s) {
         setValue("" + s);
     }
+
 }

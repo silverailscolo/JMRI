@@ -41,7 +41,7 @@ public class RpsReporterManager extends jmri.managers.AbstractReporterManager {
     }
 
     @Override
-    public String createSystemName(String curAddress, String prefix) throws JmriException {
+    public String createSystemName(@Nonnull String curAddress, @Nonnull String prefix) throws JmriException {
         if (!prefix.equals(getSystemPrefix())) {
             log.warn("prefix does not match memo.prefix");
             throw new JmriException("Unable to convert " + curAddress + ", Prefix does not match");

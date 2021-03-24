@@ -12,6 +12,8 @@ import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Brett Hoffman Copyright (C) 2010
  */
@@ -290,14 +292,16 @@ public class WiThrottlePreferences extends AbstractWiThrottlePreferences {
     @ServiceProvider(service = InstanceInitializer.class)
     public static class Initializer extends AbstractInstanceInitializer {
 
+        @Nonnull
         @Override
-        public <T> Object getDefault(Class<T> type) {
+        public <T> Object getDefault(@Nonnull Class<T> type) {
             if (type.equals(WiThrottlePreferences.class)) {
                 return new WiThrottlePreferences(FileUtil.getUserFilesPath() + "throttle" + File.separator + "WiThrottlePreferences.xml"); // NOI18N
             }
             return super.getDefault(type);
         }
 
+        @Nonnull
         @Override
         public Set<Class<?>> getInitalizes() {
             Set<Class<?>> set = super.getInitalizes();

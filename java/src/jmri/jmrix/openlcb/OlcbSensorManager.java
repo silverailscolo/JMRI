@@ -158,6 +158,7 @@ public class OlcbSensorManager extends jmri.managers.AbstractSensorManager imple
         return prefix + typeLetter() + curAddress;
     }
 
+    @Nonnull
     @Override
     public String getNextValidAddress(@Nonnull String curAddress, @Nonnull String prefix, boolean ignoreInitialExisting) {
         // always return this (the current) name without change

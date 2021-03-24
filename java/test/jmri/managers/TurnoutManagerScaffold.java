@@ -73,8 +73,8 @@ public class TurnoutManagerScaffold implements TurnoutManager {
         return null;
     }
 
+    @Nonnull
     @Override
-    @CheckForNull
     public java.util.SortedSet<Turnout> getNamedBeanSet() {
         return null;
     }

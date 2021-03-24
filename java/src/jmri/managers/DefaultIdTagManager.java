@@ -14,7 +14,6 @@ import jmri.InstanceInitializer;
 import jmri.InstanceManager;
 import jmri.Reporter;
 import jmri.ShutDownManager;
-import jmri.ShutDownTask;
 import jmri.implementation.AbstractInstanceInitializer;
 import jmri.implementation.DefaultIdTag;
 import jmri.SystemConnectionMemo;
@@ -377,7 +376,7 @@ public class DefaultIdTagManager extends AbstractManager<IdTag> implements IdTag
 
         @Override
         @Nonnull
-        public <T> Object getDefault(Class<T> type) {
+        public <T> Object getDefault(@Nonnull Class<T> type) {
             if (type.equals(IdTagManager.class)) {
                 return new DefaultIdTagManager(InstanceManager.getDefault(InternalSystemConnectionMemo.class));
             }

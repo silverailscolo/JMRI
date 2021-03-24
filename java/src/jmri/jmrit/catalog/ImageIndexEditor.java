@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.Enumeration;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -289,8 +290,9 @@ public final class ImageIndexEditor extends JmriJFrame {
     @ServiceProvider(service = InstanceInitializer.class)
     public static class Initializer extends AbstractInstanceInitializer {
 
+        @Nonnull
         @Override
-        public <T> Object getDefault(Class<T> type) {
+        public <T> Object getDefault(@Nonnull Class<T> type) {
             if (type.equals(ImageIndexEditor.class)) {
                 ImageIndexEditor instance = new ImageIndexEditor(Bundle.getMessage("editIndexFrame"));
                 instance.init();
@@ -299,6 +301,7 @@ public final class ImageIndexEditor extends JmriJFrame {
             return super.getDefault(type);
         }
 
+        @Nonnull
         @Override
         public Set<Class<?>> getInitalizes() {
             Set<Class<?>> set = super.getInitalizes();

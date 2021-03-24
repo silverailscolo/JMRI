@@ -93,6 +93,7 @@ abstract public class SerialSensorManager extends jmri.managers.AbstractSensorMa
      * TODO : Get this method working then enable multiple additions
      * {@inheritDoc}
      */
+    @Nonnull
     @Override
     public String getNextValidAddress(@Nonnull String curAddress, @Nonnull String prefix, boolean ignoreInitialExisting) throws JmriException {
         log.warn("getNextValidAddress called but system does not yet support multiple additions");

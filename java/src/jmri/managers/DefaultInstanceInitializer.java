@@ -13,6 +13,8 @@ import jmri.jmrix.internal.InternalSystemConnectionMemo;
 
 import org.openide.util.lookup.ServiceProvider;
 
+import javax.annotation.Nonnull;
+
 /**
  * Provide the usual default implementations for the
  * {@link jmri.InstanceManager}.
@@ -37,8 +39,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InstanceInitializer.class)
 public class DefaultInstanceInitializer extends AbstractInstanceInitializer {
 
+    @Nonnull
     @Override
-    public <T> Object getDefault(Class<T> type) {
+    public <T> Object getDefault(@Nonnull Class<T> type) {
 
         InternalSystemConnectionMemo memo = InstanceManager.getDefault(InternalSystemConnectionMemo.class);
         // In order for getDefault() to create a new object, the manager also
@@ -145,6 +148,7 @@ public class DefaultInstanceInitializer extends AbstractInstanceInitializer {
         return super.getDefault(type);
     }
 
+    @Nonnull
     @Override
     public Set<Class<?>> getInitalizes() {
         Set<Class<?>> set = super.getInitalizes();

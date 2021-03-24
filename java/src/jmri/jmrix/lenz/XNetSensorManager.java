@@ -217,6 +217,7 @@ public class XNetSensorManager extends jmri.managers.AbstractSensorManager imple
     /**
      * Does not enforce any rules on the encoder or input values.
      */
+    @Nonnull
     @Override
     synchronized public String getNextValidAddress(@Nonnull String curAddress, @Nonnull String prefix, boolean ignoreInitialExisting) throws JmriException {
 

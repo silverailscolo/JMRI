@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
  * Extends the {@link Manager} class to handle "provide" methods that
  * can create a {@link NamedBean} on request from just its system name.
  *
- *
  * @param <E> the type of NamedBean supported by this manager
  * @author Bob Jacobsen Copyright (C) 2003
  */

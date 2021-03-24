@@ -11,6 +11,8 @@ import jmri.InstanceInitializer;
 import jmri.ShutDownManager;
 import jmri.implementation.AbstractInstanceInitializer;
 
+import javax.annotation.Nonnull;
+
 /**
  * An initializer for the {@link jmri.ShutDownManager} that allows the
  * ShutDownManager to be used to be specified as a Java property.
@@ -30,8 +32,9 @@ public class ShutDownManagerInitializer extends AbstractInstanceInitializer {
     /**
      * {@inheritDoc}
      */
+    @Nonnull
     @Override
-    public <T> Object getDefault(Class<T> type) {
+    public <T> Object getDefault(@Nonnull Class<T> type) {
         if (type.equals(ShutDownManager.class)) {
             String property = System.getProperty("jmri.shutdownmanager");
             if (property != null) {
@@ -59,6 +62,7 @@ public class ShutDownManagerInitializer extends AbstractInstanceInitializer {
     /**
      * {@inheritDoc}
      */
+    @Nonnull
     @Override
     public Set<Class<?>> getInitalizes() {
         Set<Class<?>> set = super.getInitalizes();

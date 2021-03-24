@@ -211,7 +211,7 @@ public class EntryExitPairs extends VetoableChangeSupport implements Manager<Des
 
     /** {@inheritDoc} */
     @Override
-    public DestinationPoints getBySystemName(String systemName) {
+    public DestinationPoints getBySystemName(@Nonnull String systemName) {
         for (Source e : nxpair.values()) {
             DestinationPoints pd = e.getByUniqueId(systemName);
             if (pd != null) {

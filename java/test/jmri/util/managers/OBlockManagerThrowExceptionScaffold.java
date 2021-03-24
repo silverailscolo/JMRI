@@ -43,7 +43,7 @@ public class OBlockManagerThrowExceptionScaffold extends OBlockManager {
     
     /** {@inheritDoc} */
     @Override
-    public OBlock getByUserName(String key) {
+    public OBlock getByUserName(@Nonnull String key) {
         throw new IllegalArgumentException("Illegal argument");
     }
     

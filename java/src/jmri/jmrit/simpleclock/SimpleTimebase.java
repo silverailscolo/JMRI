@@ -14,6 +14,8 @@ import jmri.TimebaseRateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+
 /**
  * Provide basic Timebase implementation from system clock.
  * <p>
@@ -40,14 +42,14 @@ public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implem
         super("SIMPLECLOCK");
         // initialize time-containing memory
         try {
-            clockMemory = jmri.InstanceManager.memoryManagerInstance().provideMemory("IMCURRENTTIME");
+            clockMemory = jmri.InstanceManager.getDefault(jmri.MemoryManager.class).provideMemory("CURRENTTIME"); // will prepend internal prefix
             clockMemory.setValue("--");
         } catch (IllegalArgumentException ex) {
-            log.warn("Unable to create IMCURRENTTIME time memory variable");
+            log.warn("Unable to create {}CURRENTTIME time memory variable",
+                    jmri.InstanceManager.getDefault(jmri.MemoryManager.class).getSystemNamePrefix());
         }
         
         init();
-
     }
     
     final void init(){
@@ -61,25 +63,26 @@ public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implem
             clockSensor.setKnownState(Sensor.ACTIVE);
             clockSensor.addPropertyChangeListener(this::clockSensorChanged);
         } catch (jmri.JmriException e) {
-            log.warn("Exception setting ISCLOCKRUNNING sensor ACTIVE: {}", e);
+            log.warn("Exception setting ISCLOCKRUNNING sensor ACTIVE: ", e);
         }
         // initialize rate factor-containing memory
         if (jmri.InstanceManager.getNullableDefault(jmri.MemoryManager.class) != null) {
             // only try to create memory if memories are supported
             try {
-                factorMemory = jmri.InstanceManager.memoryManagerInstance().provideMemory("IMRATEFACTOR");
+                factorMemory = jmri.InstanceManager.getDefault(jmri.MemoryManager.class).provideMemory("RATEFACTOR"); // will prepend internal prefix
                 factorMemory.setValue(userGetRate());
             } catch (IllegalArgumentException ex) {
-                log.warn("Unable to create IMRATEFACTOR time memory variable");
+                log.warn("Unable to create {}RATEFACTOR time memory variable",
+                        jmri.InstanceManager.getDefault(jmri.MemoryManager.class).getSystemNamePrefix());
             }
         }
-    
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String getBeanType() {
         return Bundle.getMessage("BeanNameTime");
     }
@@ -88,6 +91,7 @@ public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implem
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public Date getTime() {
         // is clock stopped?
         if (pauseTime != null) {
@@ -122,7 +126,7 @@ public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implem
      * {@inheritDoc}
      */
     @Override
-    public void setTime(Instant i) {
+    public void setTime(@Nonnull Instant i) {
         setTime(Date.from(i));
     }
 
@@ -167,7 +171,7 @@ public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implem
                 try {
                     clockSensor.setKnownState(Sensor.ACTIVE);
                 } catch (jmri.JmriException e) {
-                    log.warn("Exception setting ISClockRunning sensor ACTIVE: {}", e);
+                    log.warn("Exception setting ISClockRunning sensor ACTIVE: ", e);
                 }
             }
         } else if (!run && pauseTime == null) {
@@ -184,7 +188,7 @@ public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implem
                 try {
                     clockSensor.setKnownState(Sensor.INACTIVE);
                 } catch (jmri.JmriException e) {
-                    log.warn("Exception setting ISClockRunning sensor INACTIVE: {}", e);
+                    log.warn("Exception setting ISClockRunning sensor INACTIVE: ", e);
                 }
             }
         }
@@ -324,7 +328,7 @@ public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implem
      * {@inheritDoc}
      */
     @Override
-    public void setMasterName(String name) {
+    public void setMasterName(@Nonnull String name) {
         if (!internalMaster) {
             masterName = name;
             // if multiple clocks, this must be replaced by a loop over all hardware clocks to identify
@@ -504,6 +508,7 @@ public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implem
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public Date getStartTime() {
         return new Date(startTime.getTime());
     }
@@ -616,7 +621,7 @@ public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implem
             timer.setRepeats(false); // just in case
             timer.stop();
 
-            java.awt.event.ActionListener listeners[] = timer.getListeners(java.awt.event.ActionListener.class);
+            java.awt.event.ActionListener[] listeners = timer.getListeners(java.awt.event.ActionListener.class);
             for (java.awt.event.ActionListener listener : listeners)
                 timer.removeActionListener(listener);
 
@@ -705,7 +710,7 @@ public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implem
             // update memory
             updateMemory(date);
             // notify listeners
-            firePropertyChange("minutes", Double.valueOf(oldMinutes), Double.valueOf(minutes));
+            firePropertyChange("minutes", (double) oldMinutes, (double) minutes);
             firePropertyChange("time", oldDate != null ? new Date(oldDate.getTime()) : null, new Date(date.getTime())); // to ensure not modified outside
         }
         oldDate = date;
@@ -720,7 +725,7 @@ public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implem
                java.util.ResourceBundle.getBundle("jmri.jmrit.simpleclock.SimpleClockBundle")
                     .getString("TimeStorageFormat"));
             } catch (java.lang.IllegalArgumentException e) {
-                log.info("Dropping back to default time format due to exception {}", e);
+                log.info("Dropping back to default time format due to exception ", e);
                 timeStorageFormat = new java.text.SimpleDateFormat("h:mm a");
             }
         }
@@ -751,6 +756,7 @@ public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implem
      * {@inheritDoc} 
      */
     @Override
+    @Nonnull
     public PropertyChangeListener[] getMinuteChangeListeners() {
         return getPropertyChangeListeners("minutes");
     }

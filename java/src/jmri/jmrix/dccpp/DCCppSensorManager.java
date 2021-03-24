@@ -177,6 +177,7 @@ public class DCCppSensorManager extends jmri.managers.AbstractSensorManager impl
      * @param prefix     the system connection prefix
      * @return the next valid address after the current address
      */
+    @Nonnull
     @Override
     synchronized public String getNextValidAddress(@Nonnull String curAddress, @Nonnull String prefix, boolean ignoreInitialExisting) throws JmriException {
 
@@ -209,8 +210,9 @@ public class DCCppSensorManager extends jmri.managers.AbstractSensorManager impl
     /**
      * {@inheritDoc}
      */
+    @Nonnull
     @Override
-    public String validateSystemNameFormat(String systemName, Locale locale) {
+    public String validateSystemNameFormat(@Nonnull String systemName, @Nonnull Locale locale) {
         return validateIntegerSystemNameFormat(systemName, 1, MAX_SENSOR_ID, locale);
     }
 

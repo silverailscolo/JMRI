@@ -88,7 +88,7 @@ public abstract class AbstractReporterManager extends AbstractManager<Reporter>
                 || !(systemName.length() > (getSystemNamePrefix()).length())) {
             log.error("Invalid system name for reporter: {} needed {}{}",
                     systemName, getSystemPrefix(), typeLetter());
-            throw new IllegalArgumentException("Invalid system name for turnout: " + systemName
+            throw new IllegalArgumentException("Invalid system name for reporter: " + systemName
                     + " needed " + getSystemNamePrefix());
         }
 
@@ -113,7 +113,7 @@ public abstract class AbstractReporterManager extends AbstractManager<Reporter>
         // doesn't exist, make a new one
         r = createNewReporter(systemName, userName);
 
-        // Some implementations of createNewReporter() registers the bean, some
+        // Some implementations of createNewReporter() register the bean, some
         // don't. Check if the bean is registered and register it if it isn't
         // registered.
         if (getBySystemName(systemName) == null) {

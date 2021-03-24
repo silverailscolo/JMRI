@@ -43,7 +43,6 @@ public class MemoryTableAction extends AbstractTableAction<Memory> {
         if (jmri.InstanceManager.getNullableDefault(jmri.MemoryManager.class) == null) {
             setEnabled(false);
         }
-
     }
 
     public MemoryTableAction() {
@@ -168,8 +167,6 @@ public class MemoryTableAction extends AbstractTableAction<Memory> {
     JmriJFrame addFrame = null;
     JTextField sysNameField = new JTextField(20);
     JTextField userNameField = new JTextField(20);
-    JLabel sysNameLabel = new JLabel(Bundle.getMessage("LabelSystemName"));
-    JLabel userNameLabel = new JLabel(Bundle.getMessage("LabelUserName"));
     SpinnerNumberModel rangeSpinner = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
     JSpinner numberToAddSpinner = new JSpinner(rangeSpinner);
     JCheckBox rangeBox = new JCheckBox(Bundle.getMessage("AddRangeBox"));
@@ -185,12 +182,8 @@ public class MemoryTableAction extends AbstractTableAction<Memory> {
             addFrame.addHelpMenu("package.jmri.jmrit.beantable.MemoryAddEdit", true);
             addFrame.getContentPane().setLayout(new BoxLayout(addFrame.getContentPane(), BoxLayout.Y_AXIS));
 
-            ActionListener okListener = (ActionEvent e1) -> {
-                okPressed(e1);
-            };
-            ActionListener cancelListener = (ActionEvent e1) -> {
-                cancelPressed(e1);
-            };
+            ActionListener okListener = this::okPressed;
+            ActionListener cancelListener = this::cancelPressed;
             addFrame.add(new AddNewBeanPanel(sysNameField, userNameField, numberToAddSpinner, rangeBox, autoSystemNameBox, "ButtonCreate", okListener, cancelListener, statusBarLabel));
             sysNameField.setToolTipText(Bundle.getMessage("SysNameToolTip", "M")); // override tooltip with bean specific letter
         }
@@ -246,7 +239,7 @@ public class MemoryTableAction extends AbstractTableAction<Memory> {
         }
 
         // Add some entry pattern checking, before assembling sName and handing it to the memoryManager
-        String statusMessage = Bundle.getMessage("ItemCreateFeedback", Bundle.getMessage("BeanNameMemory"));
+        StringBuilder statusMessage = new StringBuilder(Bundle.getMessage("ItemCreateFeedback", Bundle.getMessage("BeanNameMemory")));
         String errorMessage = null;
         for (int x = 0; x < numberOfMemory; x++) {
             if (uName != null && !uName.isEmpty() && jmri.InstanceManager.memoryManagerInstance().getByUserName(uName) != null && !p.getPreferenceState(getClassName(), "duplicateUserName")) {
@@ -269,7 +262,7 @@ public class MemoryTableAction extends AbstractTableAction<Memory> {
             }
             try {
                 if (autoSystemNameBox.isSelected()) {
-                    InstanceManager.memoryManagerInstance().newMemory(uName);
+                    InstanceManager.memoryManagerInstance().newMemory(uName); // OK if null
                 } else {
                     InstanceManager.memoryManagerInstance().newMemory(sName, uName);
                 }
@@ -285,10 +278,10 @@ public class MemoryTableAction extends AbstractTableAction<Memory> {
             // add first and last names to statusMessage uName feedback string
             // only mention first and last of rangeBox added
             if (x == 0 || x == numberOfMemory - 1) {
-                statusMessage = statusMessage + " " + sName + " (" + uName + ")";
+                statusMessage.append(" ").append(sName).append(" (").append(uName).append(")");
             }
             if (x == numberOfMemory - 2) {
-                statusMessage = statusMessage + " " + Bundle.getMessage("ItemCreateUpTo") + " ";
+                statusMessage.append(" ").append(Bundle.getMessage("ItemCreateUpTo")).append(" ");
             }
 
             // bump system & uName names
@@ -302,7 +295,7 @@ public class MemoryTableAction extends AbstractTableAction<Memory> {
 
         // provide feedback to uName
         if (errorMessage == null) {
-            statusBarLabel.setText(statusMessage);
+            statusBarLabel.setText(statusMessage.toString());
             statusBarLabel.setForeground(Color.gray);
         } else {
             statusBarLabel.setText(errorMessage);

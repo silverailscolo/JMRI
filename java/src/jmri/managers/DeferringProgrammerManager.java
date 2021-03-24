@@ -15,6 +15,8 @@ import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+
 /**
  * Defers global programmer operations to the default global Programmer, and
  * addressed programmer operations to the default AddressedProgrammer.
@@ -161,8 +163,9 @@ public class DeferringProgrammerManager extends PropertyChangeSupport implements
     @ServiceProvider(service=InstanceInitializer.class)
     public static final class Initializer extends AbstractInstanceInitializer {
 
+        @Nonnull
         @Override
-        public <T> Object getDefault(Class<T> type) {
+        public <T> Object getDefault(@Nonnull Class<T> type) {
             if (type == AddressedProgrammerManager.class) {
                 return new DeferringProgrammerManager();
             }
@@ -172,6 +175,7 @@ public class DeferringProgrammerManager extends PropertyChangeSupport implements
             return super.getDefault(type);
         }
 
+        @Nonnull
         @Override
         public Set<Class<?>> getInitalizes() {
             Set<Class<?>> set = super.getInitalizes();

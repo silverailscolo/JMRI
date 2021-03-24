@@ -168,6 +168,7 @@ public class TamsSensorManager extends jmri.managers.AbstractSensorManager imple
     int board = 0;
     int port = 0;
 
+    @Nonnull
     @Override
     public String getNextValidAddress(@Nonnull String curAddress, @Nonnull String prefix, boolean ignoreInitialExisting) throws JmriException {
 

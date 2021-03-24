@@ -130,6 +130,7 @@ public class Dcc4PcSensorManager extends jmri.managers.AbstractSensorManager
     private int board;
     private int channel;
 
+    @Nonnull
     @Override
     public String getNextValidAddress(@Nonnull String curAddress, @Nonnull String prefix, boolean ignoreInitialExisting) throws JmriException {
 

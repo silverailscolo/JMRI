@@ -10,6 +10,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.annotation.Nonnull;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -437,6 +440,7 @@ public class ProxyAnalogIOManagerTest {
             throw new UnsupportedOperationException("Not supported");
         }
 
+        @Nonnull
         @Override
         public String getBeanTypeHandled(boolean plural) {
             throw new UnsupportedOperationException("Not supported");

@@ -1,5 +1,6 @@
 package jmri;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,12 +69,12 @@ public interface ConditionalManager extends Manager<Conditional> {
     public Conditional getConditional(String name);
 
     @Override
-    public Conditional getByUserName(String s);
+    public Conditional getByUserName(@Nonnull String s);
 
     public Conditional getByUserName(Logix x, String s);
 
     @Override
-    public Conditional getBySystemName(String s);
+    public Conditional getBySystemName(@Nonnull String s);
 
     /**
      * Get a list of all Conditional system names with the specified Logix

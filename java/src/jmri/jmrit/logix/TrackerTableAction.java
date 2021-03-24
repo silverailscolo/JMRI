@@ -889,7 +889,7 @@ public class TrackerTableAction extends AbstractAction implements PropertyChange
 
         @Override
         @Nonnull
-        public <T> Object getDefault(Class<T> type) {
+        public <T> Object getDefault(@Nonnull Class<T> type) {
             if (type.equals(TrackerTableAction.class)) {
                 return new TrackerTableAction(Bundle.getMessage("MenuTrackers"));
             }

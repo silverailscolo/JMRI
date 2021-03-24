@@ -13,6 +13,8 @@ import jmri.InstanceManager;
 import jmri.implementation.AbstractInstanceInitializer;
 import jmri.jmrit.operations.rollingstock.RollingStockAttribute;
 
+import javax.annotation.Nonnull;
+
 /**
  * Represents the various engine models a railroad can have. Each model has a
  * type, horsepower rating, length, and weight that is kept here. The program provides
@@ -199,8 +201,9 @@ public class EngineModels extends RollingStockAttribute {
     @ServiceProvider(service = InstanceInitializer.class)
     public static class Initializer extends AbstractInstanceInitializer {
 
+        @Nonnull
         @Override
-        public <T> Object getDefault(Class<T> type) {
+        public <T> Object getDefault(@Nonnull Class<T> type) {
             if (type.equals(EngineModels.class)) {
                 EngineModels instance = new EngineModels();
                 instance.loadDefaults();
@@ -209,6 +212,7 @@ public class EngineModels extends RollingStockAttribute {
             return super.getDefault(type);
         }
 
+        @Nonnull
         @Override
         public Set<Class<?>> getInitalizes() {
             Set<Class<?>> set = super.getInitalizes();

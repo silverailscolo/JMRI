@@ -101,7 +101,7 @@ public interface Manager<E extends NamedBean> extends SilenceablePropertyChangeP
      * Get the sub system prefix of this manager.
      * The sub system prefix is the system name prefix and possibly some extra
      * characters of the NamedBeans handled by this manager.
-     * <P>
+     * <p>
      * For most managers, this is the same as {@link #getSystemNamePrefix() },
      * but for some like the managers in LogixNG, it differs.
      *
@@ -321,7 +321,7 @@ public interface Manager<E extends NamedBean> extends SilenceablePropertyChangeP
             Integer.parseInt(name.substring(getSystemNamePrefix().length()));
         }
         catch (NumberFormatException ex) {
-            throw new jmri.NamedBean.BadSystemNameException(locale, "InvalidSystemNameNotInteger",name,getSystemNamePrefix());
+            throw new jmri.NamedBean.BadSystemNameException(locale, "InvalidSystemNameNotInteger", name, getSystemNamePrefix());
         }
         return name;
     }
@@ -415,8 +415,8 @@ public interface Manager<E extends NamedBean> extends SilenceablePropertyChangeP
     /**
      * Convenience implementation of
      * {@link #validateSystemNameFormat(java.lang.String, java.util.Locale)}
-     * that verifies name is a valid NMRA Accessory address after the prefix. A
-     * name is considered a valid NMRA accessory address if it is an integer
+     * that verifies name is a valid NMRA Accessory address after the prefix.
+     * A name is considered a valid NMRA accessory address if it is an integer
      * between {@value NmraPacket#accIdLowLimit} and
      * {@value NmraPacket#accIdHighLimit}, inclusive.
      * <p>

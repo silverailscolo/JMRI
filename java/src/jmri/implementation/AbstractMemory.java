@@ -23,6 +23,7 @@ public abstract class AbstractMemory extends AbstractNamedBean implements Memory
     }
 
     @Override
+    @Nonnull
     public String getBeanType() {
         return Bundle.getMessage("BeanNameMemory");
     }

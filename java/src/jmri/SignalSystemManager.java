@@ -1,5 +1,7 @@
 package jmri;
 
+import javax.annotation.Nonnull;
+
 /**
  * Interface for obtaining information about signal systems.
  * <p>
@@ -25,7 +27,7 @@ public interface SignalSystemManager extends Manager<SignalSystem> {
 
     public SignalSystem getSystem(String name);
 
-    public SignalSystem getBySystemName(String name);
+    public SignalSystem getBySystemName(@Nonnull String name);
 
-    public SignalSystem getByUserName(String name);
+    public SignalSystem getByUserName(@Nonnull String name);
 }

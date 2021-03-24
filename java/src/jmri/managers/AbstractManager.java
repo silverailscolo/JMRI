@@ -550,7 +550,6 @@ public abstract class AbstractManager<E extends NamedBean> extends VetoableChang
         if (e != null) listeners.remove(e);
     }
 
-    @SuppressWarnings("deprecation")
     private final List<ManagerDataListener<E>> listeners = new ArrayList<>();
 
     private boolean muted = false;
@@ -629,7 +628,7 @@ public abstract class AbstractManager<E extends NamedBean> extends VetoableChang
         try {
             Integer.parseInt(curAddress);
         } catch (java.lang.NumberFormatException ex) {
-            throw new JmriException("Hardware Address passed "+curAddress+" should be a number");
+            throw new JmriException("Hardware Address passed " + curAddress + " should be a number");
         }
         return curAddress;
     }

@@ -108,6 +108,7 @@ public class SerialTurnoutManager extends AbstractTurnoutManager {
     /**
      * Return the next valid free turnout hardware address.
      */
+    @Nonnull
     @Override
     public String getNextValidAddress(@Nonnull String curAddress, @Nonnull String prefix, boolean ignoreInitialExisting) throws JmriException {
 

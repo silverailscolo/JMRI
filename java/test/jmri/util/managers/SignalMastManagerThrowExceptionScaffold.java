@@ -39,7 +39,7 @@ public class SignalMastManagerThrowExceptionScaffold extends DefaultSignalMastMa
     
     /** {@inheritDoc} */
     @Override
-    public SignalMast getByUserName(String key) {
+    public SignalMast getByUserName(@Nonnull String key) {
         throw new IllegalArgumentException("Illegal argument");
     }
     

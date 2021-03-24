@@ -37,7 +37,7 @@ public class DefaultMemoryManagerXml extends AbstractMemoryManagerConfigXML {
     @Override
     public boolean load(Element sharedMemories, Element perNodeMemories) {
         // ensure the master object exists
-        InstanceManager.memoryManagerInstance();
+        InstanceManager.getDefault(jmri.MemoryManager.class);
         // load individual routes
         loadMemories(sharedMemories);
         return true;

@@ -13,6 +13,8 @@ import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+
 // try to limit the JDOM to this class, so that others can manipulate...
 /**
  * Represents a set of standard names and aliases in memory.
@@ -111,8 +113,9 @@ public class NameFile extends XmlFile {
     @ServiceProvider(service = InstanceInitializer.class)
     public static class Initializer extends AbstractInstanceInitializer {
 
+        @Nonnull
         @Override
-        public <T> Object getDefault(Class<T> type) {
+        public <T> Object getDefault(@Nonnull Class<T> type) {
             if (type.equals(NameFile.class)) {
                 if (log.isDebugEnabled()) {
                     log.debug("NameFile creating instance");
@@ -130,6 +133,7 @@ public class NameFile extends XmlFile {
             return super.getDefault(type);
         }
 
+        @Nonnull
         @Override
         public Set<Class<?>> getInitalizes() {
             Set<Class<?>> set = super.getInitalizes();

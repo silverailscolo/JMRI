@@ -13,6 +13,8 @@ import org.jdom2.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+
 /**
  * Provide interface for managing the JMRI web server, including migrating from
  * the older 2.n Mini Web Server.
@@ -27,8 +29,9 @@ public class WebServerPreferencesInstanceInitializer extends AbstractInstanceIni
 
     private static final Logger log = LoggerFactory.getLogger(WebServerPreferencesInstanceInitializer.class);
 
+    @Nonnull
     @Override
-    public <T> Object getDefault(Class<T> type) {
+    public <T> Object getDefault(@Nonnull Class<T> type) {
         if (type == WebServerPreferences.class) {
             File webServerPrefsFile = new File(
                     FileUtil.getUserFilesPath() + "networkServices" + File.separator + "WebServerPreferences.xml"); // NOI18N
@@ -47,6 +50,7 @@ public class WebServerPreferencesInstanceInitializer extends AbstractInstanceIni
         return super.getDefault(type);
     }
 
+    @Nonnull
     @Override
     public Set<Class<?>> getInitalizes() {
         Set<Class<?>> set = super.getInitalizes();

@@ -265,7 +265,7 @@ public class DefaultCatalogTreeManager extends AbstractManager<CatalogTree> impl
 
         @Override
         @Nonnull
-        public <T> Object getDefault(Class<T> type) {
+        public <T> Object getDefault(@Nonnull Class<T> type) {
             if (type.equals(CatalogTreeManager.class)) {
                 return new DefaultCatalogTreeManager();
             }

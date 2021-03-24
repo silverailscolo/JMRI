@@ -125,6 +125,7 @@ public class MarklinSensorManager extends jmri.managers.AbstractSensorManager
         return true;
     }
     
+    @Nonnull
     @Override
     public String getNextValidAddress(@Nonnull String curAddress, @Nonnull String prefix, boolean ignoreInitialExisting) throws JmriException {
 

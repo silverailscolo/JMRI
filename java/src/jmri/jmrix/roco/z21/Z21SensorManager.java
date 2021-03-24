@@ -203,6 +203,7 @@ public class Z21SensorManager extends jmri.managers.AbstractSensorManager implem
     /**
      * Does not enforce any rules on the encoder or input values.
      */
+    @Nonnull
     @Override
     public synchronized String getNextValidAddress(@Nonnull String curAddress, @Nonnull String prefix, boolean ignoreInitialExisting) throws JmriException{
 

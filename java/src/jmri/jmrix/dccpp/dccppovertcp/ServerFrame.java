@@ -153,7 +153,7 @@ public class ServerFrame extends jmri.util.JmriJFrame implements ServerListner, 
 
         @Override
         @Nonnull
-        public <T> Object getDefault(Class<T> type) {
+        public <T> Object getDefault(@Nonnull Class<T> type) {
             if (type.equals(ServerFrame.class)) {
                 return new ServerFrame();
             }
