@@ -100,8 +100,7 @@ public abstract class AbstractMemoryManager extends AbstractManager<Memory>
         return m;
     }
 
-    /** {@inheritDoc}
-     * @param userName*/
+    /** {@inheritDoc} */
     @Override
     public @Nonnull Memory newMemory(@Nullable String userName) {
         return newMemory(getAutoSystemName(), userName);
