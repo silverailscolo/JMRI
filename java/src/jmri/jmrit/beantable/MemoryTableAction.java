@@ -184,7 +184,10 @@ public class MemoryTableAction extends AbstractTableAction<Memory> {
 
             ActionListener okListener = this::okPressed;
             ActionListener cancelListener = this::cancelPressed;
-            addFrame.add(new AddNewBeanPanel(sysNameField, userNameField, numberToAddSpinner, rangeBox, autoSystemNameBox, "ButtonCreate", okListener, cancelListener, statusBarLabel));
+            AddNewBeanPanel anbp = new AddNewBeanPanel(sysNameField, userNameField, numberToAddSpinner, rangeBox, autoSystemNameBox, "ButtonCreate", okListener, cancelListener, statusBarLabel);
+            addFrame.add(anbp);
+            addFrame.getRootPane().setDefaultButton(anbp.ok);
+            addFrame.setEscapeKeyClosesWindow(true);
             sysNameField.setToolTipText(Bundle.getMessage("SysNameToolTip", "M")); // override tooltip with bean specific letter
         }
         sysNameField.setBackground(Color.white);
