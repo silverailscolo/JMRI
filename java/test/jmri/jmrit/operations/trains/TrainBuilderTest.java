@@ -1277,7 +1277,7 @@ public class TrainBuilderTest extends OperationsTestCase {
 
         RouteLocation rlBoston = route.getRouteLocationBySequenceNumber(2);
 
-        train1.addTrainSkipsLocation(rlBoston.getId());
+        train1.addTrainSkipsLocation(rlBoston);
 
         // place car at start of route
         Car c1 = JUnitOperationsUtil.createAndPlaceCar("A", "1", "Boxcar", "40", actonSpur1, 0);
@@ -3375,9 +3375,9 @@ public class TrainBuilderTest extends OperationsTestCase {
         Track l3s1 = l3.getTrackById("3s1");
         Track l3s2 = l3.getTrackById("3s2");
         Route route1 = rmanager.getRouteById("1");
-        RouteLocation rl1 = route1.getLocationById("1r1");
-        RouteLocation rl2 = route1.getLocationById("1r2");
-        RouteLocation rl3 = route1.getLocationById("1r3");
+        RouteLocation rl1 = route1.getRouteLocationById("1r1");
+        RouteLocation rl2 = route1.getRouteLocationById("1r2");
+        RouteLocation rl3 = route1.getRouteLocationById("1r3");
 
         train2.setCarRoadOption(Train.ALL_ROADS);
 
@@ -4702,7 +4702,7 @@ public class TrainBuilderTest extends OperationsTestCase {
         Track l3s1 = l3.getTrackById("3s1");
         Track l3s2 = l3.getTrackById("3s2");
         Route route1 = rmanager.getRouteById("1");
-        RouteLocation rl1 = route1.getLocationById("1r1");
+        RouteLocation rl1 = route1.getRouteLocationById("1r1");
 
         train1.setEngineRoad("PC");
         train1.setEngineModel("GP40");
@@ -5152,9 +5152,9 @@ public class TrainBuilderTest extends OperationsTestCase {
 
         Track l3s2 = l3.getTrackById("3s2");
         Route route1 = rmanager.getRouteById("1");
-        RouteLocation rl1 = route1.getLocationById("1r1");
-        RouteLocation rl2 = route1.getLocationById("1r2");
-        RouteLocation rl3 = route1.getLocationById("1r3");
+        RouteLocation rl1 = route1.getRouteLocationById("1r1");
+        RouteLocation rl2 = route1.getRouteLocationById("1r2");
+        RouteLocation rl3 = route1.getRouteLocationById("1r3");
         // Place Engines on Staging tracks
         Assert.assertEquals("Place e1", Track.OKAY, e1.setLocation(l1, l1s1));
         Assert.assertEquals("Place e2", Track.OKAY, e2.setLocation(l1, l1s1));
@@ -5272,7 +5272,7 @@ public class TrainBuilderTest extends OperationsTestCase {
 
         // now limit the train length and don't allow set outs
         Route route1 = rmanager.getRouteById("1");
-        RouteLocation rl2 = route1.getLocationById("1r2");
+        RouteLocation rl2 = route1.getRouteLocationById("1r2");
         rl2.setDropAllowed(false); // no set outs
         rl2.setMaxTrainLength(80); // only enough for the two cabooses
 
@@ -6114,7 +6114,7 @@ public class TrainBuilderTest extends OperationsTestCase {
         BufferedReader in = JUnitOperationsUtil.getBufferedReader(buildReport);
 
         // any changes to the build report could cause this to fail
-        Assert.assertEquals("confirm number of lines in build report", 274, in.lines().count());
+        Assert.assertEquals("confirm number of lines in build report", 275, in.lines().count());
         in.close();
 
         JUnitOperationsUtil.checkOperationsShutDownTask();
@@ -6179,7 +6179,7 @@ public class TrainBuilderTest extends OperationsTestCase {
         BufferedReader in = JUnitOperationsUtil.getBufferedReader(buildReport);
 
         // any changes to the build report could cause this to fail
-        Assert.assertEquals("confirm number of lines in build report", 648, in.lines().count());
+        Assert.assertEquals("confirm number of lines in build report", 653, in.lines().count());
         in.close();
 
         JUnitOperationsUtil.checkOperationsShutDownTask();
@@ -9473,9 +9473,9 @@ public class TrainBuilderTest extends OperationsTestCase {
         // Create route with 3 location
         Route rte1 = rmanager.newRoute("Route Harvard-Acton-Boston");
         rte1.addLocation(harvard);
-        RouteLocation rlArlinton = rte1.addLocation(acton);
-        rlArlinton.setTrainIconX(75); // set the train icon coordinates
-        rlArlinton.setTrainIconY(150);
+        RouteLocation rlActon = rte1.addLocation(acton);
+        rlActon.setTrainIconX(75); // set the train icon coordinates
+        rlActon.setTrainIconY(150);
         RouteLocation rl3 = rte1.addLocation(boston);
         rl3.setTrainIconX(125); // set the train icon coordinates
         rl3.setTrainIconY(150);
@@ -9527,8 +9527,8 @@ public class TrainBuilderTest extends OperationsTestCase {
 
         // no engines, so the caboose with least moves should be used
         train1.setRequirements(Train.CABOOSE);
-        // don't allow pickups at second location Acton
-        rlArlinton.setPickUpAllowed(false);
+        // don't allow pickups at location Acton
+        rlActon.setPickUpAllowed(false);
 
         train1.reset();
         Assert.assertTrue(new TrainBuilder().build(train1));
@@ -9714,7 +9714,7 @@ public class TrainBuilderTest extends OperationsTestCase {
         // should default to the caboose with the least moves
         e1.setRoadName("X");
         // allow pickups at Acton
-        rlArlinton.setPickUpAllowed(true);
+        rlActon.setPickUpAllowed(true);
         train1.reset();
         Assert.assertTrue(new TrainBuilder().build(train1));
         Assert.assertEquals("Train 1 After Build 4", true, train1.isBuilt());
@@ -11308,7 +11308,7 @@ public class TrainBuilderTest extends OperationsTestCase {
         train1.setRoute(rte1);
 
         // train skips Boston
-        train1.addTrainSkipsLocation(rl3.getId());
+        train1.addTrainSkipsLocation(rl3);
 
         // Place cars
         Assert.assertEquals("Place c1", Track.OKAY, c1.setLocation(loc1, loc1trk1));
